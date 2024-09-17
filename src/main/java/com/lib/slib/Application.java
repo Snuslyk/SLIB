@@ -14,6 +14,8 @@ public class Application extends javafx.application.Application {
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
+
+        //HibernateUtil.fastSave(0);
     }
 
     public static void main(String[] args) {

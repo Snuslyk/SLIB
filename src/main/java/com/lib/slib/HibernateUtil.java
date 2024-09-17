@@ -36,7 +36,7 @@ public class HibernateUtil {
             transaction = session.beginTransaction();
 
             get = session.get(clazz, id);
-            
+
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
