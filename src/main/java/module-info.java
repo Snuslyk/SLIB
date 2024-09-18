@@ -1,4 +1,4 @@
-module com.lib.slib {
+module com.github.Snuslyk.slib {
     requires javafx.controls;
     requires javafx.fxml;
     requires org.hibernate.orm.core;
@@ -7,6 +7,6 @@ module com.lib.slib {
 
 
 
-    opens com.lib.slib to javafx.fxml;
-    exports com.lib.slib;
+    opens com.github.Snuslyk.slib to javafx.fxml;
+    exports com.github.Snuslyk.slib;
 }

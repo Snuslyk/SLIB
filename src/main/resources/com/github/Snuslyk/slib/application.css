@@ -1,0 +1,54 @@
+HBox {
+    -fx-background-color: #121212;
+}
+
+.left-side {
+    -fx-border-color: #3d3d3d;
+    -fx-border-width: 0 1 0 0;
+}
+
+.combo-box {
+    -fx-background-color: #121212;
+    -fx-background-radius: 16;
+    -fx-border-color: #3d3d3d;
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-padding: 0 11;
+}
+
+.combo-box .list-view {
+    -fx-border-radius: 16;
+    -fx-border-color: #3d3d3d;
+    -fx-border-width: 1;
+    -fx-background-radius: 16;
+    -fx-background-color: #242424;
+    -fx-padding: 8 12 7 12;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: white;
+    -fx-font-size: 20;
+    -fx-font-family: "Futura Cyrillic Book";
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-min-height: 40;
+    -fx-padding: 0 12;
+    -fx-background-insets: 4 0;
+}
+
+.combo-box .list-view .list-cell {
+    -fx-background-color: #242424;
+    -fx-padding: 11 12;
+}
+
+.combo-box .list-view .list-cell:hover {
+    -fx-background-color: #121212;
+}
+
+.combo-box .arrow {
+    -fx-background-color: transparent;
+}
+
+.combo-box:hover {
+    -fx-background-color: #191919;
+}

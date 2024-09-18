@@ -1,4 +1,4 @@
-package com.lib.slib;
+package com.github.Snuslyk.slib;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

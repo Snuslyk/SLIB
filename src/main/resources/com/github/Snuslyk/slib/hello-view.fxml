@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Point3D?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+
+<HBox prefHeight="648.0" prefWidth="1152.0" spacing="20.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.Snuslyk.slib.Controller">
+   <children>
+      <VBox alignment="TOP_CENTER" prefHeight="648.0" prefWidth="400.0" styleClass="left-side">
+         <children>
+            <AnchorPane focusTraversable="true" prefHeight="52.0" prefWidth="430.0">
+               <children>
+                  <ComboBox fx:id="sections" focusTraversable="false" layoutX="40.0" prefHeight="52.0" prefWidth="320.0" styleClass="combo-box" stylesheets="@application.css">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <rotationAxis>
+                        <Point3D />
+                     </rotationAxis></ComboBox>
+                  <SVGPath content="M10.3249 15.0874C10.6997 14.7058 10.6997 14.0942 10.3249 13.7126V13.7126C9.94041 13.3211 9.30959 13.3211 8.92511 13.7126L5.5 17.2L2.07489 13.7126C1.69041 13.3211 1.05959 13.3211 0.675113 13.7126V13.7126C0.300306 14.0942 0.300307 14.7058 0.675113 15.0874L4.78655 19.2736C5.17848 19.6726 5.82152 19.6726 6.21345 19.2736L10.3249 15.0874Z" fill="WHITE" layoutX="325.0" layoutY="16.0" mouseTransparent="true" />
+                  <SVGPath content="M0.675113 4.91261C0.300307 5.29423 0.300307 5.90577 0.675114 6.28739V6.28739C1.05959 6.67886 1.69041 6.67886 2.07489 6.28739L5.5 2.8L8.92511 6.28739C9.30959 6.67886 9.94041 6.67886 10.3249 6.28739V6.28739C10.6997 5.90577 10.6997 5.29423 10.3249 4.91261L6.21345 0.72642C5.82152 0.327364 5.17848 0.327365 4.78655 0.72642L0.675113 4.91261Z" fill="WHITE" layoutX="325.0" layoutY="16.0" mouseTransparent="true" />
+               </children>
+            </AnchorPane>
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <padding>
+            <Insets top="40.0" />
+         </padding>
+      </VBox>
+   </children>
+</HBox>

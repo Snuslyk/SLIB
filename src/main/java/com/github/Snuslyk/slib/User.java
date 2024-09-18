@@ -1,4 +1,4 @@
-package com.lib.slib;
+package com.github.Snuslyk.slib;
 
 import javax.persistence.*;
 
