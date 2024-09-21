@@ -4,9 +4,10 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">org.sqlite.JDBC</property>
-        <property name="hibernate.connection.url">jdbc:sqlite:mydatabase.db</property>
+        <property name="hibernate.connection.url">jdbc:sqlite:db.db</property>
         <property name="hibernate.dialect">org.sqlite.hibernate.dialect.SQLiteDialect</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="class">update</property>
+        <mapping class="com.github.Snuslyk.slib.User"/>
     </session-factory>
 </hibernate-configuration>
