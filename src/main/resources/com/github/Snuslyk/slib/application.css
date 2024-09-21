@@ -63,3 +63,11 @@ HBox {
 .combo-box:hover {
     -fx-background-color: #191919;
 }
+
+.object-button {
+    -fx-background-color: #FF9858;
+    -fx-text-fill: black;
+    -fx-label-padding: 0 12;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
