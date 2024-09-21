@@ -1,9 +1,10 @@
 package com.github.Snuslyk.slib;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+
 
 @Entity
-@Table (name = "users")
+@Table(name = "users")
 public class User {
 
     @Id

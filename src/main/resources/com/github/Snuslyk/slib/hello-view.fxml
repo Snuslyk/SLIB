@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 
-<HBox prefHeight="648.0" prefWidth="1152.0" spacing="20.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.Snuslyk.slib.Controller">
+<HBox prefHeight="648.0" prefWidth="1152.0" spacing="20.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/18.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.Snuslyk.slib.Controller">
    <children>
       <VBox alignment="TOP_CENTER" prefHeight="648.0" prefWidth="400.0" styleClass="left-side">
          <children>
