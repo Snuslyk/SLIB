@@ -17,8 +17,9 @@ public class Application extends javafx.application.Application {
         stage.show();
 
 
-        User lox = new User();
-        HibernateUtil.fastSave(lox);
+        //User lox = new User();
+        //HibernateUtil.fastSave(lox);
+
     }
 
     public static void main(String[] args) {
