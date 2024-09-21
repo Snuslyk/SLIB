@@ -1,7 +1,5 @@
 package com.github.Snuslyk.slib;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
@@ -30,8 +28,6 @@ public class Controller implements Initializable {
 
         sections.setOnAction(actionEvent -> {
             pickedSection = sections.getValue();
-
-            get
 
         });
     }
