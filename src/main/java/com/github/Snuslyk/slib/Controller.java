@@ -23,13 +23,21 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         sections.setValue(SECTIONS.get(0));
-
         sections.getItems().addAll(SECTIONS);
+
+        pickedSection = SECTIONS.get(0);
+
+        updateSection();
 
         sections.setOnAction(actionEvent -> {
             pickedSection = sections.getValue();
 
+            updateSection();
         });
+    }
+
+    private void updateSection(){
+
     }
 
     public static Section getPickedSection() {

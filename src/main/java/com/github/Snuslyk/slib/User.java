@@ -10,6 +10,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
 
+    @Column(name = "name")
+    public String name;
     @Override
     public String toString() {
         return "User: " + id;
