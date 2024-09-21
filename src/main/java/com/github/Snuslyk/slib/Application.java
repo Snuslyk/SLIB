@@ -16,7 +16,10 @@ public class Application extends javafx.application.Application {
         stage.setMaximized(true);
         stage.show();
 
-        //HibernateUtil.fastSave(0);
+
+        //User lox = new User();
+        //HibernateUtil.fastSave(lox);
+
     }
 
     public static void main(String[] args) {
