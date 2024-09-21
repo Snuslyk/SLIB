@@ -22,12 +22,14 @@ HBox {
 }
 
 .combo-box .list-view {
+    -fx-translate-y: 8;
     -fx-border-radius: 16;
     -fx-border-color: #3d3d3d;
     -fx-border-width: 1;
     -fx-background-radius: 16;
     -fx-background-color: #242424;
-    -fx-padding: 7 11 6 11;
+    -fx-padding: 31 11 6 11;
+    -fx-effect: none;
 }
 
 .combo-box .list-cell {
@@ -44,6 +46,10 @@ HBox {
 .combo-box .list-view .list-cell {
     -fx-background-color: #242424;
     -fx-padding: 11 12;
+}
+
+.combo-box .list-view:vertical .virtual-flow {
+    -fx-padding: 100;
 }
 
 .combo-box .list-view .list-cell:hover {
