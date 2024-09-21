@@ -65,9 +65,18 @@ HBox {
 }
 
 .object-button {
-    -fx-background-color: #FF9858;
-    -fx-text-fill: black;
+    -fx-background-color: #121212;
+    -fx-text-fill: white;
     -fx-label-padding: 0 12;
     -fx-border-radius: 12;
     -fx-background-radius: 12;
+}
+
+.object-button:hover {
+    -fx-background-color: #191919;
+}
+
+.object-button:focused {
+    -fx-background-color: #FF9858;
+    -fx-text-fill: black;
 }
