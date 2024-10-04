@@ -10,4 +10,6 @@ module com.github.Snuslyk.slib {
 
     opens com.github.Snuslyk.slib to javafx.fxml;
     exports com.github.Snuslyk.slib;
+    exports com.github.Snuslyk.slib.electives;
+    opens com.github.Snuslyk.slib.electives to javafx.fxml;
 }

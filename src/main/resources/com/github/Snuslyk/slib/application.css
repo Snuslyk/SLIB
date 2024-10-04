@@ -13,34 +13,61 @@ HBox {
     -fx-border-color: #3d3d3d;
     -fx-border-radius: 16;
     -fx-border-width: 1;
-    -fx-padding: 0 11;
+    -fx-padding: 0 23;
+
 }
 
-.combo-box:showing {
+.combo-box:selected {
     -fx-background-color: #242424;
     -fx-border-color: linear-gradient(from 0% 0% to 100% 0%, rgba(255, 152, 88, 1), rgba(250, 113, 113, 1));
 }
 
-.combo-box .list-view {
-    -fx-translate-y: 8;
+.pop-up-box {
     -fx-border-radius: 16;
+    -fx-background-radius: 16;
     -fx-border-color: #3d3d3d;
     -fx-border-width: 1;
-    -fx-background-radius: 16;
     -fx-background-color: #242424;
-    -fx-padding: 31 11 6 11;
-    -fx-effect: none;
 }
 
-.combo-box .list-cell {
+.sections-button {
+    -fx-background-color: #242424;
     -fx-text-fill: white;
-    -fx-font-size: 20;
-    -fx-font-family: "Futura Cyrillic Book";
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-min-height: 40;
-    -fx-padding: 0 12;
-    -fx-background-insets: 4 0;
+    -fx-font-size: 20;
+    -fx-font-family: "Futura Cyrillic Book";
+    -fx-padding: 0 3;
+}
+
+.sections-button:hover {
+    -fx-background-color: #1c1c1c;
+}
+
+.sections-button:selected {
+    -fx-background-color: #121212;
+}
+
+.sections-button .radio {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+    -fx-shape: none;
+    visibility: hidden;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+    -fx-min-width: 0;
+    -fx-min-height: 0;
+    -fx-max-width: 0;
+    -fx-max-height: 0;
+}
+
+.sections-button .dot {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    visibility: hidden;
 }
 
 .combo-box .list-view .list-cell {
