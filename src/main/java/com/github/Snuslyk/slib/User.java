@@ -1,7 +1,7 @@
 package com.github.Snuslyk.slib;
 
-import jakarta.persistence.*;
 
+import javax.persistence.*;
 
 @Entity
 @Table(name = "users")

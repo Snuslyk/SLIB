@@ -3,13 +3,31 @@ package com.github.Snuslyk.slib;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
 public class HibernateUtil {
-    private static final SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+
+    private static final SessionFactory sessionFactory;
+
+    static {
+        sessionFactory = new Configuration().configure().buildSessionFactory();
+    }
 
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
+    }
+
+    private static SessionFactory buildSessionFactory() {
+        try {
+            Configuration configuration = new Configuration();
+            configuration.configure("hibernate.cfg.xml");
+            return configuration.buildSessionFactory(new StandardServiceRegistryBuilder()
+                    .applySettings(configuration.getProperties()).build());
+        } catch (Throwable ex) {
+            throw new ExceptionInInitializerError(ex);
+        }
     }
 
     public static void fastSave(Object object){

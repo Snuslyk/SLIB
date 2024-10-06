@@ -27,9 +27,11 @@ public class Application extends javafx.application.Application {
         stage.show();
 
 
-        //User lox = new User();
-        //lox.name = "lox";
-        //HibernateUtil.fastSave(lox);
+        //SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory()
+
+        User lox = new User();
+        lox.name = "lox";
+        HibernateUtil.fastSave(lox);
 
     }
 
