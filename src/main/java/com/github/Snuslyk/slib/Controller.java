@@ -35,20 +35,16 @@ public class Controller implements Initializable {
 
     private Section selectedSection;
 
-    private final ToggleGroup objectToggleGroup = new ToggleGroup();
     private final ToggleGroup sectionToggleGroup = new ToggleGroup();
+    private final ToggleGroup objectToggleGroup = new ToggleGroup();
 
-    private List<ManageableElectives> externalObjects;
+    private List<List<ManageableElectives>> externalObjects;
     private List<ManageableElectives> externalSections;
-
-    private static final List<Section> SECTIONS = List.of(
-            new Section("Развлечения", "Мероприятия", User.class, "Виды мероприятий", User.class)
-    );
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupSections();  // СЕКЦИИ
-        setupObjects();  // ОБЪЕКТЫ
+        setupObjects(0);  // ОБЪЕКТЫ
         update();
     }
 
@@ -58,7 +54,7 @@ public class Controller implements Initializable {
         this.externalSections = sections;
     }
 
-    public void setObjectsList(List<ManageableElectives> objects) {
+    public void setObjectsList(List<List<ManageableElectives>> objects) {
         this.externalObjects = objects;
     }
 
@@ -74,12 +70,17 @@ public class Controller implements Initializable {
         }
     }
 
-    private void setupObjects() {
-        boolean isFirst = true;
+    private void setupObjects(int sectionIndex) {
+        objectContainer.getChildren().clear();
+        objectToggleGroup.getToggles().clear();
 
-        for (ManageableElectives object : externalObjects) {
-            addObjectButton(object.getDisplayName(), isFirst);
-            isFirst = false;
+        if (externalObjects != null && sectionIndex < externalObjects.size()) {
+            List<ManageableElectives> sectionObjects = externalObjects.get(sectionIndex);
+            boolean isFirst = true;
+            for (ManageableElectives object : sectionObjects) {
+                addObjectButton(object.getDisplayName(), isFirst);
+                isFirst = false;
+            }
         }
     }
 
@@ -101,6 +102,8 @@ public class Controller implements Initializable {
         RadioButton selectedButton = (RadioButton) sectionToggleGroup.getSelectedToggle();
         if (selectedButton != null) {
             comboBox.setText(selectedButton.getText());
+            int sectionIndex = sectionsContainer.getChildren().indexOf(selectedButton);
+            setupObjects(sectionIndex);
         }
     }
 

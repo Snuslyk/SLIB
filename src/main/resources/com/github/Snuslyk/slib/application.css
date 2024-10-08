@@ -31,6 +31,8 @@ HBox {
 }
 
 .sections-button {
+    -fx-min-height: 40px;
+    -fx-max-height: 40px;
     -fx-background-color: #242424;
     -fx-text-fill: white;
     -fx-border-radius: 8;
@@ -70,28 +72,13 @@ HBox {
     visibility: hidden;
 }
 
-.combo-box .list-view .list-cell {
-    -fx-background-color: #242424;
-    -fx-padding: 11 12;
-}
-
-.combo-box .list-view:vertical .virtual-flow {
-    -fx-padding: 100;
-}
-
-.combo-box .list-view .list-cell:hover {
-    -fx-background-color: #121212;
-}
-
-.combo-box .arrow {
-    -fx-background-color: transparent;
-}
-
 .combo-box:hover {
     -fx-background-color: #191919;
 }
 
 .object-button {
+    -fx-min-height: 40px;
+    -fx-max-height: 40px;
     -fx-background-color: #121212;
     -fx-text-fill: white;
     -fx-label-padding: 0 24;

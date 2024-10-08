@@ -1,9 +1,13 @@
 package com.github.Snuslyk.slib.electives;
 
-public class NewObject implements ManageableElectives {
+public class Elective implements ManageableElectives {
     private String name;
 
-    public NewObject(String name) {
+    public Elective(String name) {
+        this.name = name;
+    }
+
+    public Elective(String name, Elective section) {
         this.name = name;
     }
 
