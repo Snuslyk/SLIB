@@ -1,10 +1,13 @@
 package com.github.Snuslyk.slib;
 
+import com.github.Snuslyk.slib.electives.Button;
+import com.github.Snuslyk.slib.electives.Elective;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 
 public class Application extends javafx.application.Application {
 
@@ -22,6 +25,12 @@ public class Application extends javafx.application.Application {
 
     // Этот метод нужен для добавления кастомных опций контроллеру, чтобы изменять его - @override
     public void options(Controller controller) {
+        controller.setSectionList(List.of(new Elective("Развлечения"), new Elective("Просвещение")));
+        controller.setObjectsList(List.of(
+                List.of(new Button("Мероприятия"), new Button("Виды мероприятий"), new Button("Виды заявок"), new Button("Заявки")),
+                List.of(new Button("Памятники"), new Button("Музеи"))
+        ));
+
         /* Для примера:
          controller.setSectionList(List.of(new Elective("Развлечения"), new Elective("Просвещение")));
          controller.setObjectsList(List.of(
@@ -31,6 +40,10 @@ public class Application extends javafx.application.Application {
     }
 
     public void stageSettings(Stage stage, Scene scene){
+        //System.out.println(HibernateUtil.getObjectWithFilter(User.class, new Filter("name", "lox22", Filter.Type.ONLY), new Filter("name", "lox42", Filter.Type.ADD)).toString());
+//
+        //System.out.println(HibernateUtil.getObjectWithFilter(User.class).toString());
+
         /* Для примера:
         stage.setTitle("Hello!");
         stage.setScene(scene);

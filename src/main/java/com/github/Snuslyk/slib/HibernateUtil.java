@@ -7,6 +7,12 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.criteria.*;
+import java.util.List;
+
 public class HibernateUtil {
 
     private static final SessionFactory sessionFactory;
@@ -40,7 +46,7 @@ public class HibernateUtil {
         session.close();
     }
 
-    public static  <T> T getObjectById(Class<T> clazz, int id) {
+    public static <T> T getObjectById(Class<T> clazz, int id) {
         Transaction transaction = null;
         T get = null;
 
@@ -60,4 +66,31 @@ public class HibernateUtil {
 
         return get;
     }
+
+    private static final EntityManager entityManager = sessionFactory.createEntityManager();
+
+    public static <T> List<T> getObjectWithFilter(Class<T> clazz, Filter... filters){
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(clazz);
+        Root<T> root = criteriaQuery.from(clazz);
+
+        criteriaQuery.select(root);
+
+
+        for (Filter filter : filters) {
+            Predicate predicate = criteriaBuilder.equal(root.get(filter.filteredValue), filter.exceptedValue);
+
+            //criteriaQuery.select(criteriaQuery.where(predicate).getSelection());
+
+            switch (filter.type) {
+                case ONLY -> criteriaQuery.where(predicate);
+                //case ADD -> criteriaQuery.distinct()
+            }
+
+        }
+
+        Query query = entityManager.createQuery(criteriaQuery);
+        return query.getResultList();
+    }
+
 }

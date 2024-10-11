@@ -15,6 +15,6 @@ public class User {
     public String name;
     @Override
     public String toString() {
-        return "User: " + id;
+        return "User: " + id + " " + name;
     }
 }

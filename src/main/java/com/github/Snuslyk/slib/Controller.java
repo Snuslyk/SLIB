@@ -1,14 +1,17 @@
 package com.github.Snuslyk.slib;
 
+import com.github.Snuslyk.slib.electives.ButtonElective;
 import com.github.Snuslyk.slib.electives.Elective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -40,7 +43,7 @@ public class Controller implements Initializable {
     private final ToggleGroup sectionToggleGroup = new ToggleGroup();
     private final ToggleGroup objectToggleGroup = new ToggleGroup();
 
-    private List<List<ManageableElectives>> externalObjects;
+    private List<List<ButtonElective>> externalObjects;
     private List<ManageableElectives> externalSections;
 
     @Override
@@ -56,7 +59,7 @@ public class Controller implements Initializable {
         this.externalSections = sections;
     }
 
-    public void setObjectsList(List<List<ManageableElectives>> objects) {
+    public void setObjectsList(List<List<ButtonElective>> objects) {
         this.externalObjects = objects;
     }
 
@@ -64,24 +67,24 @@ public class Controller implements Initializable {
     // УСТАНОВКА СПИСОКОВ В ПРОГРАММУ
     private void setupSections() {
         boolean isFirst = true;
-        if (externalSections != null) {
-            for (ManageableElectives section : externalSections) {
-                comboBox.setText(isFirst ? section.getDisplayName() : comboBox.getText()); // Текст combo box по умолчанию
-                addSectionButton(section.getDisplayName(), isFirst);
-                isFirst = false;
-            }
+
+        if (externalSections == null) return;
+        for (ManageableElectives section : externalSections) {
+            comboBox.setText(isFirst ? section.getDisplayName() : comboBox.getText()); // Текст combo box по умолчанию
+            addSectionButton(section.getDisplayName(), isFirst);
+            isFirst = false;
         }
+
     }
 
     private void setupObjects(int sectionIndex) {
         objectContainer.getChildren().clear();
-        objectToggleGroup.getToggles().clear();
 
         if (externalObjects != null && sectionIndex < externalObjects.size()) {
-            List<ManageableElectives> sectionObjects = externalObjects.get(sectionIndex);
+            List<ButtonElective> sectionObjects = externalObjects.get(sectionIndex);
             boolean isFirst = true;
-            for (ManageableElectives object : sectionObjects) {
-                addObjectButton(object.getDisplayName(), isFirst);
+            for (ButtonElective object : sectionObjects) {
+                addObjectButton(object, isFirst);
                 isFirst = false;
             }
         }
@@ -95,9 +98,12 @@ public class Controller implements Initializable {
         sectionsContainer.getChildren().add(sectionButton);
     }
 
-    private void addObjectButton(String text, boolean isSelected) {
-        RadioButton objectButton = createRadioButton(objectToggleGroup, text, isSelected);
+    private void addObjectButton(ButtonElective object, boolean isSelected) {
+        RadioButton objectButton = createRadioButton(objectToggleGroup, object.getDisplayName(), isSelected);
         objectContainer.getChildren().add(objectButton);
+
+        objectButton.setOnMouseClicked(event -> object.pressed());
+        // Установка действия кнопки
     }
 
     // Устанавливает для combo-box название выбраной секции
@@ -132,6 +138,12 @@ public class Controller implements Initializable {
             if (!comboBox.isHover() && !popUp.isHover()) {
                 comboBox.setSelected(false);
             }
+        });
+
+        objectContainer.getChildren().forEach(node -> {
+            node.setOnMouseClicked(event -> {
+                System.out.println("aa");
+            });
         });
 
         popUp.visibleProperty().bind(comboBox.selectedProperty());
