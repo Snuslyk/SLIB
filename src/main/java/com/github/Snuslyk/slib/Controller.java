@@ -100,11 +100,13 @@ public class Controller implements Initializable {
     // Устанавливает для combo-box название выбраной секции
     private void handleSectionSelection(ActionEvent event) {
         RadioButton selectedButton = (RadioButton) sectionToggleGroup.getSelectedToggle();
-        if (selectedButton != null) {
-            comboBox.setText(selectedButton.getText());
-            int sectionIndex = sectionsContainer.getChildren().indexOf(selectedButton);
-            setupObjects(sectionIndex);
-        }
+
+        if (selectedButton == null) return;
+
+        comboBox.setText(selectedButton.getText());
+        int sectionIndex = sectionsContainer.getChildren().indexOf(selectedButton);
+        setupObjects(sectionIndex);
+
     }
 
 
@@ -115,6 +117,7 @@ public class Controller implements Initializable {
         button.getStyleClass().add(group == objectToggleGroup ? "object-button" : "sections-button");
         button.setToggleGroup(group);
         button.setPrefSize(320, 40);
+
         if (isSelected) {
             button.setSelected(true);
         }
