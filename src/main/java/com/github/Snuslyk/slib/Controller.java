@@ -62,11 +62,12 @@ public class Controller implements Initializable {
     // УСТАНОВКА СПИСОКОВ В ПРОГРАММУ
     private void setupSections() {
         boolean isFirst = true;
-
-        for (ManageableElectives section : externalSections) {
-            comboBox.setText(isFirst ? section.getDisplayName() : comboBox.getText()); // Текст combo box по умолчанию
-            addSectionButton(section.getDisplayName(), isFirst);
-            isFirst = false;
+        if (externalSections != null) {
+            for (ManageableElectives section : externalSections) {
+                comboBox.setText(isFirst ? section.getDisplayName() : comboBox.getText()); // Текст combo box по умолчанию
+                addSectionButton(section.getDisplayName(), isFirst);
+                isFirst = false;
+            }
         }
     }
 

@@ -51,14 +51,14 @@
                   <Insets top="40.0" />
                </padding>
             </VBox>
-            <AnchorPane fx:id="popUp" layoutX="40.0" prefHeight="184.0" prefWidth="320.0" styleClass="pop-up-box" AnchorPane.topAnchor="100.0">
+            <AnchorPane fx:id="popUp" layoutX="40.0" prefHeight="88.0" prefWidth="320.0" styleClass="pop-up-box" AnchorPane.topAnchor="100.0">
                <children>
                   <Label layoutX="63.0" layoutY="14.0" text="Выбрать раздел" textFill="DIMGRAY" AnchorPane.leftAnchor="23.0" AnchorPane.topAnchor="8.0">
                      <font>
                         <Font name="Futura Cyrillic Book" size="16.0" />
                      </font>
                   </Label>
-                  <VBox fx:id="sectionsContainer" layoutX="110.0" layoutY="34.0" prefHeight="136.0" prefWidth="296.0" spacing="8.0" AnchorPane.leftAnchor="11.0" AnchorPane.topAnchor="35.0" />
+                  <VBox fx:id="sectionsContainer" layoutX="110.0" layoutY="34.0" prefHeight="136.0" prefWidth="296.0" spacing="8.0" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="35.0" />
                </children></AnchorPane>
          </children>
       </AnchorPane>
