@@ -21,6 +21,7 @@ public class Application extends javafx.application.Application {
                 List.of(new Elective("Мероприят"), new Elective("Заяв"), new Elective("Виды мероприят"), new Elective("Виды заяв")),
                 List.of(new Elective("Мероприя"), new Elective("Зая"), new Elective("Виды мероприя"), new Elective("Виды зая"))
         ));
+
         FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("hello-view.fxml"));
         fxmlLoader.setController(controller);
         Scene scene = new Scene(fxmlLoader.load());
@@ -28,7 +29,6 @@ public class Application extends javafx.application.Application {
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
-
 
         User lox = new User();
         lox.name = "lox";

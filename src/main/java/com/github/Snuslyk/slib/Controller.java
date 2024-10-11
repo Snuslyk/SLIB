@@ -1,5 +1,6 @@
 package com.github.Snuslyk.slib;
 
+import com.github.Snuslyk.slib.electives.Elective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
