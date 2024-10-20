@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -10,9 +11,9 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<HBox fx:id="rootContainer" prefHeight="648.0" prefWidth="1152.0" spacing="20.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="rootContainer" prefHeight="648.0" prefWidth="1152.0" styleClass="root" stylesheets="@application.css" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <AnchorPane prefHeight="200.0" prefWidth="400.0">
+      <AnchorPane prefHeight="648.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <VBox prefHeight="648.0" prefWidth="400.0" spacing="36.0" styleClass="left-side" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
@@ -62,5 +63,48 @@
                </children></AnchorPane>
          </children>
       </AnchorPane>
+      <AnchorPane layoutX="400.0" prefHeight="648.0" prefWidth="752.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="440.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="35.0">
+         <children>
+            <Label text="Мероприятия" textFill="WHITE">
+               <font>
+                  <Font name="Futura Cyrillic Demi" size="32.0" />
+               </font>
+            </Label>
+            <HBox fillHeight="false" prefHeight="40.0" prefWidth="681.0" spacing="31.0" AnchorPane.leftAnchor="-9.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="54.0">
+               <children>
+                  <VBox prefHeight="100.0" prefWidth="162.0" spacing="8.0">
+                     <children>
+                        <RadioButton mnemonicParsing="false" prefHeight="26.0" prefWidth="166.0" styleClass="radio-button-things" text="Все бронирования" textFill="WHITE">
+                           <font>
+                              <Font name="Futura Cyrillic Book" size="20.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </RadioButton>
+                        <HBox prefHeight="4.0" prefWidth="153.0" styleClass="substract">
+                           <VBox.margin>
+                              <Insets left="9.0" />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="35.0" prefWidth="226.0" spacing="8.0">
+                     <children>
+                        <RadioButton mnemonicParsing="false" prefHeight="26.0" prefWidth="226.0" styleClass="radio-button-things" text="+ Добавить бронирование" textFill="WHITE">
+                           <font>
+                              <Font name="Futura Cyrillic Book" size="20.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </RadioButton>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox prefHeight="1.0" prefWidth="672.0" styleClass="HSeparator" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="92.0" />
+         </children>
+      </AnchorPane>
    </children>
-</HBox>
+</AnchorPane>

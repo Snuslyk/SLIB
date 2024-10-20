@@ -1,4 +1,4 @@
-HBox {
+.root {
     -fx-background-color: #121212;
 }
 
@@ -50,7 +50,7 @@ HBox {
     -fx-background-color: #121212;
 }
 
-.sections-button .radio {
+.radio-button-things .radio {
     -fx-background-color: transparent;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
@@ -65,7 +65,7 @@ HBox {
     -fx-max-height: 0;
 }
 
-.sections-button .dot {
+.radio-button-things .dot {
     -fx-background-color: transparent;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
@@ -97,24 +97,12 @@ HBox {
     -fx-text-fill: black;
 }
 
-.object-button .radio {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0;
-    -fx-background-radius: 0;
-    -fx-padding: 0;
-    -fx-shape: none;
-    visibility: hidden;
-    -fx-pref-width: 0;
-    -fx-pref-height: 0;
-    -fx-min-width: 0;
-    -fx-min-height: 0;
-    -fx-max-width: 0;
-    -fx-max-height: 0;
+.HSeparator {
+    -fx-background-color: #3D3D3D;
 }
 
-.object-button .dot {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0;
-    -fx-background-radius: 0;
-    visibility: hidden;
+.substract {
+    -fx-background-color: #ff9858;
+    -fx-background-radius: 100 100 0 0;
+    -fx-border-radius: 100 100 0 0;
 }

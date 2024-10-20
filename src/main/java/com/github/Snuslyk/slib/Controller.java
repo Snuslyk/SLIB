@@ -1,30 +1,25 @@
 package com.github.Snuslyk.slib;
 
 import com.github.Snuslyk.slib.electives.ButtonElective;
-import com.github.Snuslyk.slib.electives.Elective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
     @FXML
-    private HBox rootContainer;
+    private AnchorPane rootContainer;
 
     @FXML
     private AnchorPane popUp;
@@ -124,6 +119,7 @@ public class Controller implements Initializable {
         RadioButton button = new RadioButton(text);
         button.setCursor(Cursor.HAND);
         button.getStyleClass().add(group == objectToggleGroup ? "object-button" : "sections-button");
+        button.getStyleClass().add("radio-button-things");
         button.setToggleGroup(group);
         button.setPrefSize(320, 40);
 
