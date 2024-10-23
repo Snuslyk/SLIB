@@ -5,18 +5,32 @@ import com.github.Snuslyk.slib.electives.ManageableElectives;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Cursor;
+import javafx.geometry.Pos;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static com.github.Snuslyk.slib.factory.ButtonFacory.createLeftSideButtons;
+import static com.github.Snuslyk.slib.factory.ButtonFacory.createOptionButtons;
+
 public class Controller implements Initializable {
+
+    @FXML
+    private HBox optionsContainer;
+
+    @FXML
+    private VBox optionContainer;
+
+    @FXML
+    private HBox substract;
 
     @FXML
     private AnchorPane rootContainer;
@@ -38,13 +52,18 @@ public class Controller implements Initializable {
     private final ToggleGroup sectionToggleGroup = new ToggleGroup();
     private final ToggleGroup objectToggleGroup = new ToggleGroup();
 
+    private final ToggleGroup optionToggleGroup = new ToggleGroup();
+
     private List<List<ButtonElective>> externalObjects;
     private List<ManageableElectives> externalSections;
+
+    private List<ManageableElectives> externalOptions;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupSections();  // СЕКЦИИ
         setupObjects(0);  // ОБЪЕКТЫ
+        setupOptions();   // ОПЦИИ
         update();
     }
 
@@ -56,6 +75,10 @@ public class Controller implements Initializable {
 
     public void setObjectsList(List<List<ButtonElective>> objects) {
         this.externalObjects = objects;
+    }
+
+    public void setOptionsList(List<ManageableElectives> options) {
+        this.externalOptions = options;
     }
 
 
@@ -85,20 +108,45 @@ public class Controller implements Initializable {
         }
     }
 
+    private void setupOptions() {
+        boolean isFirst = true;
+
+        if (externalOptions == null) return;
+        for (ManageableElectives option : externalOptions) {
+            addOptionButton(option.getDisplayName(), isFirst);
+            isFirst = false;
+        }
+
+    }
+
 
     // МЕТОДЫ СОЗДАНИЯ КНОПОК СЕКЦИЙ И ОБЪЕКТОВ
     private void addSectionButton(String text, boolean isSelected) {
-        RadioButton sectionButton = createRadioButton(sectionToggleGroup, text, isSelected);
+        RadioButton sectionButton = createLeftSideButtons(sectionToggleGroup, false, text, isSelected);
         sectionButton.setOnAction(this::handleSectionSelection);
         sectionsContainer.getChildren().add(sectionButton);
     }
 
     private void addObjectButton(ButtonElective object, boolean isSelected) {
-        RadioButton objectButton = createRadioButton(objectToggleGroup, object.getDisplayName(), isSelected);
+        RadioButton objectButton = createLeftSideButtons(objectToggleGroup, true, object.getDisplayName(), isSelected);
         objectContainer.getChildren().add(objectButton);
 
         objectButton.setOnMouseClicked(event -> object.pressed());
         // Установка действия кнопки
+    }
+
+    // МЕТОД СОЗДАНИЯ КНОПКИ ОПЦИЙ
+    private void addOptionButton(String text, boolean isSelected) {
+        RadioButton optionButton = createOptionButtons(optionToggleGroup, text, isSelected);
+
+        HBox substractCopy = new HBox(substract);
+        VBox optionContainerCopy = new VBox(optionContainer);
+
+        optionContainer.getChildren().add(substractCopy);
+
+        substractCopy.prefWidth(optionButton.getPrefWidth() - 9);
+        optionContainerCopy.getChildren().add(0, optionButton);
+        optionsContainer.getChildren().add(optionContainerCopy);
     }
 
     // Устанавливает для combo-box название выбраной секции
@@ -111,22 +159,6 @@ public class Controller implements Initializable {
         int sectionIndex = sectionsContainer.getChildren().indexOf(selectedButton);
         setupObjects(sectionIndex);
 
-    }
-
-
-    // ОБЩАЯ ФОРМА КНОПОК
-    private RadioButton createRadioButton(ToggleGroup group, String text, boolean isSelected) {
-        RadioButton button = new RadioButton(text);
-        button.setCursor(Cursor.HAND);
-        button.getStyleClass().add(group == objectToggleGroup ? "object-button" : "sections-button");
-        button.getStyleClass().add("radio-button-things");
-        button.setToggleGroup(group);
-        button.setPrefSize(320, 40);
-
-        if (isSelected) {
-            button.setSelected(true);
-        }
-        return button;
     }
 
     private void update() {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
@@ -70,17 +71,21 @@
                   <Font name="Futura Cyrillic Demi" size="32.0" />
                </font>
             </Label>
-            <HBox fillHeight="false" prefHeight="40.0" prefWidth="681.0" spacing="31.0" AnchorPane.leftAnchor="-9.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="54.0">
+            <HBox fx:id="optionsContainer" fillHeight="false" prefHeight="40.0" prefWidth="681.0" spacing="31.0" AnchorPane.leftAnchor="-9.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="54.0">
                <children>
                   <VBox prefHeight="100.0" prefWidth="162.0" spacing="8.0">
                      <children>
-                        <RadioButton mnemonicParsing="false" prefHeight="26.0" prefWidth="166.0" styleClass="radio-button-things" text="Все бронирования" textFill="WHITE">
+                        <RadioButton mnemonicParsing="false" prefHeight="26.0" prefWidth="166.0" text="Все бронирования" textFill="WHITE">
                            <font>
                               <Font name="Futura Cyrillic Book" size="20.0" />
                            </font>
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
+                           <styleClass>
+                              <String fx:value="radio-button-things" />
+                              <String fx:value="option-button" />
+                           </styleClass>
                         </RadioButton>
                         <HBox prefHeight="4.0" prefWidth="153.0" styleClass="substract">
                            <VBox.margin>
@@ -89,16 +94,13 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <VBox prefHeight="35.0" prefWidth="226.0" spacing="8.0">
+                  <VBox fx:id="optionContainer" prefHeight="100.0" spacing="8.0">
                      <children>
-                        <RadioButton mnemonicParsing="false" prefHeight="26.0" prefWidth="226.0" styleClass="radio-button-things" text="+ Добавить бронирование" textFill="WHITE">
-                           <font>
-                              <Font name="Futura Cyrillic Book" size="20.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </RadioButton>
+                        <HBox fx:id="substract" prefHeight="4.0" styleClass="substract">
+                           <VBox.margin>
+                              <Insets left="9.0" />
+                           </VBox.margin>
+                        </HBox>
                      </children>
                   </VBox>
                </children>
