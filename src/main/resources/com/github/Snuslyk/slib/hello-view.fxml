@@ -94,15 +94,6 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <VBox fx:id="optionContainer" prefHeight="100.0" spacing="8.0">
-                     <children>
-                        <HBox fx:id="substract" prefHeight="4.0" styleClass="substract">
-                           <VBox.margin>
-                              <Insets left="9.0" />
-                           </VBox.margin>
-                        </HBox>
-                     </children>
-                  </VBox>
                </children>
             </HBox>
             <HBox prefHeight="1.0" prefWidth="672.0" styleClass="HSeparator" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="92.0" />
