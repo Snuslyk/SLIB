@@ -5,7 +5,11 @@ import com.github.Snuslyk.slib.electives.ManageableElectives;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -22,6 +26,9 @@ import static com.github.Snuslyk.slib.factory.ButtonFacory.createLeftSideButtons
 import static com.github.Snuslyk.slib.factory.ButtonFacory.createOptionButtons;
 
 public class Controller implements Initializable {
+
+    @FXML
+    private VBox optionExample;
 
     @FXML
     private HBox optionsContainer;
@@ -137,16 +144,29 @@ public class Controller implements Initializable {
 
     // МЕТОД СОЗДАНИЯ КНОПКИ ОПЦИЙ
     private void addOptionButton(String text, boolean isSelected) {
-        RadioButton optionButton = createOptionButtons(optionToggleGroup, text, isSelected);
+        // Создаем новый VBox для каждой опции вместо использования копирования optionExample
+        VBox optionCopy = new VBox();
+        optionCopy.setSpacing(8);
 
-        HBox substractCopy = new HBox(substract);
-        VBox optionContainerCopy = new VBox(optionContainer);
+        RadioButton radioButton = new RadioButton(text);
+        radioButton.getStyleClass().add("radio-button-things");
+        radioButton.getStyleClass().add("option-button");
+        radioButton.setCursor(Cursor.HAND);
 
-        optionContainer.getChildren().add(substractCopy);
+        HBox substractBox = new HBox();
+        substractBox.setPrefHeight(4);
+        VBox.setMargin(substractBox, new Insets(0, 0, 0, 9));
+        substractBox.getStyleClass().add("substract");
 
-        substractCopy.prefWidth(optionButton.getPrefWidth() - 9);
-        optionContainerCopy.getChildren().add(0, optionButton);
-        optionsContainer.getChildren().add(optionContainerCopy);
+        if (!isSelected) {
+            substractBox.setVisible(false);
+        }
+
+
+        optionCopy.getChildren().addAll(radioButton, substractBox);
+
+        // Добавляем в контейнер опций
+        optionsContainer.getChildren().add(optionCopy);
     }
 
     // Устанавливает для combo-box название выбраной секции
