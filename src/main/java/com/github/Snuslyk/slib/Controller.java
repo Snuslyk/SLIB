@@ -1,29 +1,25 @@
 package com.github.Snuslyk.slib;
 
+import com.github.Snuslyk.slib.electives.Button;
 import com.github.Snuslyk.slib.electives.ButtonElective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Cursor;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
 
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static com.github.Snuslyk.slib.factory.ButtonFacory.createLeftSideButtons;
-import static com.github.Snuslyk.slib.factory.ButtonFacory.createOptionButtons;
+import static com.github.Snuslyk.slib.factory.ButtonFactory.createLeftSideButtons;
+import static com.github.Snuslyk.slib.factory.ButtonFactory.createOptionButtons;
 
 public class Controller implements Initializable {
 
@@ -55,6 +51,8 @@ public class Controller implements Initializable {
     private VBox sectionsContainer;
 
     private Section selectedSection;
+
+    private RadioButton previousSelectedOption;
 
     private final ToggleGroup sectionToggleGroup = new ToggleGroup();
     private final ToggleGroup objectToggleGroup = new ToggleGroup();
@@ -123,8 +121,8 @@ public class Controller implements Initializable {
             addOptionButton(option.getDisplayName(), isFirst);
             isFirst = false;
         }
-
     }
+
 
 
     // МЕТОДЫ СОЗДАНИЯ КНОПОК СЕКЦИЙ И ОБЪЕКТОВ
@@ -148,10 +146,11 @@ public class Controller implements Initializable {
         VBox optionCopy = new VBox();
         optionCopy.setSpacing(8);
 
-        RadioButton radioButton = new RadioButton(text);
-        radioButton.getStyleClass().add("radio-button-things");
-        radioButton.getStyleClass().add("option-button");
-        radioButton.setCursor(Cursor.HAND);
+        RadioButton radioButton = createOptionButtons(optionToggleGroup, text, isSelected);
+
+        if (isSelected) {
+            previousSelectedOption = radioButton;
+        }
 
         HBox substractBox = new HBox();
         substractBox.setPrefHeight(4);
@@ -162,6 +161,7 @@ public class Controller implements Initializable {
             substractBox.setVisible(false);
         }
 
+        radioButton.setOnAction(this::handleOptionSelection);
 
         optionCopy.getChildren().addAll(radioButton, substractBox);
 
@@ -179,6 +179,30 @@ public class Controller implements Initializable {
         int sectionIndex = sectionsContainer.getChildren().indexOf(selectedButton);
         setupObjects(sectionIndex);
 
+        comboBox.setSelected(false);
+
+    }
+
+    // Устанавливает substract для выбранной опции
+    private void handleOptionSelection(ActionEvent event) {
+        RadioButton selectedButton = (RadioButton) optionToggleGroup.getSelectedToggle();
+
+        if (selectedButton == null) return;
+
+        // Скрываем substract у предыдущей выбранной кнопки, если она существует
+        if (previousSelectedOption != null && previousSelectedOption != selectedButton) {
+            VBox previousContainer = (VBox) previousSelectedOption.getParent();
+            HBox previousSubstract = (HBox) previousContainer.getChildren().get(1);
+            previousSubstract.setVisible(false);
+        }
+
+        // Делаем substract текущей кнопки видимым
+        VBox container = (VBox) selectedButton.getParent();
+        HBox substract = (HBox) container.getChildren().get(1);
+        substract.setVisible(true);
+
+        // Обновляем previousSelectedOption на текущую выбранную кнопку
+        previousSelectedOption = selectedButton;
     }
 
     private void update() {

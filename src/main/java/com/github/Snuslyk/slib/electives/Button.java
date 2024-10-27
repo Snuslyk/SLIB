@@ -8,6 +8,6 @@ public class Button extends Elective implements ButtonElective {
 
     @Override
     public void pressed() {
-
+        // Ваш код на случай, если кнопка нажата
     }
 }
