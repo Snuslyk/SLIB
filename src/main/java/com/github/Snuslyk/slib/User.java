@@ -1,6 +1,5 @@
 package com.github.Snuslyk.slib;
 
-
 import javax.persistence.*;
 
 @Entity
@@ -13,8 +12,10 @@ public class User {
 
     @Column(name = "name")
     public String name;
+    @Column(name = "age")
+    public int age;
     @Override
     public String toString() {
-        return "User: " + id + " " + name;
+        return "User: " + id + " " + name + " " + age;
     }
 }

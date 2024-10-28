@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HibernateUtil {
@@ -76,15 +77,15 @@ public class HibernateUtil {
 
         criteriaQuery.select(root);
 
-
         for (Filter filter : filters) {
-            Predicate predicate = criteriaBuilder.equal(root.get(filter.filteredValue), filter.exceptedValue);
+            List<Predicate> predicates = new ArrayList<>();
 
-            //criteriaQuery.select(criteriaQuery.where(predicate).getSelection());
+            if (filter.typeIO != null){
+                filter.typeIO.getPredicates(root,filter,criteriaBuilder,predicates);
+            }
 
-            switch (filter.type) {
-                case ONLY -> criteriaQuery.where(predicate);
-                //case ADD -> criteriaQuery.distinct()
+            for (Predicate p : predicates) {
+                criteriaQuery.where(p);
             }
 
         }

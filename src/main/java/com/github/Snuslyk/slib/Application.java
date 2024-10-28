@@ -1,5 +1,6 @@
 package com.github.Snuslyk.slib;
 
+import com.github.Snuslyk.slib.factory.Form;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
