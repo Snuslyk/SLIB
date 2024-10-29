@@ -9,59 +9,78 @@ import java.util.List;
 
 public class Form {
 
-    private final Type type;
-    private final Class<?> tableClass;
-    private final Filter filter;
-    private final List<String> columns;
+    private final List<String> options;
+    private final Type[] type;
+    private final Class<?>[] tableClass;
+    private final Filter[] filter;
+    private final List<List<String>> columns;
 
-    private Form(Type type, Class<?> tableClass, Filter filter, List<String> columns) {
+    private Form(Type[] type, Class<?>[] tableClass, Filter[] filter, List<List<String>> columns, List<String> options) {
+        this.options = options;
         this.type = type;
         this.tableClass = tableClass;
         this.filter = filter;
         this.columns = columns;
     }
 
-    public List<Object> get(){
-        return Collections.singletonList(HibernateUtil.getObjectWithFilter(tableClass, filter));
+    public List<Object> get(int option){
+        return Collections.singletonList(HibernateUtil.getObjectWithFilter(tableClass[option], filter[option]));
     }
 
-    public Type getType() {
+    public Type[] getType() {
         return type;
     }
-    public Class<?> getTableClass() {
+    public Class<?>[] getTableClass() {
         return tableClass;
     }
-    public Filter getFilter() {
+    public Filter[] getFilter() {
         return filter;
     }
-    public List<String> getColumns() {
+    public List<List<String>> getColumns() {
         return columns;
     }
 
+    public List<String> getOptions() {
+        return options;
+    }
+
     public static class Builder {
-        private Type type;
-        private Class<?> tableClass;
-        private Filter filter;
-        private final List<String> columns = new ArrayList<>();
+        private int optionId = -1;
+        private final List<String> options = new ArrayList<>();
+        private Type[] type;
+        private Class<?>[] tableClass;
+        private Filter[] filter;
+        private final List<List<String>> columns = new ArrayList<>();
 
         public Builder type(Type type){
-            this.type = type;
+            this.type[optionId] = type;
             return this;
         }
         public Builder tableClass(Class<?> clazz){
-            this.tableClass = clazz;
+            this.tableClass[optionId] = clazz;
             return this;
         }
         public Builder filter(Filter filter){
-            this.filter = filter;
+            this.filter[optionId] = filter;
             return this;
         }
         public Builder column(String columnName){
-            this.columns.add(columnName);
+            this.columns.get(optionId).add(columnName);
+            return this;
+        }
+        public Builder sizeOfOption(int size){
+            type = new Type[size];
+            tableClass = new Class[size];
+            filter = new Filter[size];
+            return this;
+        }
+        public Builder option(String name){
+            optionId+=1;
+            options.add(name);
             return this;
         }
         public Form build(){
-            return new Form(type, tableClass, filter, columns);
+            return new Form(type, tableClass, filter, columns, options);
         }
     }
 

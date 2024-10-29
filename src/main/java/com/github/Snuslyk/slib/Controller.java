@@ -59,16 +59,16 @@ public class Controller implements Initializable {
 
     private final ToggleGroup optionToggleGroup = new ToggleGroup();
 
-    private List<List<ButtonElective>> externalObjects;
+    private List<List<Button>> externalObjects;
     private List<ManageableElectives> externalSections;
 
-    private List<ManageableElectives> externalOptions;
+    private int pickedSectionIndex = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupSections();  // СЕКЦИИ
         setupObjects(0);  // ОБЪЕКТЫ
-        setupOptions();   // ОПЦИИ
+        setupOptions(0,0);   // ОПЦИИ
         update();
     }
 
@@ -78,12 +78,8 @@ public class Controller implements Initializable {
         this.externalSections = sections;
     }
 
-    public void setObjectsList(List<List<ButtonElective>> objects) {
+    public void setObjectsList(List<List<Button>> objects) {
         this.externalObjects = objects;
-    }
-
-    public void setOptionsList(List<ManageableElectives> options) {
-        this.externalOptions = options;
     }
 
 
@@ -104,7 +100,7 @@ public class Controller implements Initializable {
         objectContainer.getChildren().clear();
 
         if (externalObjects != null && sectionIndex < externalObjects.size()) {
-            List<ButtonElective> sectionObjects = externalObjects.get(sectionIndex);
+            List<Button> sectionObjects = externalObjects.get(sectionIndex);
             boolean isFirst = true;
             for (ButtonElective object : sectionObjects) {
                 addObjectButton(object, isFirst);
@@ -113,12 +109,15 @@ public class Controller implements Initializable {
         }
     }
 
-    private void setupOptions() {
+    private void setupOptions(int sectionIndex, int objectIndex) {
         boolean isFirst = true;
 
-        if (externalOptions == null) return;
-        for (ManageableElectives option : externalOptions) {
-            addOptionButton(option.getDisplayName(), isFirst);
+        if (externalObjects == null) return;
+        if (optionsContainer != null) {
+            optionsContainer.getChildren().clear();
+        }
+        for (String option : externalObjects.get(sectionIndex).get(objectIndex).getForm().getOptions()) {
+            addOptionButton(option, isFirst);
             isFirst = false;
         }
     }
@@ -136,7 +135,7 @@ public class Controller implements Initializable {
         RadioButton objectButton = createLeftSideButtons(objectToggleGroup, true, object.getDisplayName(), isSelected);
         objectContainer.getChildren().add(objectButton);
 
-        objectButton.setOnMouseClicked(event -> object.pressed());
+        objectButton.setOnAction(this::handleObjectSelection);
         // Установка действия кнопки
     }
 
@@ -181,6 +180,7 @@ public class Controller implements Initializable {
 
         comboBox.setSelected(false);
 
+        pickedSectionIndex = sectionIndex;
     }
 
     // Устанавливает substract для выбранной опции
@@ -203,6 +203,15 @@ public class Controller implements Initializable {
 
         // Обновляем previousSelectedOption на текущую выбранную кнопку
         previousSelectedOption = selectedButton;
+    }
+
+    private void handleObjectSelection(ActionEvent event){
+        RadioButton selectedButton = (RadioButton) objectToggleGroup.getSelectedToggle();
+
+        if (selectedButton == null) return;
+
+        int objectIndex = objectContainer.getChildren().indexOf(selectedButton);
+        setupOptions(pickedSectionIndex, objectIndex);
     }
 
     private void update() {
