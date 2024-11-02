@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
@@ -49,6 +50,9 @@ public class Controller implements Initializable {
 
     @FXML
     private VBox sectionsContainer;
+
+    @FXML
+    private TableView tableView;
 
     private Section selectedSection;
 
@@ -122,6 +126,10 @@ public class Controller implements Initializable {
         }
     }
 
+    private void setupColumns() {
+
+    }
+
 
 
     // МЕТОДЫ СОЗДАНИЯ КНОПОК СЕКЦИЙ И ОБЪЕКТОВ
@@ -179,8 +187,16 @@ public class Controller implements Initializable {
         setupObjects(sectionIndex);
 
         comboBox.setSelected(false);
-
         pickedSectionIndex = sectionIndex;
+
+        // Выбираем первый объект и обновляем его опции
+        if (!objectContainer.getChildren().isEmpty()) {
+            RadioButton firstObjectButton = (RadioButton) objectContainer.getChildren().get(0);
+            firstObjectButton.setSelected(true);
+
+            int objectIndex = objectContainer.getChildren().indexOf(firstObjectButton);
+            setupOptions(pickedSectionIndex, objectIndex);
+        }
     }
 
     // Устанавливает substract для выбранной опции
