@@ -45,6 +45,7 @@ public class Form {
     }
 
     public static class Builder {
+        private int optionSize;
         private int optionId = -1;
         private final List<String> options = new ArrayList<>();
         private Type[] type;
@@ -57,7 +58,10 @@ public class Form {
             return this;
         }
         public Builder tableClass(Class<?> clazz){
-            this.tableClass[optionId] = clazz;
+            for (int i = optionId; i < optionSize; i++){
+                if (i < 0) i = 0;
+                this.tableClass[i] = clazz;
+            }
             return this;
         }
         public Builder filter(Filter filter){
@@ -69,6 +73,7 @@ public class Form {
             return this;
         }
         public Builder sizeOfOption(int size){
+            optionSize = size;
             type = new Type[size];
             tableClass = new Class[size];
             filter = new Filter[size];
