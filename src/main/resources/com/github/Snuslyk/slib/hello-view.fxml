@@ -73,7 +73,7 @@
             </Label>
             <HBox fx:id="optionsContainer" fillHeight="false" prefHeight="40.0" prefWidth="681.0" spacing="31.0" AnchorPane.leftAnchor="-9.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="54.0" />
             <HBox prefHeight="1.0" prefWidth="672.0" styleClass="HSeparator" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="92.0" />
-            <TableView layoutX="232.0" layoutY="146.0" prefHeight="297.0" prefWidth="200.0" styleClass="tableD" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="173.0">
+            <TableView fx:id="tableview" layoutX="232.0" layoutY="146.0" prefHeight="297.0" prefWidth="200.0" styleClass="tableD" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="173.0">
               <columns>
                 <TableColumn prefWidth="75.0" text="№" />
                 <TableColumn prefWidth="75.0" text="Дата создания" />
