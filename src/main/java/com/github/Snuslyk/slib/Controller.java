@@ -3,6 +3,7 @@ package com.github.Snuslyk.slib;
 import com.github.Snuslyk.slib.electives.Button;
 import com.github.Snuslyk.slib.electives.ButtonElective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
+import com.github.Snuslyk.slib.factory.Form;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -130,20 +131,20 @@ public class Controller implements Initializable {
 
         tableView.getColumns().clear();
 
-        List<String> columnNames = externalObjects.get(sectionIndex)
+        List<Form.Column> columns = externalObjects.get(sectionIndex)
                 .get(objectIndex)
                 .getForm()
                 .getColumns()
                 .get(optionIndex);
 
-        for (String columnName : columnNames) {
-            TableColumn<Map<String, Object>, String> column = new TableColumn<>(columnName);
+        for (Form.Column column : columns) {
+            TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>(column.displayName());
 
-            column.setCellValueFactory(cellData ->
-                    new SimpleStringProperty((String) cellData.getValue().get(columnName))
+            tableColumn.setCellValueFactory(cellData ->
+                    new SimpleStringProperty((String) cellData.getValue().get(column))
             );
 
-            tableView.getColumns().add(column);
+            tableView.getColumns().add(tableColumn);
         }
     }
 
