@@ -3,20 +3,19 @@ package com.github.Snuslyk.slib;
 import com.github.Snuslyk.slib.electives.Button;
 import com.github.Snuslyk.slib.electives.ButtonElective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.createLeftSideButtons;
@@ -126,9 +125,28 @@ public class Controller implements Initializable {
         }
     }
 
-    private void setupColumns() {
+    private void setupTableColumns(int sectionIndex, int objectIndex, int optionIndex) {
+        if (externalObjects == null || tableView == null) return;
 
+        tableView.getColumns().clear();
+
+        List<String> columnNames = externalObjects.get(sectionIndex)
+                .get(objectIndex)
+                .getForm()
+                .getColumns()
+                .get(optionIndex);
+
+        for (String columnName : columnNames) {
+            TableColumn<Map<String, Object>, String> column = new TableColumn<>(columnName);
+
+            column.setCellValueFactory(cellData ->
+                    new SimpleStringProperty((String) cellData.getValue().get(columnName))
+            );
+
+            tableView.getColumns().add(column);
+        }
     }
+
 
 
 
