@@ -13,9 +13,9 @@ public class Form {
     private final Type[] type;
     private final Class<?>[] tableClass;
     private final Filter[] filter;
-    private final List<List<String>> columns;
+    private final List<List<Column>> columns;
 
-    private Form(Type[] type, Class<?>[] tableClass, Filter[] filter, List<List<String>> columns, List<String> options) {
+    private Form(Type[] type, Class<?>[] tableClass, Filter[] filter, List<List<Column>> columns, List<String> options) {
         this.options = options;
         this.type = type;
         this.tableClass = tableClass;
@@ -36,7 +36,7 @@ public class Form {
     public Filter[] getFilter() {
         return filter;
     }
-    public List<List<String>> getColumns() {
+    public List<List<Column>> getColumns() {
         return columns;
     }
 
@@ -45,30 +45,35 @@ public class Form {
     }
 
     public static class Builder {
+        private int optionSize;
         private int optionId = -1;
         private final List<String> options = new ArrayList<>();
         private Type[] type;
         private Class<?>[] tableClass;
         private Filter[] filter;
-        private final List<List<String>> columns = new ArrayList<>();
+        private final List<List<Column>> columns = new ArrayList<>();
 
         public Builder type(Type type){
             this.type[optionId] = type;
             return this;
         }
         public Builder tableClass(Class<?> clazz){
-            this.tableClass[optionId] = clazz;
+            for (int i = optionId; i < optionSize; i++){
+                if (i < 0) i = 0;
+                this.tableClass[i] = clazz;
+            }
             return this;
         }
         public Builder filter(Filter filter){
             this.filter[optionId] = filter;
             return this;
         }
-        public Builder column(String columnName){
-            this.columns.get(optionId).add(columnName);
+        public Builder column(String displayName, String key){
+            this.columns.get(optionId).add(new Column(displayName, key));
             return this;
         }
         public Builder sizeOfOption(int size){
+            optionSize = size;
             type = new Type[size];
             tableClass = new Class[size];
             filter = new Filter[size];
@@ -84,9 +89,11 @@ public class Form {
         }
     }
 
-    public enum  Type{
+    public enum Type{
         TABLE,
         CREATE
     }
+
+    public record Column(String displayName, String key){}
 
 }
