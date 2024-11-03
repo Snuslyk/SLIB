@@ -140,8 +140,9 @@ public class Controller implements Initializable {
         for (Form.Column column : columns) {
             TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>(column.displayName());
 
-            tableColumn.setCellValueFactory(cellData ->
-                    new SimpleStringProperty((String) cellData.getValue().get(column))
+            tableColumn.setCellValueFactory(cellData -> {
+                        return new SimpleStringProperty((String) cellData.getValue().get(column));
+                    }
             );
 
             tableView.getColumns().add(tableColumn);
