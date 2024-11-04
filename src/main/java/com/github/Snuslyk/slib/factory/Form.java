@@ -82,7 +82,7 @@ public class Form {
         public Builder option(String name) {
             optionId += 1;
             options.add(name);
-            columns.add(new ArrayList<>()); // Добавляем новый подсписок для каждой опции
+            columns.add(new ArrayList<>());
             return this;
         }
         public Form build(){
