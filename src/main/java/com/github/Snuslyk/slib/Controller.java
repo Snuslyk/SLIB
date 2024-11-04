@@ -240,6 +240,31 @@ public class Controller implements Initializable {
 
         // Обновляем previousSelectedOption на текущую выбранную кнопку
         previousSelectedOption = selectedButton;
+
+        int optionIndex = optionsContainer.getChildren().indexOf(selectedButton.getParent());
+        int sectionIndex = sectionsContainer.getChildren().indexOf((RadioButton) sectionToggleGroup.getSelectedToggle());
+        int objectIndex = objectContainer.getChildren().indexOf((RadioButton) objectToggleGroup.getSelectedToggle());
+
+        System.out.println("optionIndex: " + optionIndex);
+        System.out.println("sectionIndex: " + sectionIndex);
+        System.out.println("objectIndex: " + objectIndex);
+
+        tableView.setPrefWidth(200);
+        tableView.setPrefHeight(297);
+        AnchorPane.setTopAnchor(tableView, 173.0);
+        AnchorPane.setBottomAnchor(tableView, 40.0);
+        AnchorPane.setLeftAnchor(tableView, 0.0);
+        AnchorPane.setRightAnchor(tableView, 0.0);
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tableView.getStyleClass().add("tableD");
+
+        if (optionIndex == 0) {
+            setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView);
+            rightSideContainer.getChildren().add(tableView);
+        } else {
+            rightSideContainer.getChildren().remove(tableView);
+        }
+
     }
 
     private void handleObjectSelection(ActionEvent event){
