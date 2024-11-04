@@ -3,8 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -64,7 +62,7 @@
                </children></AnchorPane>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="400.0" prefHeight="648.0" prefWidth="752.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="440.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="35.0">
+      <AnchorPane fx:id="rightSideContainer" layoutX="400.0" prefHeight="648.0" prefWidth="752.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="440.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="35.0">
          <children>
             <Label text="Мероприятия" textFill="WHITE">
                <font>
@@ -73,20 +71,6 @@
             </Label>
             <HBox fx:id="optionsContainer" fillHeight="false" prefHeight="40.0" prefWidth="681.0" spacing="31.0" AnchorPane.leftAnchor="-9.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="54.0" />
             <HBox prefHeight="1.0" prefWidth="672.0" styleClass="HSeparator" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="92.0" />
-            <TableView fx:id="tableview" layoutX="232.0" layoutY="146.0" prefHeight="297.0" prefWidth="200.0" styleClass="tableD" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="173.0">
-              <columns>
-                <TableColumn prefWidth="75.0" text="№" />
-                <TableColumn prefWidth="75.0" text="Дата создания" />
-                  <TableColumn prefWidth="75.0" text="Мероприятие" />
-                  <TableColumn prefWidth="75.0" text="Помещение" />
-                  <TableColumn prefWidth="75.0" text="Дата окончания" />
-                  <TableColumn prefWidth="75.0" text="Комментарий" />
-                  <TableColumn prefWidth="75.0" text="Частное" />
-              </columns>
-               <columnResizePolicy>
-                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-               </columnResizePolicy>
-            </TableView>
          </children>
       </AnchorPane>
    </children>

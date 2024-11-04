@@ -79,9 +79,10 @@ public class Form {
             filter = new Filter[size];
             return this;
         }
-        public Builder option(String name){
-            optionId+=1;
+        public Builder option(String name) {
+            optionId += 1;
             options.add(name);
+            columns.add(new ArrayList<>()); // Добавляем новый подсписок для каждой опции
             return this;
         }
         public Form build(){

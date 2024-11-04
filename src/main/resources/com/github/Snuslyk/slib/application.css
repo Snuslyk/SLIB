@@ -113,11 +113,11 @@
     -fx-border-radius: 100 100 0 0;
 }
 
-.table-view {
+.tableD {
     -fx-background-color: #121212;
 }
 
-.table-view .column-header {
+.tableD .column-header {
     -fx-background-color: #242424;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
@@ -126,12 +126,12 @@
     -fx-font-family: "Futura Cyrillic Book";
 }
 
-.table-view .column-header-background {
+.tableD .column-header-background {
     -fx-background-radius: 8 8 0 0;
     -fx-background-color: #242424;
 }
 
-.table-view .column-header-background .label {
+.tableD .column-header-background .label {
     -fx-text-fill: white;
     -fx-alignment: left;
     -fx-label-padding: 10;

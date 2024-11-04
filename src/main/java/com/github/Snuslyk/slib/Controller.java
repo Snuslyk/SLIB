@@ -52,7 +52,9 @@ public class Controller implements Initializable {
     private VBox sectionsContainer;
 
     @FXML
-    private TableView tableView;
+    private AnchorPane rightSideContainer;
+
+    private TableView<Map<String, Object>> tableView = new TableView<>();
 
     private Section selectedSection;
 
@@ -126,7 +128,7 @@ public class Controller implements Initializable {
         }
     }
 
-    private void setupTableColumns(int sectionIndex, int objectIndex, int optionIndex) {
+    private void setupTableColumns(int sectionIndex, int objectIndex, int optionIndex, TableView<Map<String, Object>> tableView) {
         if (externalObjects == null || tableView == null) return;
 
         tableView.getColumns().clear();
@@ -141,7 +143,7 @@ public class Controller implements Initializable {
             TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>(column.displayName());
 
             tableColumn.setCellValueFactory(cellData ->
-                    new SimpleStringProperty((String) cellData.getValue().get(column))
+                    new SimpleStringProperty((String) cellData.getValue().get(column.displayName()))
             );
 
             tableView.getColumns().add(tableColumn);
@@ -238,6 +240,31 @@ public class Controller implements Initializable {
 
         // Обновляем previousSelectedOption на текущую выбранную кнопку
         previousSelectedOption = selectedButton;
+
+        int optionIndex = optionsContainer.getChildren().indexOf(selectedButton.getParent());
+        int sectionIndex = sectionsContainer.getChildren().indexOf((RadioButton) sectionToggleGroup.getSelectedToggle());
+        int objectIndex = objectContainer.getChildren().indexOf((RadioButton) objectToggleGroup.getSelectedToggle());
+
+        System.out.println("optionIndex: " + optionIndex);
+        System.out.println("sectionIndex: " + sectionIndex);
+        System.out.println("objectIndex: " + objectIndex);
+
+        tableView.setPrefWidth(200);
+        tableView.setPrefHeight(297);
+        AnchorPane.setTopAnchor(tableView, 173.0);
+        AnchorPane.setBottomAnchor(tableView, 40.0);
+        AnchorPane.setLeftAnchor(tableView, 0.0);
+        AnchorPane.setRightAnchor(tableView, 0.0);
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tableView.getStyleClass().add("tableD");
+
+        if (optionIndex == 0) {
+            setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView);
+            rightSideContainer.getChildren().add(tableView);
+        } else {
+            rightSideContainer.getChildren().remove(tableView);
+        }
+
     }
 
     private void handleObjectSelection(ActionEvent event){
