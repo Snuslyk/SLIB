@@ -315,10 +315,12 @@ public class Controller implements Initializable {
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         tableView.getStyleClass().add("tableD");
 
-        if (optionIndex == 0) {
-            Form form = externalObjects.get(sectionIndex)
-                    .get(objectIndex)
-                    .getForm();
+        Form form = externalObjects.get(sectionIndex)
+                .get(objectIndex)
+                .getForm();
+        
+        if (form.getType()[optionIndex] == Form.Type.TABLE) {
+
             setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
             adjustTableColumnsWidth(rightSideContainer.getWidth());
             rightSideContainer.getChildren().add(tableView);
