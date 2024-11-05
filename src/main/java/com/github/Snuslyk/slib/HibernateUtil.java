@@ -73,6 +73,7 @@ public class HibernateUtil {
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(clazz);
         Root<T> root = criteriaQuery.from(clazz);
 
+
         criteriaQuery.select(root);
 
         for (FilterIO filter : filters) {

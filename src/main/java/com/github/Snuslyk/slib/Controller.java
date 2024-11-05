@@ -23,11 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.createLeftSideButtons;
 import static com.github.Snuslyk.slib.factory.ButtonFactory.createOptionButtons;
@@ -158,17 +154,6 @@ public class Controller implements Initializable {
                 .getColumns()
                 .get(optionIndex);
 
-
-        List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], form.getFilter()[optionIndex]);
-        try {
-            T object = (T) list.get(0);
-            System.out.println(object.getClass());
-            System.out.println(object.getClass().getFields()[2].getName());
-            System.out.println(object.getClass().getField("age").get(object));
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
         for (Form.Column column : columns) {
             TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>(column.displayName());
             tableColumn.setResizable(false);
@@ -195,18 +180,32 @@ public class Controller implements Initializable {
         // Пример добавления данных
         ObservableList<Map<String, Object>> data = FXCollections.observableArrayList();
 
-        // Создание строк данных
-        Map<String, Object> row1 = new HashMap<>();
-        row1.put("Column1", "Data1");  // Заполнение значений для каждого столбца
-        row1.put("Column2", "Data2");
+        List<Map<String, Object>> rows = new ArrayList<>();
 
-        Map<String, Object> row2 = new HashMap<>();
-        row2.put("Column1", "Data3");
-        row2.put("Column2", "Data4");
+        List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], form.getFilter()[optionIndex]);
+
+        try {
+            for (Object object : list) {
+                Map<String, Object> row = new HashMap<>();
+                for (Form.Column column : columns)
+                    row.put(column.displayName(), object.getClass().getField(column.key()).get(object));
+                rows.add(row);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        // Создание строк данных
+       //Map<String, Object> row1 = new HashMap<>();
+       //row1.put("Column1", "Data1");  // Заполнение значений для каждого столбца
+       //row1.put("Column2", "Data2");
+
+       //Map<String, Object> row2 = new HashMap<>();
+       //row2.put("Column1", "Data3");
+       //row2.put("Column2", "Data4");
 
         // Добавляем строки данных в ObservableList
-        data.add(row1);
-        data.add(row2);
+        data.addAll(rows);
 
         // Устанавливаем данные в таблицу
         tableView.setItems(data);
