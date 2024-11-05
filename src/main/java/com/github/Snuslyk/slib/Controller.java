@@ -133,6 +133,13 @@ public class Controller implements Initializable {
 
         tableView.getColumns().clear();
 
+        List<List<Form.Column>> columnsList = externalObjects.get(sectionIndex)
+                .get(objectIndex)
+                .getForm()
+                .getColumns();
+
+        System.out.println(columnsList);
+
         List<Form.Column> columns = externalObjects.get(sectionIndex)
                 .get(objectIndex)
                 .getForm()
@@ -141,10 +148,16 @@ public class Controller implements Initializable {
 
         for (Form.Column column : columns) {
             TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>(column.displayName());
+            tableColumn.setResizable(false);
+            tableColumn.setReorderable(false);
 
-            tableColumn.setCellValueFactory(cellData ->
-                    new SimpleStringProperty((String) cellData.getValue().get(column.displayName()))
-            );
+            tableView.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+                double totalWidth = newWidth.doubleValue();
+                double columnWidth = totalWidth / tableView.getColumns().size(); // Распределяем ширину
+                for (TableColumn<?, ?> columnA : tableView.getColumns()) {
+                    columnA.setPrefWidth(columnWidth);
+                }
+            });
 
             tableView.getColumns().add(tableColumn);
         }
