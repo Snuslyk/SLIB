@@ -3,12 +3,10 @@ package com.github.Snuslyk.slib;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
@@ -70,18 +68,19 @@ public class HibernateUtil {
 
     private static final EntityManager entityManager = sessionFactory.createEntityManager();
 
-    public static <T> List<T> getObjectWithFilter(Class<T> clazz, Filter... filters){
+    public static <T> List<T> getObjectWithFilter(Class<T> clazz, FilterIO... filters){
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(clazz);
         Root<T> root = criteriaQuery.from(clazz);
 
+
         criteriaQuery.select(root);
 
-        for (Filter filter : filters) {
+        for (FilterIO filter : filters) {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (filter.typeIO != null){
-                filter.typeIO.getPredicates(root,filter,criteriaBuilder,predicates);
+            if (filter != null){
+                filter.getPredicates(root,criteriaBuilder,predicates);
             }
 
             for (Predicate p : predicates) {

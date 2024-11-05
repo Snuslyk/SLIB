@@ -4,9 +4,13 @@ import com.github.Snuslyk.slib.electives.Button;
 import com.github.Snuslyk.slib.electives.ButtonElective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
 import com.github.Snuslyk.slib.factory.Form;
+import javafx.beans.InvalidationListener;
+import javafx.beans.binding.IntegerExpression;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,12 +20,10 @@ import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.createLeftSideButtons;
 import static com.github.Snuslyk.slib.factory.ButtonFactory.createOptionButtons;
@@ -132,14 +134,23 @@ public class Controller implements Initializable {
         }
     }
 
-    private void setupTableColumns(int sectionIndex, int objectIndex, int optionIndex, TableView<Map<String, Object>> tableView) {
+    private <T> void setupTableColumns(int sectionIndex, int objectIndex, int optionIndex, TableView<Map<String, Object>> tableView, Class<T> dataClass) {
         if (externalObjects == null || tableView == null) return;
 
         tableView.getColumns().clear();
 
-        List<Form.Column> columns = externalObjects.get(sectionIndex)
+        List<List<Form.Column>> columnsList = externalObjects.get(sectionIndex)
                 .get(objectIndex)
                 .getForm()
+                .getColumns();
+
+        System.out.println(columnsList);
+
+        Form form = externalObjects.get(sectionIndex)
+                .get(objectIndex)
+                .getForm();
+
+        List<Form.Column> columns = form
                 .getColumns()
                 .get(optionIndex);
 
@@ -165,18 +176,23 @@ public class Controller implements Initializable {
         // Пример добавления данных
         ObservableList<Map<String, Object>> data = FXCollections.observableArrayList();
 
-        // Создание строк данных
-        Map<String, Object> row1 = new HashMap<>();
-        row1.put("Column1", "Data1");  // Заполнение значений для каждого столбца
-        row1.put("Column2", "Data2");
+        List<Map<String, Object>> rows = new ArrayList<>();
 
-        Map<String, Object> row2 = new HashMap<>();
-        row2.put("Column1", "Data3");
-        row2.put("Column2", "Data4");
+        List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], form.getFilter()[optionIndex]);
+
+        try {
+            for (Object object : list) {
+                Map<String, Object> row = new HashMap<>();
+                for (Form.Column column : columns)
+                    row.put(column.displayName(), object.getClass().getField(column.key()).get(object));
+                rows.add(row);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
         // Добавляем строки данных в ObservableList
-        data.add(row1);
-        data.add(row2);
+        data.addAll(rows);
 
         // Устанавливаем данные в таблицу
         tableView.setItems(data);
@@ -300,7 +316,10 @@ public class Controller implements Initializable {
         tableView.getStyleClass().add("tableD");
 
         if (optionIndex == 0) {
-            setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView);
+            Form form = externalObjects.get(sectionIndex)
+                    .get(objectIndex)
+                    .getForm();
+            setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
             adjustTableColumnsWidth(rightSideContainer.getWidth());
             rightSideContainer.getChildren().add(tableView);
         } else {
