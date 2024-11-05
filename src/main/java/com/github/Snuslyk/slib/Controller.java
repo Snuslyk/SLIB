@@ -7,13 +7,10 @@ import com.github.Snuslyk.slib.factory.Form;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.IntegerExpression;
 import javafx.beans.property.SimpleStringProperty;
-<<<<<<< Updated upstream
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-=======
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
->>>>>>> Stashed changes
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,11 +23,8 @@ import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
 import java.net.URL;
-<<<<<<< Updated upstream
 import java.util.HashMap;
-=======
 import java.util.Arrays;
->>>>>>> Stashed changes
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -149,9 +143,6 @@ public class Controller implements Initializable {
 
         tableView.getColumns().clear();
 
-<<<<<<< Updated upstream
-        List<Form.Column> columns = externalObjects.get(sectionIndex)
-=======
         List<List<Form.Column>> columnsList = externalObjects.get(sectionIndex)
                 .get(objectIndex)
                 .getForm()
@@ -160,7 +151,6 @@ public class Controller implements Initializable {
         System.out.println(columnsList);
 
         Form form = externalObjects.get(sectionIndex)
->>>>>>> Stashed changes
                 .get(objectIndex)
                 .getForm();
 
@@ -169,9 +159,9 @@ public class Controller implements Initializable {
                 .get(optionIndex);
 
 
-        List<?> data = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], form.getFilter()[optionIndex]);
+        List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], form.getFilter()[optionIndex]);
         try {
-            T object = (T) data.get(0);
+            T object = (T) list.get(0);
             System.out.println(object.getClass());
             System.out.println(object.getClass().getFields()[2].getName());
             System.out.println(object.getClass().getField("age").get(object));
