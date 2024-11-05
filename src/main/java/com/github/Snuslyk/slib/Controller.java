@@ -195,15 +195,6 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
 
-        // Создание строк данных
-       //Map<String, Object> row1 = new HashMap<>();
-       //row1.put("Column1", "Data1");  // Заполнение значений для каждого столбца
-       //row1.put("Column2", "Data2");
-
-       //Map<String, Object> row2 = new HashMap<>();
-       //row2.put("Column1", "Data3");
-       //row2.put("Column2", "Data4");
-
         // Добавляем строки данных в ObservableList
         data.addAll(rows);
 
