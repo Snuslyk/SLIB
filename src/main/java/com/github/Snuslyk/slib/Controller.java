@@ -4,9 +4,16 @@ import com.github.Snuslyk.slib.electives.Button;
 import com.github.Snuslyk.slib.electives.ButtonElective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
 import com.github.Snuslyk.slib.factory.Form;
+import javafx.beans.InvalidationListener;
+import javafx.beans.binding.IntegerExpression;
 import javafx.beans.property.SimpleStringProperty;
+<<<<<<< Updated upstream
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+=======
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+>>>>>>> Stashed changes
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,9 +23,14 @@ import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 
 import java.net.URL;
+<<<<<<< Updated upstream
 import java.util.HashMap;
+=======
+import java.util.Arrays;
+>>>>>>> Stashed changes
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -132,16 +144,40 @@ public class Controller implements Initializable {
         }
     }
 
-    private void setupTableColumns(int sectionIndex, int objectIndex, int optionIndex, TableView<Map<String, Object>> tableView) {
+    private <T> void setupTableColumns(int sectionIndex, int objectIndex, int optionIndex, TableView<Map<String, Object>> tableView, Class<T> dataClass) {
         if (externalObjects == null || tableView == null) return;
 
         tableView.getColumns().clear();
 
+<<<<<<< Updated upstream
         List<Form.Column> columns = externalObjects.get(sectionIndex)
+=======
+        List<List<Form.Column>> columnsList = externalObjects.get(sectionIndex)
                 .get(objectIndex)
                 .getForm()
+                .getColumns();
+
+        System.out.println(columnsList);
+
+        Form form = externalObjects.get(sectionIndex)
+>>>>>>> Stashed changes
+                .get(objectIndex)
+                .getForm();
+
+        List<Form.Column> columns = form
                 .getColumns()
                 .get(optionIndex);
+
+
+        List<?> data = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], form.getFilter()[optionIndex]);
+        try {
+            T object = (T) data.get(0);
+            System.out.println(object.getClass());
+            System.out.println(object.getClass().getFields()[2].getName());
+            System.out.println(object.getClass().getField("age").get(object));
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
         for (Form.Column column : columns) {
             TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>(column.displayName());
@@ -295,7 +331,10 @@ public class Controller implements Initializable {
         tableView.getStyleClass().add("tableD");
 
         if (optionIndex == 0) {
-            setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView);
+            Form form = externalObjects.get(sectionIndex)
+                    .get(objectIndex)
+                    .getForm();
+            setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
             rightSideContainer.getChildren().add(tableView);
         } else {
             rightSideContainer.getChildren().remove(tableView);
