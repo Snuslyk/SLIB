@@ -166,12 +166,8 @@ public class Controller implements Initializable {
                 return new SimpleStringProperty(cellValue != null ? cellValue.toString() : "");
             });
 
-            tableView.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-                double totalWidth = newWidth.doubleValue();
-                double columnWidth = totalWidth / tableView.getColumns().size(); // Распределяем ширину
-                for (TableColumn<?, ?> columnA : tableView.getColumns()) {
-                    columnA.setPrefWidth(columnWidth);
-                }
+            rightSideContainer.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+                adjustTableColumnsWidth(newWidth.doubleValue());
             });
 
             tableView.getColumns().add(tableColumn);
@@ -200,6 +196,15 @@ public class Controller implements Initializable {
 
         // Устанавливаем данные в таблицу
         tableView.setItems(data);
+    }
+
+    private void adjustTableColumnsWidth(double totalWidth) {
+        if (tableView.getColumns().isEmpty()) return;
+
+        double columnWidth = totalWidth / tableView.getColumns().size();
+        for (TableColumn<?, ?> column : tableView.getColumns()) {
+            column.setPrefWidth(columnWidth);
+        }
     }
 
 
@@ -315,6 +320,7 @@ public class Controller implements Initializable {
                     .get(objectIndex)
                     .getForm();
             setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
+            adjustTableColumnsWidth(rightSideContainer.getWidth());
             rightSideContainer.getChildren().add(tableView);
         } else {
             rightSideContainer.getChildren().remove(tableView);
