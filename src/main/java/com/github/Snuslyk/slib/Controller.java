@@ -133,13 +133,6 @@ public class Controller implements Initializable {
 
         tableView.getColumns().clear();
 
-        List<List<Form.Column>> columnsList = externalObjects.get(sectionIndex)
-                .get(objectIndex)
-                .getForm()
-                .getColumns();
-
-        System.out.println(columnsList);
-
         List<Form.Column> columns = externalObjects.get(sectionIndex)
                 .get(objectIndex)
                 .getForm()
