@@ -185,7 +185,6 @@ public class Controller implements Initializable {
         // Устанавливаем данные в таблицу
         tableView.setItems(data);
     }
-}
 
 
 
