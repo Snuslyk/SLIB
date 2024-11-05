@@ -133,6 +133,31 @@
 
 .tableD .column-header-background .label {
     -fx-text-fill: white;
-    -fx-alignment: left;
+    -fx-alignment: CENTER_LEFT;
     -fx-label-padding: 10;
 }
+
+.tableD .table-cell {
+    -fx-text-fill: white;
+    -fx-alignment: CENTER_LEFT;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-label-padding: 10;
+}
+
+.tableD .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-pref-height: 56;
+}
+
+.tableD .table-row-cell:filled {
+    -fx-border-color: #3D3D3D;
+    -fx-border-width: 0 0 1 0;
+}
+
+.tableD .button-cell {
+    -fx-alignment: CENTER_RIGHT;
+    -fx-padding: 0 16 0 0;
+}
+
+
