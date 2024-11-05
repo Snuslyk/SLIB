@@ -5,16 +5,20 @@ import com.github.Snuslyk.slib.electives.ButtonElective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
 import com.github.Snuslyk.slib.factory.Form;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -144,6 +148,13 @@ public class Controller implements Initializable {
             tableColumn.setResizable(false);
             tableColumn.setReorderable(false);
 
+            // Используем лямбду для установки значения ячейки
+            tableColumn.setCellValueFactory(cellData -> {
+                Map<String, Object> rowData = cellData.getValue();
+                Object cellValue = rowData.get(column.displayName()); // column.name() - ключ в Map
+                return new SimpleStringProperty(cellValue != null ? cellValue.toString() : "");
+            });
+
             tableView.widthProperty().addListener((obs, oldWidth, newWidth) -> {
                 double totalWidth = newWidth.doubleValue();
                 double columnWidth = totalWidth / tableView.getColumns().size(); // Распределяем ширину
@@ -154,7 +165,27 @@ public class Controller implements Initializable {
 
             tableView.getColumns().add(tableColumn);
         }
+
+        // Пример добавления данных
+        ObservableList<Map<String, Object>> data = FXCollections.observableArrayList();
+
+        // Создание строк данных
+        Map<String, Object> row1 = new HashMap<>();
+        row1.put("Column1", "Data1");  // Заполнение значений для каждого столбца
+        row1.put("Column2", "Data2");
+
+        Map<String, Object> row2 = new HashMap<>();
+        row2.put("Column1", "Data3");
+        row2.put("Column2", "Data4");
+
+        // Добавляем строки данных в ObservableList
+        data.add(row1);
+        data.add(row2);
+
+        // Устанавливаем данные в таблицу
+        tableView.setItems(data);
     }
+}
 
 
 
