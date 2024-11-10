@@ -206,14 +206,12 @@ public class Controller implements Initializable {
                 getStyleClass().add("button-cell");
 
                 button.setOnAction(event -> {
-                    // Проверяем, есть ли предыдущая нажатая кнопка, и выключаем её
                     if (lastSelectedButton != null && lastSelectedButton != button) {
                         lastSelectedButton.setSelected(false);
                     }
 
                     if (button.isSelected()) {
                         lastSelectedButton = button;
-
                         Map<String, Object> rowData = getTableView().getItems().get(getIndex());
                         System.out.println("Кнопка нажата для строки: " + rowData);
 
@@ -225,6 +223,14 @@ public class Controller implements Initializable {
                         // Удаляем старый экземпляр editPopUp, если он есть, перед добавлением нового
                         rightSideContainer.getChildren().removeIf(node -> node.getStyleClass().contains("editPopUp"));
                         rightSideContainer.getChildren().add(editPopUp);
+
+                        // Преобразование координат кнопки из системы координат сцены в систему координат rightSideContainer
+                        Point2D buttonPosition = button.localToScene(0.0, 0.0);
+                        Point2D containerCoordinates = rightSideContainer.sceneToLocal(buttonPosition);
+
+                        // Устанавливаем позицию editPopUp относительно containerCoordinates
+                        editPopUp.setLayoutX(containerCoordinates.getX() - 100);
+                        editPopUp.setLayoutY(containerCoordinates.getY());
 
                         // Добавляем событие для закрытия editPopUp при клике на rootContainer
                         rootContainer.setOnMouseClicked(eventClick -> {
