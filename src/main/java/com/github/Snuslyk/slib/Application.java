@@ -19,6 +19,8 @@ public class Application extends javafx.application.Application {
         Scene scene = new Scene(fxmlLoader.load());
 
         stageSettings(stage, scene);
+
+        HibernateUtil.getSessionFactory().openSession().close();
     }
 
     // Этот метод нужен для добавления кастомных опций контроллеру, чтобы изменять его - @override
