@@ -12,10 +12,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.SVGPath;
 
 import java.net.URL;
 import java.util.*;
@@ -70,6 +75,8 @@ public class Controller implements Initializable {
     private List<ManageableElectives> externalSections;
 
     private int pickedSectionIndex = 0;
+
+    private ToggleButton lastSelectedButton = null;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -184,15 +191,57 @@ public class Controller implements Initializable {
         // Cтолбец с кнопкой
         TableColumn<Map<String, Object>, Void> buttonColumn = new TableColumn<>();
         buttonColumn.setCellFactory(col -> new TableCell<>() {
-            private final javafx.scene.control.Button button = new javafx.scene.control.Button("Нажать");
+            private final VBox editPopUp = new VBox();
+            private final ToggleButton button = new ToggleButton();
 
             {
-                button.setOnAction(event -> {
-                    Map<String, Object> rowData = getTableView().getItems().get(getIndex());
-                    System.out.println("Кнопка нажата для строки: " + rowData);
-                });
+                // Создаём SVGPath и задаем его путь
+                SVGPath svgIcon = new SVGPath();
+                svgIcon.setContent("M0,2 A2,2 0 1,0 4,2 A2,2 0 1,0 0,2 M6,2 A2,2 0 1,0 10,2 A2,2 0 1,0 6,2 M12,2 A2,2 0 1,0 16,2 A2,2 0 1,0 12,2");
+                svgIcon.setFill(Color.WHITE);
+
+                // Устанавливаем SVGPath как графику для кнопки
+                button.setGraphic(svgIcon);
 
                 getStyleClass().add("button-cell");
+
+                button.setOnAction(event -> {
+                    // Проверяем, есть ли предыдущая нажатая кнопка, и выключаем её
+                    if (lastSelectedButton != null && lastSelectedButton != button) {
+                        lastSelectedButton.setSelected(false);
+                    }
+
+                    if (button.isSelected()) {
+                        lastSelectedButton = button;
+
+                        Map<String, Object> rowData = getTableView().getItems().get(getIndex());
+                        System.out.println("Кнопка нажата для строки: " + rowData);
+
+                        // Создаём и настраиваем editPopUp
+                        editPopUp.setPrefWidth(140);
+                        editPopUp.setPrefHeight(28);
+                        editPopUp.getStyleClass().add("editPopUp");
+
+                        // Удаляем старый экземпляр editPopUp, если он есть, перед добавлением нового
+                        rightSideContainer.getChildren().removeIf(node -> node.getStyleClass().contains("editPopUp"));
+                        rightSideContainer.getChildren().add(editPopUp);
+
+                        // Добавляем событие для закрытия editPopUp при клике на rootContainer
+                        rootContainer.setOnMouseClicked(eventClick -> {
+                            button.setSelected(false);
+                            rightSideContainer.getChildren().remove(editPopUp);
+                            lastSelectedButton = null;
+                        });
+                        tableView.setOnMouseClicked(eventClick -> {
+                            button.setSelected(false);
+                            rightSideContainer.getChildren().remove(editPopUp);
+                            lastSelectedButton = null;
+                        });
+                    } else {
+                        lastSelectedButton = null;
+                        rightSideContainer.getChildren().remove(editPopUp);
+                    }
+                });
             }
 
             @Override
@@ -340,17 +389,17 @@ public class Controller implements Initializable {
 
         tableView.setPrefWidth(200);
         tableView.setPrefHeight(297);
-        AnchorPane.setTopAnchor(tableView, 173.0);
+        AnchorPane.setTopAnchor(tableView, 172.0);
         AnchorPane.setBottomAnchor(tableView, 40.0);
-        AnchorPane.setLeftAnchor(tableView, 0.0);
-        AnchorPane.setRightAnchor(tableView, 0.0);
+        AnchorPane.setLeftAnchor(tableView, -1.0);
+        AnchorPane.setRightAnchor(tableView, -1.0);
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         tableView.getStyleClass().add("tableD");
 
         Form form = externalObjects.get(sectionIndex)
                 .get(objectIndex)
                 .getForm();
-        
+
         if (form.getType()[optionIndex] == Form.Type.TABLE) {
             setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
             adjustTableColumnsWidth(rightSideContainer.getWidth());
