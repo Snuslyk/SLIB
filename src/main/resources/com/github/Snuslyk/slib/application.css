@@ -133,6 +133,99 @@
 
 .tableD .column-header-background .label {
     -fx-text-fill: white;
-    -fx-alignment: left;
+    -fx-alignment: CENTER_LEFT;
     -fx-label-padding: 10;
+}
+
+.tableD .table-cell {
+    -fx-text-fill: white;
+    -fx-alignment: CENTER_LEFT;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-label-padding: 10;
+}
+
+.tableD .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-pref-height: 56;
+}
+
+.tableD .table-row-cell:filled {
+    -fx-border-color: #3D3D3D;
+    -fx-border-width: 0 0 1 0;
+}
+
+.tableD .button-cell {
+    -fx-alignment: CENTER_RIGHT;
+    -fx-padding: 0 16 0 0;
+}
+
+.tableD .button-cell .toggle-button {
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-background-color: #121212;
+    -fx-cursor: hand;
+}
+
+.tableD .button-cell .toggle-button:hover {
+    -fx-background-color: #191919;
+}
+
+/* Стили для горизонтального и вертикального скроллбара */
+.tableD .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.tableD .scroll-bar:vertical .increment-button,
+.tableD .scroll-bar:vertical .decrement-button,
+.tableD .scroll-bar:horizontal .increment-button,
+.tableD .scroll-bar:horizontal .decrement-button {
+    -fx-padding: 0;
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}
+
+.tableD .scroll-bar:horizontal .increment-arrow,
+.tableD .scroll-bar:horizontal .decrement-arrow,
+.tableD .scroll-bar:vertical .increment-arrow,
+.tableD .scroll-bar:vertical .decrement-arrow {
+    -fx-background-color: transparent;
+}
+
+/* Стили для ползунка скроллбара */
+.tableD .scroll-bar .thumb {
+    -fx-background-color: #242424;
+    -fx-background-radius: 4;
+}
+
+/* Стили для hover-эффекта ползунка */
+.tableD .scroll-bar .thumb:hover {
+    -fx-background-color: #191919;
+}
+
+/* Стили для трека скроллбара */
+.tableD .scroll-bar .track {
+    -fx-background-color: #121212;
+}
+
+/* Устанавливаем ширину вертикального скроллбара */
+.tableD .scroll-bar:vertical {
+    -fx-translate-x: 1;
+    -fx-translate-y: 1;
+    -fx-pref-width: 10;
+}
+
+/* Устанавливаем высоту горизонтального скроллбара */
+.tableD .scroll-bar:horizontal {
+    -fx-pref-height: 10;
+}
+
+.editPopUp {
+    -fx-background-color: #ff0707;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
 }
