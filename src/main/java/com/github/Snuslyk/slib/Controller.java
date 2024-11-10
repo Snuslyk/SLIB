@@ -294,6 +294,41 @@ public class Controller implements Initializable {
         }
     }
 
+    private javafx.scene.control.Button addEditButton(String logo, String text, Color color) {
+        HBox contentBox = new HBox();
+
+        // Проверяем, есть ли логотип для создания SVGPath
+        if (logo != null && !logo.isEmpty()) {
+            SVGPath svgIcon = new SVGPath();
+            svgIcon.setContent(logo);
+            svgIcon.setFill(color);
+
+            // Устанавливаем отступ для SVGPath
+            HBox.setMargin(svgIcon, new Insets(0, 0, 0, 16));
+
+            contentBox.getChildren().add(svgIcon);
+        } else {
+            // Устанавливаем отступ для текста, если нет SVG
+            HBox.setMargin(new Label(text), new Insets(0, 0, 0, 36));
+        }
+
+        // Добавляем текст в любом случае
+        Label label = new Label(text);
+        contentBox.getChildren().add(label);
+
+        // Настраиваем размеры HBox
+        contentBox.setPrefWidth(140);
+        contentBox.setPrefHeight(28);
+
+        // Создаем кнопку и добавляем HBox внутрь
+        javafx.scene.control.Button button = new javafx.scene.control.Button();
+        button.setGraphic(contentBox);
+        button.setStyle("-fx-text-fill: " + color.toString().replace("0x", "#") + ";");
+        button.getStyleClass().add("editButton");
+
+        return button;
+    }
+
 
 
 
