@@ -15,11 +15,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
 
 import java.net.URL;
@@ -375,6 +373,8 @@ public class Controller implements Initializable {
             int objectIndex = objectContainer.getChildren().indexOf(firstObjectButton);
             setupOptions(pickedSectionIndex, objectIndex);
         }
+
+        modelCreate();
     }
 
     // Устанавливает substract для выбранной опции
@@ -398,34 +398,7 @@ public class Controller implements Initializable {
         // Обновляем previousSelectedOption на текущую выбранную кнопку
         previousSelectedOption = selectedButton;
 
-        int optionIndex = optionsContainer.getChildren().indexOf(selectedButton.getParent());
-        int sectionIndex = sectionsContainer.getChildren().indexOf((RadioButton) sectionToggleGroup.getSelectedToggle());
-        int objectIndex = objectContainer.getChildren().indexOf((RadioButton) objectToggleGroup.getSelectedToggle());
-
-        System.out.println("optionIndex: " + optionIndex);
-        System.out.println("sectionIndex: " + sectionIndex);
-        System.out.println("objectIndex: " + objectIndex);
-
-        tableView.setPrefWidth(200);
-        tableView.setPrefHeight(297);
-        AnchorPane.setTopAnchor(tableView, 172.0);
-        AnchorPane.setBottomAnchor(tableView, 40.0);
-        AnchorPane.setLeftAnchor(tableView, -1.0);
-        AnchorPane.setRightAnchor(tableView, -1.0);
-        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        tableView.getStyleClass().add("tableD");
-
-        Form form = externalObjects.get(sectionIndex)
-                .get(objectIndex)
-                .getForm();
-
-        if (form.getType()[optionIndex] == Form.Type.TABLE) {
-            setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
-            adjustTableColumnsWidth(rightSideContainer.getWidth());
-            rightSideContainer.getChildren().add(tableView);
-        } else {
-            rightSideContainer.getChildren().remove(tableView);
-        }
+        modelCreate();
 
     }
 
@@ -436,6 +409,8 @@ public class Controller implements Initializable {
 
         int objectIndex = objectContainer.getChildren().indexOf(selectedButton);
         setupOptions(pickedSectionIndex, objectIndex);
+
+        modelCreate();
     }
 
     private void update() {
@@ -452,6 +427,35 @@ public class Controller implements Initializable {
         });
 
         popUp.visibleProperty().bind(comboBox.selectedProperty());
+
+        modelCreate(); // создаю таблицу при первом старте
+    }
+
+    private void modelCreate() {
+        int sectionIndex = sectionsContainer.getChildren().indexOf((RadioButton) sectionToggleGroup.getSelectedToggle());
+        int objectIndex = objectContainer.getChildren().indexOf((RadioButton) objectToggleGroup.getSelectedToggle());
+        int optionIndex = optionsContainer.getChildren().indexOf(((RadioButton) optionToggleGroup.getSelectedToggle()).getParent());
+
+        Form form = externalObjects.get(sectionIndex)
+                .get(objectIndex)
+                .getForm();
+
+        if (form.getType()[optionIndex] == Form.Type.TABLE) {
+            tableView.setPrefWidth(200);
+            tableView.setPrefHeight(297);
+            AnchorPane.setTopAnchor(tableView, 172.0);
+            AnchorPane.setBottomAnchor(tableView, 40.0);
+            AnchorPane.setLeftAnchor(tableView, -1.0);
+            AnchorPane.setRightAnchor(tableView, -1.0);
+            tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            tableView.getStyleClass().add("tableD");
+
+            setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
+            adjustTableColumnsWidth(rightSideContainer.getWidth());
+            rightSideContainer.getChildren().add(tableView);
+        } else {
+            rightSideContainer.getChildren().remove(tableView);
+        }
     }
 
     public Section getSelectedSection() {
