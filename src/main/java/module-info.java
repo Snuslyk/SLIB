@@ -5,6 +5,7 @@ module com.github.Snuslyk.slib {
     requires java.persistence;
     requires org.hibernate.orm.core;
     requires java.naming;
+    requires com.sun.istack.runtime;
 
 
     opens com.github.Snuslyk.slib to javafx.fxml;

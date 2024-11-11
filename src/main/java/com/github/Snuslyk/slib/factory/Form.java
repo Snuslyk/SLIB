@@ -2,6 +2,8 @@ package com.github.Snuslyk.slib.factory;
 
 import com.github.Snuslyk.slib.FilterIO;
 import com.github.Snuslyk.slib.HibernateUtil;
+import com.sun.istack.Nullable;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,13 +16,15 @@ public class Form {
     private final Class<?>[] tableClass;
     private final FilterIO[] filter;
     private final List<List<Column>> columns;
+    private final List<List<TableActionButton>> tableButtons;
 
-    private Form(Type[] type, Class<?>[] tableClass, FilterIO[] filter, List<List<Column>> columns, List<String> options) {
+    private Form(Type[] type, Class<?>[] tableClass, FilterIO[] filter, List<List<Column>> columns, List<String> options, List<List<TableActionButton>> tableButtons) {
         this.options = options;
         this.type = type;
         this.tableClass = tableClass;
         this.filter = filter;
         this.columns = columns;
+        this.tableButtons = tableButtons;
     }
 
     public List<Object> get(int option){
@@ -44,6 +48,10 @@ public class Form {
         return options;
     }
 
+    public List<List<TableActionButton>> getTableButtons() {
+        return tableButtons;
+    }
+
     public static class Builder {
         private int optionSize;
         private int optionId = -1;
@@ -52,6 +60,7 @@ public class Form {
         private Class<?>[] tableClass;
         private FilterIO[] filter;
         private final List<List<Column>> columns = new ArrayList<>();
+        private final List<List<TableActionButton>> tableButtons = new ArrayList<>();
 
         public Builder type(Type type){
             this.type[optionId] = type;
@@ -64,6 +73,11 @@ public class Form {
             }
             return this;
         }
+        public Builder tableActionButton(String display, Color color, @Nullable String svg){
+            tableButtons.get(optionId).add(new TableActionButton(display, color, svg));
+            return this;
+        }
+
         public Builder filter(FilterIO filter){
             this.filter[optionId] = filter;
             return this;
@@ -83,10 +97,12 @@ public class Form {
             optionId += 1;
             options.add(name);
             columns.add(new ArrayList<>());
+            tableButtons.add(new ArrayList<>());
             return this;
         }
+
         public Form build(){
-            return new Form(type, tableClass, filter, columns, options);
+            return new Form(type, tableClass, filter, columns, options, tableButtons);
         }
     }
 
@@ -96,5 +112,7 @@ public class Form {
     }
 
     public record Column(String displayName, String key){}
+
+    public record TableActionButton(String display, Color color, @Nullable String svg){}
 
 }
