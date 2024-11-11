@@ -428,7 +428,7 @@ public class Controller implements Initializable {
 
         popUp.visibleProperty().bind(comboBox.selectedProperty());
 
-        modelUpdate(); // создаю таблицу при первом старте
+        modelUpdate(); // обнавляю модели при первом старте
     }
 
     private void modelUpdate() {
