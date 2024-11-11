@@ -229,3 +229,24 @@
     -fx-background-radius: 8;
     -fx-border-radius: 8;
 }
+
+.editButton {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+.editButton:hover {
+    -fx-background-color: #3A3A3A;
+}
+
+.firstChild {
+    -fx-background-radius: 8 8 0 0;
+    -fx-border-radius: 8 8 0 0;
+}
+
+.secondChild {
+    -fx-background-radius: 0 0 8 8;
+    -fx-border-radius: 0 0 8 8;
+}
