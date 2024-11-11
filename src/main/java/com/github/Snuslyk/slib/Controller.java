@@ -217,6 +217,13 @@ public class Controller implements Initializable {
 
             rootContainer.setOnMouseClicked(event -> closeEditPopUp());
             getTableView().setOnMouseClicked(event -> closeEditPopUp());
+
+            Form form = externalObjects.get(getSectionIndex()).get(getObjectIndex()).getForm();
+            List<Form.TableActionButton> buttons = form.getTableButtons().get(getOptionIndex());
+
+            for (Form.TableActionButton actionButton : buttons) {
+                editPopUp.getChildren().add(addEditButton(actionButton.display(), actionButton.color(), actionButton.svg()));
+            }
         }
 
         private void closeEditPopUp() {
@@ -270,7 +277,7 @@ public class Controller implements Initializable {
     }
 
 
-    private javafx.scene.control.Button addEditButton(String logo, String text, Color color) {
+    private javafx.scene.control.Button addEditButton(String text, Color color,String logo) {
         HBox contentBox = new HBox();
 
         // Проверяем, есть ли логотип для создания SVGPath
@@ -432,9 +439,9 @@ public class Controller implements Initializable {
     }
 
     private void modelUpdate() {
-        int sectionIndex = sectionsContainer.getChildren().indexOf((RadioButton) sectionToggleGroup.getSelectedToggle());
-        int objectIndex = objectContainer.getChildren().indexOf((RadioButton) objectToggleGroup.getSelectedToggle());
-        int optionIndex = optionsContainer.getChildren().indexOf(((RadioButton) optionToggleGroup.getSelectedToggle()).getParent());
+        int sectionIndex = getSectionIndex();
+        int objectIndex = getObjectIndex();
+        int optionIndex = getOptionIndex();
 
         Form form = externalObjects.get(sectionIndex)
                 .get(objectIndex)
@@ -458,6 +465,16 @@ public class Controller implements Initializable {
         } else {
             rightSideContainer.getChildren().remove(tableView);
         }
+    }
+
+    public int getSectionIndex(){
+        return sectionsContainer.getChildren().indexOf((RadioButton) sectionToggleGroup.getSelectedToggle());
+    }
+    public int getObjectIndex(){
+        return objectContainer.getChildren().indexOf((RadioButton) objectToggleGroup.getSelectedToggle());
+    }
+    public int getOptionIndex(){
+        return optionsContainer.getChildren().indexOf(((RadioButton) optionToggleGroup.getSelectedToggle()).getParent());
     }
 
     public Section getSelectedSection() {
