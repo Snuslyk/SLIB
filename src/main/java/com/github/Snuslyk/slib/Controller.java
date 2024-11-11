@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -221,11 +222,12 @@ public class Controller implements Initializable {
             Form form = externalObjects.get(getSectionIndex()).get(getObjectIndex()).getForm();
             List<Form.TableActionButton> buttons = form.getTableButtons().get(getOptionIndex());
             if (buttons == null) return;
+            if (!editPopUp.getChildren().isEmpty()) return;
 
             // Перебираем кнопки и добавляем их с соответствующими классами
             for (int i = 0; i < buttons.size(); i++) {
                 Form.TableActionButton actionButton = buttons.get(i);
-                javafx.scene.control.Button editButton = addEditButton(actionButton.display(), actionButton.color(), actionButton.svg());
+                javafx.scene.control.Button editButton = addEditButton(actionButton.display(), actionButton.color(), actionButton.svg(), actionButton.io());
 
                 // Определение класса для первой и последней кнопки
                 String buttonClass = (i == 0) ? "firstChild" : (i == buttons.size() - 1) ? "secondChild" : "";
@@ -289,7 +291,7 @@ public class Controller implements Initializable {
     }
 
 
-    private javafx.scene.control.Button addEditButton(String text, Color color, String logo) {
+    private javafx.scene.control.Button addEditButton(String text, Color color, String logo, Form.TableActionButtonIO io) {
         HBox contentBox = new HBox();
 
         // Проверяем, есть ли логотип для создания SVGPath
@@ -320,6 +322,8 @@ public class Controller implements Initializable {
         javafx.scene.control.Button button = new javafx.scene.control.Button();
         button.setGraphic(contentBox);
         button.getStyleClass().add("editButton");
+
+        button.setOnAction(event -> io.run(this));
 
         return button;
     }

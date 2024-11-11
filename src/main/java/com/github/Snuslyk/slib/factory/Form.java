@@ -1,5 +1,6 @@
 package com.github.Snuslyk.slib.factory;
 
+import com.github.Snuslyk.slib.Controller;
 import com.github.Snuslyk.slib.FilterIO;
 import com.github.Snuslyk.slib.HibernateUtil;
 import com.sun.istack.Nullable;
@@ -73,8 +74,12 @@ public class Form {
             }
             return this;
         }
+        public Builder tableActionButton(String display, Color color, @Nullable String svg, @Nullable TableActionButtonIO io){
+            tableButtons.get(optionId).add(new TableActionButton(display, color, svg, io));
+            return this;
+        }
         public Builder tableActionButton(String display, Color color, @Nullable String svg){
-            tableButtons.get(optionId).add(new TableActionButton(display, color, svg));
+            tableButtons.get(optionId).add(new TableActionButton(display, color, svg, null));
             return this;
         }
 
@@ -113,6 +118,10 @@ public class Form {
 
     public record Column(String displayName, String key){}
 
-    public record TableActionButton(String display, Color color, @Nullable String svg){}
+    public record TableActionButton(String display, Color color, @Nullable String svg, @Nullable TableActionButtonIO io){}
+
+    public interface TableActionButtonIO{
+        void run(Controller controller);
+    }
 
 }
