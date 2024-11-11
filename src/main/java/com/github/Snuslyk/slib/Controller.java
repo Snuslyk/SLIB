@@ -374,7 +374,7 @@ public class Controller implements Initializable {
             setupOptions(pickedSectionIndex, objectIndex);
         }
 
-        modelCreate();
+        modelUpdate();
     }
 
     // Устанавливает substract для выбранной опции
@@ -398,7 +398,7 @@ public class Controller implements Initializable {
         // Обновляем previousSelectedOption на текущую выбранную кнопку
         previousSelectedOption = selectedButton;
 
-        modelCreate();
+        modelUpdate();
 
     }
 
@@ -410,7 +410,7 @@ public class Controller implements Initializable {
         int objectIndex = objectContainer.getChildren().indexOf(selectedButton);
         setupOptions(pickedSectionIndex, objectIndex);
 
-        modelCreate();
+        modelUpdate();
     }
 
     private void update() {
@@ -428,10 +428,10 @@ public class Controller implements Initializable {
 
         popUp.visibleProperty().bind(comboBox.selectedProperty());
 
-        modelCreate(); // создаю таблицу при первом старте
+        modelUpdate(); // создаю таблицу при первом старте
     }
 
-    private void modelCreate() {
+    private void modelUpdate() {
         int sectionIndex = sectionsContainer.getChildren().indexOf((RadioButton) sectionToggleGroup.getSelectedToggle());
         int objectIndex = objectContainer.getChildren().indexOf((RadioButton) objectToggleGroup.getSelectedToggle());
         int optionIndex = optionsContainer.getChildren().indexOf(((RadioButton) optionToggleGroup.getSelectedToggle()).getParent());
