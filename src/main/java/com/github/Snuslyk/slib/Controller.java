@@ -441,20 +441,20 @@ public class Controller implements Initializable {
                 .getForm();
 
         if (form.getType()[optionIndex] == Form.Type.TABLE) {
-            if (!rightSideContainer.getChildren().contains(tableView)) {
-                tableView.setPrefWidth(200);
-                tableView.setPrefHeight(297);
-                AnchorPane.setTopAnchor(tableView, 172.0);
-                AnchorPane.setBottomAnchor(tableView, 40.0);
-                AnchorPane.setLeftAnchor(tableView, -1.0);
-                AnchorPane.setRightAnchor(tableView, -1.0);
-                tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-                tableView.getStyleClass().add("tableD");
+            rightSideContainer.getChildren().remove(tableView);
 
-                setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
-                adjustTableColumnsWidth(rightSideContainer.getWidth());
-                rightSideContainer.getChildren().add(tableView);
-            }
+            tableView.setPrefWidth(200);
+            tableView.setPrefHeight(297);
+            AnchorPane.setTopAnchor(tableView, 172.0);
+            AnchorPane.setBottomAnchor(tableView, 40.0);
+            AnchorPane.setLeftAnchor(tableView, -1.0);
+            AnchorPane.setRightAnchor(tableView, -1.0);
+            tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            tableView.getStyleClass().add("tableD");
+
+            setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
+            adjustTableColumnsWidth(rightSideContainer.getWidth());
+            rightSideContainer.getChildren().add(tableView);
         } else {
             rightSideContainer.getChildren().remove(tableView);
         }
