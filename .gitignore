@@ -37,3 +37,4 @@ build/
 ### Mac OS ###
 .DS_Store
 out/artifacts/SLIB_jar/SLIB.jar
+out/artifacts/SLIB_jar/SLIB.jar
