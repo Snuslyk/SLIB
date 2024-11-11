@@ -141,133 +141,111 @@ public class Controller implements Initializable {
 
         tableView.getColumns().clear();
 
-        List<List<Form.Column>> columnsList = externalObjects.get(sectionIndex)
-                .get(objectIndex)
-                .getForm()
-                .getColumns();
+        Form form = externalObjects.get(sectionIndex).get(objectIndex).getForm();
+        List<Form.Column> columns = form.getColumns().get(optionIndex);
 
-        System.out.println(columnsList);
+        setupColumns(tableView, columns);
+        setupButtonColumn(tableView);
+        setupRowFactory(tableView);
 
-        Form form = externalObjects.get(sectionIndex)
-                .get(objectIndex)
-                .getForm();
+        rightSideContainer.widthProperty().addListener((obs, oldWidth, newWidth) -> adjustTableColumnsWidth(newWidth.doubleValue()));
 
-        List<Form.Column> columns = form
-                .getColumns()
-                .get(optionIndex);
+        ObservableList<Map<String, Object>> data = fetchData(form, optionIndex, columns);
+        tableView.setItems(data);
+    }
 
+    private void setupColumns(TableView<Map<String, Object>> tableView, List<Form.Column> columns) {
         for (Form.Column column : columns) {
-            // Создаём таблицу
             TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>(column.displayName());
             tableColumn.setResizable(false);
             tableColumn.setReorderable(false);
 
-            // Чтобы названия у колонок работали
             tableColumn.setCellValueFactory(cellData -> {
                 Map<String, Object> rowData = cellData.getValue();
                 Object cellValue = rowData.get(column.displayName());
                 return new SimpleStringProperty(cellValue != null ? cellValue.toString() : "");
             });
 
-            // Чтобы разделения были только у заполненных строк
-            PseudoClass filled = PseudoClass.getPseudoClass("filled");
-            tableView.setRowFactory(tv -> {
-                TableRow<Map<String, Object>> row = new TableRow<>();
-                row.itemProperty().addListener((obs, oldItem, newItem) -> {
-                    row.pseudoClassStateChanged(filled, newItem != null);
-                });
-                return row;
-            });
-
-            // Распределяем столбцы по ширине таблицы
-            rightSideContainer.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-                adjustTableColumnsWidth(newWidth.doubleValue());
-            });
-
-            // Добавляем столбцы в таблицу
             tableView.getColumns().add(tableColumn);
         }
+    }
 
-        // Cтолбец с кнопкой
+    private void setupButtonColumn(TableView<Map<String, Object>> tableView) {
         TableColumn<Map<String, Object>, Void> buttonColumn = new TableColumn<>();
-        buttonColumn.setCellFactory(col -> new TableCell<>() {
-            private final VBox editPopUp = new VBox();
-            private final ToggleButton button = new ToggleButton();
-
-            {
-                // Создаём SVGPath и задаем его путь
-                SVGPath svgIcon = new SVGPath();
-                svgIcon.setContent("M0,2 A2,2 0 1,0 4,2 A2,2 0 1,0 0,2 M6,2 A2,2 0 1,0 10,2 A2,2 0 1,0 6,2 M12,2 A2,2 0 1,0 16,2 A2,2 0 1,0 12,2");
-                svgIcon.setFill(Color.WHITE);
-
-                // Устанавливаем SVGPath как графику для кнопки
-                button.setGraphic(svgIcon);
-
-                getStyleClass().add("button-cell");
-
-                button.setOnAction(event -> {
-                    if (lastSelectedButton != null && lastSelectedButton != button) {
-                        lastSelectedButton.setSelected(false);
-                    }
-
-                    if (button.isSelected()) {
-                        lastSelectedButton = button;
-                        Map<String, Object> rowData = getTableView().getItems().get(getIndex());
-                        System.out.println("Кнопка нажата для строки: " + rowData);
-
-                        // Создаём и настраиваем editPopUp
-                        editPopUp.setPrefWidth(140);
-                        editPopUp.setPrefHeight(28);
-                        editPopUp.getStyleClass().add("editPopUp");
-
-                        // Удаляем старый экземпляр editPopUp, если он есть, перед добавлением нового
-                        rightSideContainer.getChildren().removeIf(node -> node.getStyleClass().contains("editPopUp"));
-                        rightSideContainer.getChildren().add(editPopUp);
-
-                        // Преобразование координат кнопки из системы координат сцены в систему координат rightSideContainer
-                        Point2D buttonPosition = button.localToScene(0.0, 0.0);
-                        Point2D containerCoordinates = rightSideContainer.sceneToLocal(buttonPosition);
-
-                        // Устанавливаем позицию editPopUp относительно containerCoordinates
-                        editPopUp.setLayoutX(containerCoordinates.getX() - 100);
-                        editPopUp.setLayoutY(containerCoordinates.getY());
-
-                        // Добавляем событие для закрытия editPopUp при клике на rootContainer
-                        rootContainer.setOnMouseClicked(eventClick -> {
-                            button.setSelected(false);
-                            rightSideContainer.getChildren().remove(editPopUp);
-                            lastSelectedButton = null;
-                        });
-                        tableView.setOnMouseClicked(eventClick -> {
-                            button.setSelected(false);
-                            rightSideContainer.getChildren().remove(editPopUp);
-                            lastSelectedButton = null;
-                        });
-                    } else {
-                        lastSelectedButton = null;
-                        rightSideContainer.getChildren().remove(editPopUp);
-                    }
-                });
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(button);
-                }
-            }
-        });
-
+        buttonColumn.setReorderable(false);
+        buttonColumn.setCellFactory(col -> new ButtonCell());
         tableView.getColumns().add(buttonColumn);
+    }
 
-        // Пример добавления данных
+    private class ButtonCell extends TableCell<Map<String, Object>, Void> {
+        private final VBox editPopUp = new VBox();
+        private final ToggleButton button = new ToggleButton();
+
+        ButtonCell() {
+            SVGPath svgIcon = new SVGPath();
+            svgIcon.setContent("M0,2 A2,2 0 1,0 4,2 A2,2 0 1,0 0,2 M6,2 A2,2 0 1,0 10,2 A2,2 0 1,0 6,2 M12,2 A2,2 0 1,0 16,2 A2,2 0 1,0 12,2");
+            svgIcon.setFill(Color.WHITE);
+            button.setGraphic(svgIcon);
+            getStyleClass().add("button-cell");
+
+            button.setOnAction(event -> toggleButton());
+        }
+
+        private void toggleButton() {
+            if (lastSelectedButton != null && lastSelectedButton != button) {
+                lastSelectedButton.setSelected(false);
+            }
+            if (button.isSelected()) {
+                lastSelectedButton = button;
+                Map<String, Object> rowData = getTableView().getItems().get(getIndex());
+                System.out.println("Button clicked for row: " + rowData);
+                setupEditPopUp(button, rowData);
+            } else {
+                closeEditPopUp();
+            }
+        }
+
+        private void setupEditPopUp(ToggleButton button, Map<String, Object> rowData) {
+            editPopUp.setPrefWidth(140);
+            editPopUp.setPrefHeight(28);
+            editPopUp.getStyleClass().add("editPopUp");
+            rightSideContainer.getChildren().removeIf(node -> node.getStyleClass().contains("editPopUp"));
+            rightSideContainer.getChildren().add(editPopUp);
+
+            Point2D buttonPosition = button.localToScene(0.0, 0.0);
+            Point2D containerCoordinates = rightSideContainer.sceneToLocal(buttonPosition);
+            editPopUp.setLayoutX(containerCoordinates.getX() - 100);
+            editPopUp.setLayoutY(containerCoordinates.getY());
+
+            rootContainer.setOnMouseClicked(event -> closeEditPopUp());
+            getTableView().setOnMouseClicked(event -> closeEditPopUp());
+        }
+
+        private void closeEditPopUp() {
+            button.setSelected(false);
+            rightSideContainer.getChildren().remove(editPopUp);
+            lastSelectedButton = null;
+        }
+
+        @Override
+        protected void updateItem(Void item, boolean empty) {
+            super.updateItem(item, empty);
+            setGraphic(empty ? null : button);
+        }
+    }
+
+    private void setupRowFactory(TableView<Map<String, Object>> tableView) {
+        PseudoClass filled = PseudoClass.getPseudoClass("filled");
+        tableView.setRowFactory(tv -> {
+            TableRow<Map<String, Object>> row = new TableRow<>();
+            row.itemProperty().addListener((obs, oldItem, newItem) -> row.pseudoClassStateChanged(filled, newItem != null));
+            return row;
+        });
+    }
+
+    private ObservableList<Map<String, Object>> fetchData(Form form, int optionIndex, List<Form.Column> columns) {
         ObservableList<Map<String, Object>> data = FXCollections.observableArrayList();
-
         List<Map<String, Object>> rows = new ArrayList<>();
-
         List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], form.getFilter()[optionIndex]);
 
         try {
@@ -282,17 +260,17 @@ public class Controller implements Initializable {
         }
 
         data.addAll(rows);
-        tableView.setItems(data);
+        return data;
     }
 
     private void adjustTableColumnsWidth(double totalWidth) {
         if (tableView.getColumns().isEmpty()) return;
-
         double columnWidth = totalWidth / tableView.getColumns().size();
         for (TableColumn<?, ?> column : tableView.getColumns()) {
             column.setPrefWidth(columnWidth);
         }
     }
+
 
     private javafx.scene.control.Button addEditButton(String logo, String text, Color color) {
         HBox contentBox = new HBox();
