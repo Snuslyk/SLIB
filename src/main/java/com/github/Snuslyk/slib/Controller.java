@@ -440,9 +440,9 @@ public class Controller implements Initializable {
                 .get(objectIndex)
                 .getForm();
 
-        if (form.getType()[optionIndex] == Form.Type.TABLE) {
-            rightSideContainer.getChildren().remove(tableView);
+        rightSideContainer.getChildren().remove(tableView);
 
+        if (form.getType()[optionIndex] == Form.Type.TABLE) {
             tableView.setPrefWidth(200);
             tableView.setPrefHeight(297);
             AnchorPane.setTopAnchor(tableView, 172.0);
