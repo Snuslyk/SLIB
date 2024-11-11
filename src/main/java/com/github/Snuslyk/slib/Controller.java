@@ -452,7 +452,9 @@ public class Controller implements Initializable {
 
             setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
             adjustTableColumnsWidth(rightSideContainer.getWidth());
-            rightSideContainer.getChildren().add(tableView);
+            if (!rightSideContainer.getChildren().contains(tableView)) {
+                rightSideContainer.getChildren().add(tableView);
+            }
         } else {
             rightSideContainer.getChildren().remove(tableView);
         }
