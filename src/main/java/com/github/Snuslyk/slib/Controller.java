@@ -4,6 +4,7 @@ import com.github.Snuslyk.slib.electives.Button;
 import com.github.Snuslyk.slib.electives.ButtonElective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
 import com.github.Snuslyk.slib.factory.Form;
+import com.sun.istack.Nullable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -229,6 +231,8 @@ public class Controller implements Initializable {
                 Form.TableActionButton actionButton = buttons.get(i);
                 javafx.scene.control.Button editButton = addEditButton(actionButton.display(), actionButton.color(), actionButton.svg(), actionButton.io());
 
+                editButton.setOnMouseClicked(event -> closeEditPopUp());
+
                 // Определение класса для первой и последней кнопки
                 String buttonClass = (i == 0) ? "firstChild" : (i == buttons.size() - 1) ? "secondChild" : "";
                 if (!buttonClass.isEmpty()) {
@@ -291,39 +295,45 @@ public class Controller implements Initializable {
     }
 
 
-    private javafx.scene.control.Button addEditButton(String text, Color color, String logo, Form.TableActionButtonIO io) {
+    private javafx.scene.control.Button addEditButton(String text, Color color, @Nullable String logo, @Nullable Form.TableActionButtonIO io) {
         HBox contentBox = new HBox();
+        contentBox.setSpacing(7);
+        Label label = new Label(text);
 
         // Проверяем, есть ли логотип для создания SVGPath
         if (logo != null && !logo.isEmpty()) {
             SVGPath svgIcon = new SVGPath();
             svgIcon.setContent(logo);
-            svgIcon.setFill(color);
+            svgIcon.setStroke(color);
+            svgIcon.setFill(null);
+            svgIcon.setStrokeWidth(1);
 
             // Устанавливаем отступ для SVGPath
-            HBox.setMargin(svgIcon, new Insets(0, 0, 0, 16));
+            HBox.setMargin(svgIcon, new Insets(0, 0, 0, 7));
 
             contentBox.getChildren().add(svgIcon);
         } else {
             // Устанавливаем отступ для текста, если нет SVG
-            HBox.setMargin(new Label(text), new Insets(0, 0, 0, 36));
+            HBox.setMargin(label, new Insets(0, 0, 0, 27));
         }
 
         // Добавляем текст в любом случае
-        Label label = new Label(text);
         label.setTextFill(color);
         contentBox.getChildren().add(label);
 
         // Настраиваем размеры HBox
         contentBox.setPrefWidth(140);
-        contentBox.setPrefHeight(28);
+        contentBox.setAlignment(Pos.CENTER_LEFT);
 
         // Создаем кнопку и добавляем HBox внутрь
         javafx.scene.control.Button button = new javafx.scene.control.Button();
         button.setGraphic(contentBox);
         button.getStyleClass().add("editButton");
+        button.setMinHeight(28);
 
-        button.setOnAction(event -> io.run(this));
+        if (io != null) {
+            button.setOnAction(event -> io.run(this));
+        }
 
         return button;
     }
