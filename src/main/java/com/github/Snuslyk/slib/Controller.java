@@ -232,8 +232,20 @@ public class Controller implements Initializable {
             if (buttons == null) return;
             if (!editPopUp.getChildren().isEmpty()) return;
 
-            for (Form.TableActionButton actionButton : buttons) {
-                editPopUp.getChildren().add(addEditButton(actionButton.display(), actionButton.color(), actionButton.svg(), actionButton.io(), rowData));
+            // Перебираем кнопки и добавляем их с соответствующими классами
+            for (int i = 0; i < buttons.size(); i++) {
+                Form.TableActionButton actionButton = buttons.get(i);
+                javafx.scene.control.Button editButton = addEditButton(actionButton.display(), actionButton.color(), actionButton.svg(), actionButton.io(), rowData);
+
+                editButton.setOnMouseClicked(event -> closeEditPopUp());
+
+                // Определение класса для первой и последней кнопки
+                String buttonClass = (i == 0) ? "firstChild" : (i == buttons.size() - 1) ? "secondChild" : "";
+                if (!buttonClass.isEmpty()) {
+                    editButton.getStyleClass().add(buttonClass);
+                }
+
+                editPopUp.getChildren().add(editButton);
             }
         }
 
@@ -307,10 +319,11 @@ public class Controller implements Initializable {
             contentBox.getChildren().add(svgIcon);
         } else {
             // Устанавливаем отступ для текста, если нет SVG
-            HBox.setMargin(new Label(text), new Insets(0, 0, 0, 36));
+            HBox.setMargin(label, new Insets(0, 0, 0, 27));
         }
 
         // Добавляем текст в любом случае
+        label.setTextFill(color);
         contentBox.getChildren().add(label);
 
         // Настраиваем размеры HBox
@@ -320,7 +333,6 @@ public class Controller implements Initializable {
         // Создаем кнопку и добавляем HBox внутрь
         javafx.scene.control.Button button = new javafx.scene.control.Button();
         button.setGraphic(contentBox);
-        button.setStyle("-fx-text-fill: " + color.toString().replace("0x", "#") + ";");
         button.getStyleClass().add("editButton");
         button.setMinHeight(28);
 
