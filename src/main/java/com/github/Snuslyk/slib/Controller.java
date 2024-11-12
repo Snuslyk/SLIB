@@ -79,6 +79,8 @@ public class Controller implements Initializable {
 
     private ToggleButton lastSelectedButton = null;
 
+    private String idColumnsDisplay;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupSections();  // СЕКЦИИ
@@ -161,6 +163,10 @@ public class Controller implements Initializable {
             tableColumn.setResizable(false);
             tableColumn.setReorderable(false);
 
+            if (column.key().equals("id")){
+                idColumnsDisplay = column.displayName();
+            }
+
             tableColumn.setCellValueFactory(cellData -> {
                 Map<String, Object> rowData = cellData.getValue();
                 Object cellValue = rowData.get(column.displayName());
@@ -226,23 +232,10 @@ public class Controller implements Initializable {
             if (buttons == null) return;
             if (!editPopUp.getChildren().isEmpty()) return;
 
-            // Перебираем кнопки и добавляем их с соответствующими классами
-            for (int i = 0; i < buttons.size(); i++) {
-                Form.TableActionButton actionButton = buttons.get(i);
-                javafx.scene.control.Button editButton = addEditButton(actionButton.display(), actionButton.color(), actionButton.svg(), actionButton.io());
-
-                editButton.setOnMouseClicked(event -> closeEditPopUp());
-
-                // Определение класса для первой и последней кнопки
-                String buttonClass = (i == 0) ? "firstChild" : (i == buttons.size() - 1) ? "secondChild" : "";
-                if (!buttonClass.isEmpty()) {
-                    editButton.getStyleClass().add(buttonClass);
-                }
-
-                editPopUp.getChildren().add(editButton);
+            for (Form.TableActionButton actionButton : buttons) {
+                editPopUp.getChildren().add(addEditButton(actionButton.display(), actionButton.color(), actionButton.svg(), actionButton.io(), rowData));
             }
         }
-
 
         private void closeEditPopUp() {
             button.setSelected(false);
@@ -295,7 +288,7 @@ public class Controller implements Initializable {
     }
 
 
-    private javafx.scene.control.Button addEditButton(String text, Color color, @Nullable String logo, @Nullable Form.TableActionButtonIO io) {
+    private javafx.scene.control.Button addEditButton(String text, Color color, String logo, Form.TableActionButtonIO io, Map<String, Object> rowData) {
         HBox contentBox = new HBox();
         contentBox.setSpacing(7);
         Label label = new Label(text);
@@ -314,11 +307,10 @@ public class Controller implements Initializable {
             contentBox.getChildren().add(svgIcon);
         } else {
             // Устанавливаем отступ для текста, если нет SVG
-            HBox.setMargin(label, new Insets(0, 0, 0, 27));
+            HBox.setMargin(new Label(text), new Insets(0, 0, 0, 36));
         }
 
         // Добавляем текст в любом случае
-        label.setTextFill(color);
         contentBox.getChildren().add(label);
 
         // Настраиваем размеры HBox
@@ -328,11 +320,12 @@ public class Controller implements Initializable {
         // Создаем кнопку и добавляем HBox внутрь
         javafx.scene.control.Button button = new javafx.scene.control.Button();
         button.setGraphic(contentBox);
+        button.setStyle("-fx-text-fill: " + color.toString().replace("0x", "#") + ";");
         button.getStyleClass().add("editButton");
         button.setMinHeight(28);
 
         if (io != null) {
-            button.setOnAction(event -> io.run(this));
+            button.setOnAction(event -> io.run(this, rowData));
         }
 
         return button;
@@ -464,7 +457,7 @@ public class Controller implements Initializable {
         modelUpdate(); // обнавляю модели при первом старте
     }
 
-    private void modelUpdate() {
+    public void modelUpdate() {
         int sectionIndex = getSectionIndex();
         int objectIndex = getObjectIndex();
         int optionIndex = getOptionIndex();
@@ -503,7 +496,14 @@ public class Controller implements Initializable {
         return optionsContainer.getChildren().indexOf(((RadioButton) optionToggleGroup.getSelectedToggle()).getParent());
     }
 
+    public List<List<Button>> getExternalObjects() {
+        return externalObjects;
+    }
+
     public Section getSelectedSection() {
         return selectedSection;
+    }
+    public String getIdColumnsDisplay() {
+        return idColumnsDisplay;
     }
 }

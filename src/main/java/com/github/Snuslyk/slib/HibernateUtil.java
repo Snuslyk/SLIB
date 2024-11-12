@@ -44,6 +44,15 @@ public class HibernateUtil {
         session.getTransaction().commit();
         session.close();
     }
+    public static void remove(Object object){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        session.remove(object);
+
+        session.getTransaction().commit();
+        session.close();
+    }
 
     public static <T> T getObjectById(Class<T> clazz, int id) {
         Transaction transaction = null;
