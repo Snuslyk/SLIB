@@ -4,13 +4,11 @@ import com.github.Snuslyk.slib.electives.Button;
 import com.github.Snuslyk.slib.electives.ButtonElective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
 import com.github.Snuslyk.slib.factory.Form;
-import com.sun.istack.Nullable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -26,8 +24,7 @@ import javafx.scene.shape.SVGPath;
 import java.net.URL;
 import java.util.*;
 
-import static com.github.Snuslyk.slib.factory.ButtonFactory.createLeftSideButtons;
-import static com.github.Snuslyk.slib.factory.ButtonFactory.createOptionButtons;
+import static com.github.Snuslyk.slib.factory.ButtonFactory.*;
 
 public class Controller implements Initializable {
 
@@ -62,6 +59,7 @@ public class Controller implements Initializable {
     private AnchorPane rightSideContainer;
 
     private final TableView<Map<String, Object>> tableView = new TableView<>();
+    private VBox createRowContainer = new VBox();
 
     private Section selectedSection;
 
@@ -179,7 +177,9 @@ public class Controller implements Initializable {
 
     private void setupButtonColumn(TableView<Map<String, Object>> tableView) {
         TableColumn<Map<String, Object>, Void> buttonColumn = new TableColumn<>();
+        buttonColumn.setResizable(false);
         buttonColumn.setReorderable(false);
+        buttonColumn.setSortable(false);
         buttonColumn.setCellFactory(col -> new ButtonCell());
         tableView.getColumns().add(buttonColumn);
     }
@@ -240,9 +240,13 @@ public class Controller implements Initializable {
                 editButton.setOnMouseClicked(event -> closeEditPopUp());
 
                 // Определение класса для первой и последней кнопки
-                String buttonClass = (i == 0) ? "firstChild" : (i == buttons.size() - 1) ? "secondChild" : "";
-                if (!buttonClass.isEmpty()) {
-                    editButton.getStyleClass().add(buttonClass);
+                if (buttons.size() > 1) {
+                    String buttonClass = (i == 0) ? "firstChild" : (i == buttons.size() - 1) ? "secondChild" : "";
+                    if (!buttonClass.isEmpty()) {
+                        editButton.getStyleClass().add(buttonClass);
+                    }
+                } else {
+                    editButton.getStyleClass().add("singleChild");
                 }
 
                 editPopUp.getChildren().add(editButton);
@@ -275,12 +279,25 @@ public class Controller implements Initializable {
         ObservableList<Map<String, Object>> data = FXCollections.observableArrayList();
         List<Map<String, Object>> rows = new ArrayList<>();
         List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], form.getFilter()[optionIndex]);
+        System.out.println(list);
 
         try {
             for (Object object : list) {
-                Map<String, Object> row = new HashMap<>();
-                for (Form.Column column : columns)
+                Map<String, Object> row = new LinkedHashMap<>();
+
+                // Извлекаем ID из строки объекта
+                String objString = object.toString();
+                String[] parts = objString.split(" ");
+                if (parts.length > 1) {
+                    int id = Integer.parseInt(parts[1]);
+                    row.put("id", id);  // Сначала добавляем ID в row
+                }
+
+                // Добавляем остальные колонки
+                for (Form.Column column : columns) {
                     row.put(column.displayName(), object.getClass().getField(column.key()).get(object));
+                }
+
                 rows.add(row);
             }
         } catch (Exception e) {
@@ -493,8 +510,9 @@ public class Controller implements Initializable {
             setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
             adjustTableColumnsWidth(rightSideContainer.getWidth());
             rightSideContainer.getChildren().add(tableView);
-        } else {
+        } else if (form.getType()[optionIndex] == Form.Type.CREATE) {
             rightSideContainer.getChildren().remove(tableView);
+
         }
     }
 

@@ -257,3 +257,8 @@
     -fx-background-radius: 0 0 8 8;
     -fx-border-radius: 0 0 8 8;
 }
+
+.singleChild {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}

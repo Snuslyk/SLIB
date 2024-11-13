@@ -139,13 +139,38 @@ public class Form {
     }
 
     public static class TableActionButtons{
-        public static final TableActionButton DELETE = new TableActionButton("Удалить",  Color.rgb(239, 48, 48), "M1 3.4H2.22222M2.22222 3.4H12.9997M2.22222 3.4V11.8C2.22222 12.1183 2.35099 12.4235 2.5802 12.6485C2.80941 12.8736 3.12029 13 3.44444 13H10.5552C10.8794 13 11.1903 12.8736 11.4195 12.6485C11.6487 12.4235 11.7775 12.1183 11.7775 11.8V3.4M4.05556 3.4V2.2C4.05556 1.88174 4.18433 1.57652 4.41354 1.35147C4.64275 1.12643 4.95362 1 5.27778 1H8.7219C9.04605 1 9.35693 1.12643 9.58614 1.35147C9.81535 1.57652 9.94412 1.88174 9.94412 2.2V3.4M5.27778 6.4V10M8.7219 6.4V10", (controller, data) -> {
-            Form form = controller.getExternalObjects().get(controller.getSectionIndex()).get(controller.getObjectIndex()).getForm();
-            List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[controller.getOptionIndex()], form.getFilter()[controller.getOptionIndex()]);
-            Object o = list.get(0); // Вместо 0 id в таблицы
-            HibernateUtil.remove(o);
-            controller.modelUpdate();
-        });
+        public static final TableActionButton DELETE = new TableActionButton("Удалить", Color.rgb(239, 48, 48),
+                "M1 3.4H2.22222M2.22222 3.4H12.9997M2.22222 3.4V11.8C2.22222 12.1183 2.35099 12.4235 2.5802 12.6485C2.80941 12.8736 3.12029 13 3.44444 13H10.5552C10.8794 13 11.1903 12.8736 11.4195 12.6485C11.6487 12.4235 11.7775 12.1183 11.7775 11.8V3.4M4.05556 3.4V2.2C4.05556 1.88174 4.18433 1.57652 4.41354 1.35147C4.64275 1.12643 4.95362 1 5.27778 1H8.7219C9.04605 1 9.35693 1.12643 9.58614 1.35147C9.81535 1.57652 9.94412 1.88174 9.94412 2.2V3.4M5.27778 6.4V10M8.7219 6.4V10",
+                (controller, data) -> {
+                    Form form = controller.getExternalObjects().get(controller.getSectionIndex()).get(controller.getObjectIndex()).getForm();
+                    List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[controller.getOptionIndex()], form.getFilter()[controller.getOptionIndex()]);
+                    System.out.println("asdasdasd" + list);
+
+                    // Получаем id из rowData
+                    int id = (int) data.get("id");
+
+                    // Находим объект с совпадающим id в списке list
+                    Object toDelete = list.stream()
+                            .filter(obj -> {
+                                try {
+                                    return obj.getClass().getField("id").get(obj).equals(id);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    return false;
+                                }
+                            })
+                            .findFirst()
+                            .orElse(null);
+
+                    // Удаляем объект, если он найден
+                    if (toDelete != null) {
+                        HibernateUtil.remove(toDelete);
+                        controller.modelUpdate();
+                    } else {
+                        System.out.println("Object with id " + id + " not found in the list.");
+                    }
+                }
+        );
         public static final TableActionButton EDIT = new TableActionButton("Редактировать", Color.WHITE, "M6.36744 2.26512H2.19276C1.87642 2.26512 1.57304 2.39078 1.34935 2.61447C1.12567 2.83816 1 3.14154 1 3.45788V11.8072C1 12.1236 1.12567 12.427 1.34935 12.6506C1.57304 12.8743 1.87642 13 2.19276 13H10.5421C10.8585 13 11.1618 12.8743 11.3855 12.6506C11.6092 12.427 11.7349 12.1236 11.7349 11.8072V7.63256M10.8403 1.37054C11.0776 1.13329 11.3994 1 11.7349 1C12.0704 1 12.3922 1.13329 12.6295 1.37054C12.8667 1.6078 13 1.92959 13 2.26512C13 2.60065 12.8667 2.92244 12.6295 3.15969L6.96382 8.82532L4.57829 9.42171L5.17468 7.03618L10.8403 1.37054Z", (controller, data) -> {
 
         });
