@@ -12,7 +12,7 @@
 
 <AnchorPane fx:id="rootContainer" prefHeight="648.0" prefWidth="1152.0" styleClass="root" stylesheets="@application.css" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <AnchorPane prefHeight="648.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane fx:id="leftSideContainer" prefHeight="648.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <VBox prefHeight="648.0" prefWidth="400.0" spacing="36.0" styleClass="left-side" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>

@@ -4,6 +4,7 @@ import com.github.Snuslyk.slib.electives.Button;
 import com.github.Snuslyk.slib.electives.ButtonElective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
 import com.github.Snuslyk.slib.factory.Form;
+import javafx.animation.PauseTransition;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,11 +16,13 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.*;
@@ -57,6 +60,8 @@ public class Controller implements Initializable {
 
     @FXML
     private AnchorPane rightSideContainer;
+    @FXML
+    private AnchorPane leftSideContainer;
 
     private final TableView<Map<String, Object>> tableView = new TableView<>();
     private VBox createRowContainer = new VBox();
@@ -171,6 +176,38 @@ public class Controller implements Initializable {
                 return new SimpleStringProperty(cellValue != null ? cellValue.toString() : "");
             });
 
+            tableColumn.setCellFactory(col -> new TableCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null) {
+                        setGraphic(null);
+                    } else {
+                        Label label = new Label(item);
+                        label.setTextFill(Color.WHITE);
+
+                        Tooltip tooltip = new Tooltip(item);
+                        label.setTooltip(tooltip);
+
+                        // Обработка события нажатия мыши
+                        label.setOnMouseClicked(event -> {
+                            if (event.getButton() == MouseButton.PRIMARY) { // ЛКМ
+                                // Показать Tooltip при нажатии
+                                tooltip.show(label, event.getScreenX(), event.getScreenY());
+
+                                // Скрыть Tooltip через 1 секунду (1000 мс)
+                                PauseTransition pause = new PauseTransition(Duration.seconds(1));
+                                pause.setOnFinished(e -> tooltip.hide());
+                                pause.play();
+                            }
+                        });
+
+                        setGraphic(label);
+                    }
+                }
+            });
+
             tableView.getColumns().add(tableColumn);
         }
     }
@@ -270,7 +307,10 @@ public class Controller implements Initializable {
         PseudoClass filled = PseudoClass.getPseudoClass("filled");
         tableView.setRowFactory(tv -> {
             TableRow<Map<String, Object>> row = new TableRow<>();
-            row.itemProperty().addListener((obs, oldItem, newItem) -> row.pseudoClassStateChanged(filled, newItem != null));
+            row.itemProperty().addListener((obs, oldItem, newItem) -> {
+                row.pseudoClassStateChanged(filled, newItem != null);
+            });
+
             return row;
         });
     }
@@ -380,31 +420,13 @@ public class Controller implements Initializable {
 
     // МЕТОД СОЗДАНИЯ КНОПКИ ОПЦИЙ
     private void addOptionButton(String text, boolean isSelected) {
-        // Создаем новый VBox для каждой опции вместо использования копирования optionExample
-        VBox optionCopy = new VBox();
-        optionCopy.setSpacing(8);
+        VBox Box = createUnderlinedButtons(text, isSelected, optionToggleGroup, optionsContainer, 20, 4, 9);
 
-        RadioButton radioButton = createOptionButtons(optionToggleGroup, text, isSelected);
+        RadioButton radioButton = (RadioButton) Box.getChildren().get(0);
 
-        if (isSelected) {
-            previousSelectedOption = radioButton;
-        }
-
-        HBox substractBox = new HBox();
-        substractBox.setPrefHeight(4);
-        VBox.setMargin(substractBox, new Insets(0, 0, 0, 9));
-        substractBox.getStyleClass().add("substract");
-
-        if (!isSelected) {
-            substractBox.setVisible(false);
-        }
-
-        radioButton.setOnAction(this::handleOptionSelection);
-
-        optionCopy.getChildren().addAll(radioButton, substractBox);
-
-        // Добавляем в контейнер опций
-        optionsContainer.getChildren().add(optionCopy);
+        radioButton.setOnAction(event -> {
+            modelUpdate();
+        });
     }
 
     // Устанавливает для combo-box название выбраной секции
@@ -430,31 +452,6 @@ public class Controller implements Initializable {
         }
 
         modelUpdate();
-    }
-
-    // Устанавливает substract для выбранной опции
-    private void handleOptionSelection(ActionEvent event) {
-        RadioButton selectedButton = (RadioButton) optionToggleGroup.getSelectedToggle();
-
-        if (selectedButton == null) return;
-
-        // Скрываем substract у предыдущей выбранной кнопки, если она существует
-        if (previousSelectedOption != null && previousSelectedOption != selectedButton) {
-            VBox previousContainer = (VBox) previousSelectedOption.getParent();
-            HBox previousSubstract = (HBox) previousContainer.getChildren().get(1);
-            previousSubstract.setVisible(false);
-        }
-
-        // Делаем substract текущей кнопки видимым
-        VBox container = (VBox) selectedButton.getParent();
-        HBox substract = (HBox) container.getChildren().get(1);
-        substract.setVisible(true);
-
-        // Обновляем previousSelectedOption на текущую выбранную кнопку
-        previousSelectedOption = selectedButton;
-
-        modelUpdate();
-
     }
 
     private void handleObjectSelection(ActionEvent event){
