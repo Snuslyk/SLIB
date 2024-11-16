@@ -134,6 +134,14 @@ public class ButtonFactory {
             }
         });
 
+        button.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+            if (isNowSelected) {
+                svgIcon.setContent("M1, 0L7, 6L13, 0");
+            } else {
+                svgIcon.setContent("M1, 7L7, 0.999999L13, 7");
+            }
+        });
+
         suggestionsPopup.showingProperty().addListener((obs, wasShowing, isNowShowing) -> {
             button.setSelected(isNowShowing);
         });

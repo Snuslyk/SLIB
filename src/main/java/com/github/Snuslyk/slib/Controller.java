@@ -494,6 +494,7 @@ public class Controller implements Initializable {
 
         rightSideContainer.getChildren().remove(tableView);
         rightSideContainer.getChildren().remove(createRowContainer);
+        createRowContainer.getChildren().clear();
 
         if (form.getType()[optionIndex] == Form.Type.TABLE) {
             tableView.setPrefWidth(200);
