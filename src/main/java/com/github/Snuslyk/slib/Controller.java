@@ -3,6 +3,7 @@ package com.github.Snuslyk.slib;
 import com.github.Snuslyk.slib.electives.Button;
 import com.github.Snuslyk.slib.electives.ButtonElective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
+import com.github.Snuslyk.slib.factory.ButtonFactory;
 import com.github.Snuslyk.slib.factory.Form;
 import javafx.animation.PauseTransition;
 import javafx.beans.property.SimpleStringProperty;
@@ -16,6 +17,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -519,8 +521,26 @@ public class Controller implements Initializable {
             AnchorPane.setRightAnchor(createRowContainer, 360.0);
             createRowContainer.setSpacing(20);
 
-            VBox textField = createBasicTextField(createRowContainer, "Что-то...", "Комментарий", 20, 20, 20, 8, 40, null);
-            VBox choosingTextField = createChoosingTextField(createRowContainer, "Что-то...", "Мероприятия", 20, 20, 20, 8, 40, 99, 719, rootContainer, null);
+            BasicTextField textField = new BasicTextField(createRowContainer, "Что-то...", "Комментарий", 20, 20, 20, 8, 40, null);
+            textField.getTextField().addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+                validateTextField(textField, "Ну всё, пизда", null);
+            });
+
+            ObservableList<String> items = FXCollections.observableArrayList(
+                    "Apple", "Banana", "Cherry", "Date", "Elderberry", "Fig", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape"
+            );
+            ChoosingTextField choosingTextField = new ChoosingTextField(createRowContainer, "Что-то...", "Мероприятия", 20, 20, 20, 8, 40, 99, 719, rootContainer, items, null);
+            choosingTextField.getTextField().addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+                validateTextField(choosingTextField, "Ну всё, пизда", items);
+            });
+            choosingTextField.getTextField().textProperty().addListener((observable, oldValue, newValue) -> {
+                validateChoosingTextField(choosingTextField, "Текст некорректный", items, newValue);
+            });
+
+            BasicTextField textFieldD = new BasicTextField(createRowContainer, "Что-то...", "Комментарий", 20, 20, 20, 8, 40, null);
+            textFieldD.getTextField().addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+                validateTextField(textFieldD, "Это пиздос", null);
+            });
 
             rightSideContainer.getChildren().add(createRowContainer);
         }

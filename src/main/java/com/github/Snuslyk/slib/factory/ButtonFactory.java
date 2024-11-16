@@ -18,6 +18,9 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.stage.Popup;
 
+import java.util.List;
+import java.util.Objects;
+
 public class ButtonFactory {
 
     // ОБЩАЯ ФОРМА КНОПОК
@@ -66,143 +69,317 @@ public class ButtonFactory {
         return optionCopy;
     }
 
-    public static VBox createBasicTextField(VBox container, String text, String descText, int descFontSize, int mainFontSize, int Hmargin, int Vmargin, int height, @Nullable String textFieldText) {
-        VBox field = new VBox();
-        field.setSpacing(Vmargin);
+    public static class BasicTextField implements TextFieldWrapper {
 
-        Label descriptionText = new Label(descText);
-        descriptionTextFieldOptions(descriptionText, descFontSize, Hmargin);
+        private final VBox field;
+        private final TextField textField;
+        private String error = null;
+        private final Label errorLabel = new Label();
+        private Boolean isError = false;
+        private final int descFontSize;
+        private final int Hmargin;
 
-        TextField textField = new TextField();
-        textFieldOptions(text, mainFontSize, Hmargin, height, textFieldText, textField);
+        public BasicTextField(VBox container, String text, String descText, int descFontSize, int mainFontSize, int Hmargin, int Vmargin, int height, @Nullable String textFieldText) {
+            this.descFontSize = descFontSize;
+            this.Hmargin = Hmargin;
+            field = new VBox();
+            field.setSpacing(Vmargin);
 
-        field.getChildren().addAll(descriptionText, textField);
+            Label descriptionLabel = new Label(descText);
+            descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
 
-        container.getChildren().add(field);
+            textField = new TextField();
+            textFieldOptions(text, mainFontSize, Hmargin, height, textFieldText, textField);
 
-        return field;
-    }
+            field.getChildren().addAll(descriptionLabel, textField);
 
-    public static VBox createChoosingTextField(VBox container, String text, String descText, int descFontSize, int mainFontSize, int Hmargin, int Vmargin, int height, int popUpHeight, int popUpWidth, Pane outOfBoundsContainer, @Nullable String textFieldText) {
-        VBox field = new VBox();
-        field.setSpacing(Vmargin);
-
-        Label descriptionText = new Label(descText);
-        descriptionTextFieldOptions(descriptionText, descFontSize, Hmargin);
-
-        TextField textField = new TextField();
-        textFieldOptions(text, mainFontSize, Hmargin, height, textFieldText, textField);
-
-        textField.setMinWidth(popUpWidth + 1);
-
-        ToggleButton button = new ToggleButton();
-        SVGPath svgIcon = new SVGPath();
-        svgIcon.setContent("M1, 7L7, 0.999999L13, 7");
-        svgIcon.setFill(Color.TRANSPARENT);
-        svgIcon.setStroke(Color.web("#3D3D3D"));
-        svgIcon.setStrokeWidth(1.0);
-        button.setGraphic(svgIcon);
-
-        // Создаем контейнер HBox и добавляем в него TextField и кнопку
-        HBox buttonContainer = new HBox(-41);
-        buttonContainer.getChildren().addAll(textField, button);
-        buttonContainer.setAlignment(Pos.CENTER_LEFT);
-
-        // Устанавливаем стиль для корректного отображения
-        buttonContainer.getStyleClass().add("text-field-with-button");
-
-
-        ObservableList<String> items = FXCollections.observableArrayList(
-                "Apple", "Banana", "Cherry", "Date", "Elderberry", "Fig", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape"
-        );
-
-        Popup suggestionsPopup = new Popup();
-        suggestionsPopup.setAutoHide(true);
-
-        ListView<String> listView = new ListView<>();
-        listView.setMaxHeight(popUpHeight); // Ограничиваем высоту списка
-        listView.setPrefWidth(popUpWidth); // Задаем ширину списка
-        listView.setItems(items);
-
-        suggestionsPopup.getContent().add(listView);
-
-        button.setOnAction(event -> {
-            if (button.isSelected()) {
-                popupShow(height, textField, suggestionsPopup);
-            } else {
-                suggestionsPopup.hide();
-            }
-        });
-
-        button.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
-            if (isNowSelected) {
-                svgIcon.setContent("M1, 0L7, 6L13, 0");
-            } else {
-                svgIcon.setContent("M1, 7L7, 0.999999L13, 7");
-            }
-        });
-
-        suggestionsPopup.showingProperty().addListener((obs, wasShowing, isNowShowing) -> {
-            button.setSelected(isNowShowing);
-        });
-
-        outOfBoundsContainer.setOnMouseClicked(mouseEvent -> {
-            button.setSelected(false);
-            suggestionsPopup.hide();
-        });
-
-        textField.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-            String input = textField.getText();
-            if (input.isEmpty()) {
-                listView.setItems(items);
-                return;
-            }
-
-            // Фильтрация вариантов
-            ObservableList<String> filteredItems = items.filtered(item ->
-                    item.toLowerCase().contains(input.toLowerCase())
-            );
-
-            if (filteredItems.isEmpty()) {
-                suggestionsPopup.hide();
-            } else {
-                listView.setItems(filteredItems);
-
-                popupShow(height, textField, suggestionsPopup);
-            }
-        });
-
-        textField.setOnMouseClicked(event -> {
-            if (textField.getText().isEmpty()) {
-                listView.setItems(items);
-            }
-
-            popupShow(height, textField, suggestionsPopup);
-        });
-
-        listView.setOnMouseClicked(event -> {
-            String selectedItem = listView.getSelectionModel().getSelectedItem();
-            if (selectedItem != null) {
-                textField.setText(selectedItem);
-                suggestionsPopup.hide();
-            }
-        });
-
-        field.getChildren().addAll(descriptionText, buttonContainer);
-        container.getChildren().add(field);
-
-        return field;
-    }
-
-    private static void popupShow(int height, TextField textField, Popup suggestionsPopup) {
-        if (!suggestionsPopup.isShowing()) {
-            // Вычисляем абсолютные координаты TextField
-            Bounds boundsInScene = textField.localToScene(textField.getBoundsInLocal());
-            double x = boundsInScene.getMinX() + textField.getScene().getWindow().getX() + 8;
-            double y = boundsInScene.getMaxY() + textField.getScene().getWindow().getY() + height - 3;
-
-            suggestionsPopup.show(textField, x, y);
+            container.getChildren().add(field);
         }
+
+        public Boolean getError() {
+            return isError;
+        }
+
+        public String getErrorText() {
+            return error;
+        }
+
+        public TextField getTextField() {
+            return textField;
+        }
+
+        public String getTextFieldText() {
+            return textField.getText();
+        }
+
+        public void setError(String error) {
+            this.error = error;
+
+            if (error != null && !error.isEmpty()) {
+                isError = true;
+                errorLabel.setText(error);
+                errorLabel.setTextFill(Color.rgb(239, 48, 48));
+                descriptionTextFieldOptions(errorLabel, descFontSize, Hmargin);
+                if (!field.getChildren().contains(errorLabel)) {
+                    field.getChildren().add(errorLabel);
+                }
+            } else {
+                isError = false;
+                field.getChildren().remove(errorLabel);
+            }
+        }
+
+        public void clearError() {
+            setError(null);
+        }
+
+        public VBox getContainer() {
+            return field;
+        }
+
+        public String getTextFieldValue() {
+            return textField.getText();
+        }
+
+        public void setTextFieldValue(String value) {
+            textField.setText(value);
+        }
+    }
+
+    public static class ChoosingTextField implements TextFieldWrapper {
+        private final VBox field;
+        private final TextField textField;
+        private final ToggleButton button;
+        private final Popup suggestionsPopup;
+        private final ListView<String> listView;
+        private final ObservableList<String> items;
+        private String error = null;
+        private final Label errorLabel = new Label();
+        private boolean isError = false;
+        private final int descFontSize;
+        private final int Hmargin;
+
+        public ChoosingTextField(VBox container, String text, String descText, int descFontSize, int mainFontSize,
+                                 int Hmargin, int Vmargin, int height, int popUpHeight, int popUpWidth,
+                                 Pane outOfBoundsContainer, ObservableList<String> items, @Nullable String textFieldText) {
+
+            this.descFontSize = descFontSize;
+            this.Hmargin = Hmargin;
+            this.items = items;
+            field = new VBox();
+            field.setSpacing(Vmargin);
+
+            // Description label
+            Label descriptionText = new Label(descText);
+            descriptionTextFieldOptions(descriptionText, descFontSize, Hmargin);
+
+            // TextField
+            textField = new TextField();
+            textFieldOptions(text, mainFontSize, Hmargin, height, textFieldText, textField);
+            textField.setMinWidth(popUpWidth + 1);
+
+            // Button and SVG Icon
+            button = new ToggleButton();
+            SVGPath svgIcon = new SVGPath();
+            svgIcon.setContent("M1, 7L7, 0.999999L13, 7");
+            svgIcon.setFill(Color.TRANSPARENT);
+            svgIcon.setStroke(Color.web("#3D3D3D"));
+            svgIcon.setStrokeWidth(1.0);
+            button.setGraphic(svgIcon);
+
+            // Button container
+            HBox buttonContainer = new HBox(-41);
+            buttonContainer.getChildren().addAll(textField, button);
+            buttonContainer.setAlignment(Pos.CENTER_LEFT);
+            buttonContainer.getStyleClass().add("text-field-with-button");
+
+            // Popup
+            suggestionsPopup = new Popup();
+            suggestionsPopup.setAutoHide(true);
+            listView = new ListView<>();
+            listView.setMaxHeight(popUpHeight);
+            listView.setPrefWidth(popUpWidth);
+            listView.setItems(items);
+            suggestionsPopup.getContent().add(listView);
+
+            // Button action listener
+            button.setOnAction(event -> {
+                if (button.isSelected()) {
+                    popupShow(height, textField, suggestionsPopup);
+                } else {
+                    suggestionsPopup.hide();
+                }
+            });
+
+            // Toggle button state change listener
+            button.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+                if (isNowSelected) {
+                    svgIcon.setContent("M1, 0L7, 6L13, 0");
+                } else {
+                    svgIcon.setContent("M1, 7L7, 0.999999L13, 7");
+                }
+            });
+
+            // Popup visibility listener
+            suggestionsPopup.showingProperty().addListener((obs, wasShowing, isNowShowing) -> {
+                button.setSelected(isNowShowing);
+            });
+
+            // Out of bounds click listener
+            outOfBoundsContainer.setOnMouseClicked(mouseEvent -> {
+                button.setSelected(false);
+                suggestionsPopup.hide();
+            });
+
+            // Key released filter
+            textField.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+                String input = textField.getText();
+                if (input.isEmpty()) {
+                    listView.setItems(items);
+                    return;
+                }
+
+                ObservableList<String> filteredItems = items.filtered(item -> item.toLowerCase().contains(input.toLowerCase()));
+
+                if (filteredItems.isEmpty()) {
+                    suggestionsPopup.hide();
+                } else {
+                    listView.setItems(filteredItems);
+                    popupShow(height, textField, suggestionsPopup);
+                }
+            });
+
+            // TextField click listener
+            textField.setOnMouseClicked(event -> {
+                if (textField.getText().isEmpty()) {
+                    listView.setItems(items);
+                }
+                popupShow(height, textField, suggestionsPopup);
+            });
+
+            // ListView click listener
+            listView.setOnMouseClicked(event -> {
+                String selectedItem = listView.getSelectionModel().getSelectedItem();
+                if (selectedItem != null) {
+                    textField.setText(selectedItem);
+                    suggestionsPopup.hide();
+                }
+            });
+
+            field.getChildren().addAll(descriptionText, buttonContainer);
+            container.getChildren().add(field);
+        }
+
+        public Boolean getError() {
+            return isError;
+        }
+
+        public String getErrorText() {
+            return error;
+        }
+
+        public void setError(String error) {
+            this.error = error;
+
+            if (error != null && !error.isEmpty()) {
+                isError = true;
+                errorLabel.setText(error);
+                errorLabel.setTextFill(Color.rgb(239, 48, 48));
+                descriptionTextFieldOptions(errorLabel, descFontSize, Hmargin);
+                if (!field.getChildren().contains(errorLabel)) {
+                    field.getChildren().add(errorLabel);
+                }
+            } else {
+                isError = false;
+                field.getChildren().remove(errorLabel);
+            }
+        }
+
+        public void clearError() {
+            setError(null);
+        }
+
+        public TextField getTextField() {
+            return textField;
+        }
+
+        private void popupShow(int height, TextField textField, Popup suggestionsPopup) {
+            if (!suggestionsPopup.isShowing()) {
+                Bounds boundsInScene = textField.localToScene(textField.getBoundsInLocal());
+                double x = boundsInScene.getMinX() + textField.getScene().getWindow().getX() + 8;
+                double y = boundsInScene.getMaxY() + textField.getScene().getWindow().getY() + height - 3;
+                suggestionsPopup.show(textField, x, y);
+            }
+        }
+
+        // Метод для получения текста из TextField
+        public String getTextFieldText() {
+            return textField.getText();
+        }
+
+        // Метод для установки текста в TextField
+        public void setTextFieldText(String text) {
+            textField.setText(text);
+        }
+
+        // Метод для получения списка элементов
+        public ObservableList<String> getItems() {
+            return items;
+        }
+
+        // Метод для изменения элементов в списке
+        public void setItems(ObservableList<String> newItems) {
+            items.setAll(newItems);
+            listView.setItems(items);
+        }
+    }
+
+    public static void validateChoosingTextField(TextFieldWrapper textFieldWrapper, String errorMessage, List<String> validItems, String newValue) {
+        boolean isValid = false;
+
+        for (String item : validItems) {
+            if (Objects.equals(newValue, item)) {
+                isValid = true;
+                break;
+            }
+        }
+
+        if (isValid) {
+            textFieldWrapper.clearError();
+        } else {
+            textFieldWrapper.setError(errorMessage);
+        }
+    }
+
+    // Универсальный метод для проверки текста
+    public static void validateTextField(TextFieldWrapper textFieldWrapper, String errorMessage, @Nullable List<String> validItems) {
+        String input = textFieldWrapper.getTextFieldText();
+
+        // Если текст пустой, устанавливаем ошибку
+        if (input.isEmpty()) {
+            textFieldWrapper.setError(errorMessage);
+            return;
+        } else if (validItems == null) {
+            textFieldWrapper.clearError();
+        }
+
+        if (validItems != null) {
+            // Если текст не соответствует ни одному из допустимых значений
+            if (!validItems.contains(input)) {
+                textFieldWrapper.setError("Текст некорректный");
+            } else {
+                // Если текст валиден, очищаем ошибку
+                textFieldWrapper.clearError();
+            }
+        }
+    }
+
+
+    // Интерфейс-обёртка для текстовых полей
+    public interface TextFieldWrapper {
+        String getTextFieldText();
+        void setError(String message);
+        void clearError();
     }
 
     private static void textFieldOptions(String text, int mainFontSize, int Hmargin, int height, @Nullable String textFieldText, TextField textField) {
