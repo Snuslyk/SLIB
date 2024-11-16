@@ -542,6 +542,13 @@ public class Controller implements Initializable {
                 validateTextField(textFieldD, "Это пиздос", null);
             });
 
+            javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
+            createRowContainer.getChildren().add(create);
+
+            create.setOnAction(event -> {
+                
+            });
+
             rightSideContainer.getChildren().add(createRowContainer);
         }
     }
