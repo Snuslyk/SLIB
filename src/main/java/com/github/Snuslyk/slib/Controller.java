@@ -420,7 +420,7 @@ public class Controller implements Initializable {
 
     // МЕТОД СОЗДАНИЯ КНОПКИ ОПЦИЙ
     private void addOptionButton(String text, boolean isSelected) {
-        VBox Box = createUnderlinedButtons(text, isSelected, optionToggleGroup, optionsContainer, 20, 4, 9);
+        VBox Box = createUnderlinedButtons(optionsContainer, text, isSelected, optionToggleGroup, 20, 4, 9);
 
         RadioButton radioButton = (RadioButton) Box.getChildren().get(0);
 
@@ -493,6 +493,7 @@ public class Controller implements Initializable {
                 .getForm();
 
         rightSideContainer.getChildren().remove(tableView);
+        rightSideContainer.getChildren().remove(createRowContainer);
 
         if (form.getType()[optionIndex] == Form.Type.TABLE) {
             tableView.setPrefWidth(200);
@@ -506,10 +507,21 @@ public class Controller implements Initializable {
 
             setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
             adjustTableColumnsWidth(rightSideContainer.getWidth());
+
             rightSideContainer.getChildren().add(tableView);
         } else if (form.getType()[optionIndex] == Form.Type.CREATE) {
-            rightSideContainer.getChildren().remove(tableView);
+            createRowContainer.setPrefWidth(200);
+            createRowContainer.setPrefHeight(297);
+            AnchorPane.setTopAnchor(createRowContainer, 172.0);
+            AnchorPane.setBottomAnchor(createRowContainer, 40.0);
+            AnchorPane.setLeftAnchor(createRowContainer, 360.0);
+            AnchorPane.setRightAnchor(createRowContainer, 360.0);
+            createRowContainer.setSpacing(20);
 
+            VBox textField = createBasicTextField(createRowContainer, "Что-то...", "Комментарий", 20, 20, 20, 8, 40, null);
+            VBox choosingTextField = createChoosingTextField(createRowContainer, "Что-то...", "Мероприятия", 20, 20, 20, 8, 40, 99, 719, rootContainer, null);
+
+            rightSideContainer.getChildren().add(createRowContainer);
         }
     }
 
