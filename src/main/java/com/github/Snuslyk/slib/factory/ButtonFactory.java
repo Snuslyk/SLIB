@@ -315,7 +315,7 @@ public class ButtonFactory {
                 setTextFieldText(LocalDate.of(year, month, day));
             }
 
-            field.getChildren().add(datePicker);
+            field.getChildren().addAll(descriptionLabel, datePicker);
             container.getChildren().add(field);
         }
 
