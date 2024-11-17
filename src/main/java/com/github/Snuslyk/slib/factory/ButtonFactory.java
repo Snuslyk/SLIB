@@ -74,11 +74,11 @@ public class ButtonFactory {
         private Boolean isError = false;
 
         // Параметры дизайна с значениями по умолчанию
-        private int descFontSize = 20;
-        private int mainFontSize = 20;
-        private int Hmargin = 20;
-        private int Vmargin = 8;
-        private int height = 40;
+        public int descFontSize = 20;
+        public int mainFontSize = 20;
+        public int Hmargin = 20;
+        public int Vmargin = 8;
+        public int height = 40;
 
         private final String errorSample;
 
@@ -98,47 +98,6 @@ public class ButtonFactory {
             // Добавление элементов в контейнер
             field.getChildren().addAll(descriptionLabel, textField);
             container.getChildren().add(field);
-        }
-
-        // Методы доступа к параметрам дизайна
-        public int getDescFontSize() {
-            return descFontSize;
-        }
-
-        public void setDescFontSize(int descFontSize) {
-            this.descFontSize = descFontSize;
-        }
-
-        public int getMainFontSize() {
-            return mainFontSize;
-        }
-
-        public void setMainFontSize(int mainFontSize) {
-            this.mainFontSize = mainFontSize;
-        }
-
-        public int getHmargin() {
-            return Hmargin;
-        }
-
-        public void setHmargin(int Hmargin) {
-            this.Hmargin = Hmargin;
-        }
-
-        public int getVmargin() {
-            return Vmargin;
-        }
-
-        public void setVmargin(int Vmargin) {
-            this.Vmargin = Vmargin;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public void setHeight(int height) {
-            this.height = height;
         }
 
         // Методы для работы с ошибками
@@ -184,13 +143,13 @@ public class ButtonFactory {
         private boolean isError = false;
 
         // Параметры дизайна с значениями по умолчанию
-        private int descFontSize = 20;
-        private int mainFontSize = 20;
-        private int Hmargin = 20;
-        private int Vmargin = 8;
-        private int height = 40;
-        private int popUpHeight = 99;
-        private int popUpWidth = 719;
+        public int descFontSize = 20;
+        public int mainFontSize = 20;
+        public int Hmargin = 20;
+        public int Vmargin = 8;
+        public int height = 40;
+        public int popUpHeight = 99;
+        public int popUpWidth = 719;
 
         public ChoosingTextField(VBox container, String text, String descText, String errorSample, String errorSampleD,
                                  Pane outOfBoundsContainer, ObservableList<String> items, @Nullable String textFieldText) {
@@ -325,63 +284,6 @@ public class ButtonFactory {
                 double y = boundsInScene.getMaxY() + textField.getScene().getWindow().getY() + height - 3;
                 suggestionsPopup.show(textField, x, y);
             }
-        }
-
-        // Методы доступа к параметрам дизайна
-        public int getDescFontSize() {
-            return descFontSize;
-        }
-
-        public void setDescFontSize(int descFontSize) {
-            this.descFontSize = descFontSize;
-        }
-
-        public int getMainFontSize() {
-            return mainFontSize;
-        }
-
-        public void setMainFontSize(int mainFontSize) {
-            this.mainFontSize = mainFontSize;
-        }
-
-        public int getHmargin() {
-            return Hmargin;
-        }
-
-        public void setHmargin(int Hmargin) {
-            this.Hmargin = Hmargin;
-        }
-
-        public int getVmargin() {
-            return Vmargin;
-        }
-
-        public void setVmargin(int Vmargin) {
-            this.Vmargin = Vmargin;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public void setHeight(int height) {
-            this.height = height;
-        }
-
-        public int getPopUpHeight() {
-            return popUpHeight;
-        }
-
-        public void setPopUpHeight(int popUpHeight) {
-            this.popUpHeight = popUpHeight;
-        }
-
-        public int getPopUpWidth() {
-            return popUpWidth;
-        }
-
-        public void setPopUpWidth(int popUpWidth) {
-            this.popUpWidth = popUpWidth;
         }
 
         // Метод для получения текста из TextField
