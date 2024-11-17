@@ -521,32 +521,19 @@ public class Controller implements Initializable {
             AnchorPane.setRightAnchor(createRowContainer, 360.0);
             createRowContainer.setSpacing(20);
 
-            BasicTextField textField = new BasicTextField(createRowContainer, "Что-то...", "Комментарий", 20, 20, 20, 8, 40, null);
-            textField.getTextField().addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-                validateTextField(textField, "Ну всё, пизда", null);
-            });
-
             ObservableList<String> items = FXCollections.observableArrayList(
                     "Apple", "Banana", "Cherry", "Date", "Elderberry", "Fig", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape"
             );
-            ChoosingTextField choosingTextField = new ChoosingTextField(createRowContainer, "Что-то...", "Мероприятия", 20, 20, 20, 8, 40, 99, 719, rootContainer, items, null);
-            choosingTextField.getTextField().addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-                validateTextField(choosingTextField, "Ну всё, пизда", items);
-            });
-            choosingTextField.getTextField().textProperty().addListener((observable, oldValue, newValue) -> {
-                validateChoosingTextField(choosingTextField, "Текст некорректный", items, newValue);
-            });
 
-            BasicTextField textFieldD = new BasicTextField(createRowContainer, "Что-то...", "Комментарий", 20, 20, 20, 8, 40, null);
-            textFieldD.getTextField().addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-                validateTextField(textFieldD, "Это пиздос", null);
-            });
+            BasicTextField textField = new BasicTextField(createRowContainer, "Что-то...", "Комментарий", "Ты чо, долбаёб?", 20, 20, 20, 8, 40, null);
+            ChoosingTextField choosingTextField = new ChoosingTextField(createRowContainer, "Что-то...", "Мероприятия", "У тебя нихуя нет, еблан", "Ты чо пишешь, еблан?", 20, 20, 20, 8, 40, 99, 719, rootContainer, items, null);
+            BasicTextField textFieldD = new BasicTextField(createRowContainer, "Что-то...", "Комментарий", "Ну всё, пизда", 20, 20, 20, 8, 40, null);
 
             javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
             createRowContainer.getChildren().add(create);
 
             create.setOnAction(event -> {
-                
+                validateChecker(textField, choosingTextField, textFieldD);
             });
 
             rightSideContainer.getChildren().add(createRowContainer);

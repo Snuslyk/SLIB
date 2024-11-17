@@ -21,6 +21,8 @@ import javafx.stage.Popup;
 import java.util.List;
 import java.util.Objects;
 
+import static com.github.Snuslyk.slib.factory.ButtonFactory.validateTextField;
+
 public class ButtonFactory {
 
     // ОБЩАЯ ФОРМА КНОПОК
@@ -78,8 +80,10 @@ public class ButtonFactory {
         private Boolean isError = false;
         private final int descFontSize;
         private final int Hmargin;
+        private final String errorSample;
 
-        public BasicTextField(VBox container, String text, String descText, int descFontSize, int mainFontSize, int Hmargin, int Vmargin, int height, @Nullable String textFieldText) {
+        public BasicTextField(VBox container, String text, String descText, String errorSample, int descFontSize, int mainFontSize, int Hmargin, int Vmargin, int height, @Nullable String textFieldText) {
+            this.errorSample = errorSample;
             this.descFontSize = descFontSize;
             this.Hmargin = Hmargin;
             field = new VBox();
@@ -154,15 +158,19 @@ public class ButtonFactory {
         private final ListView<String> listView;
         private final ObservableList<String> items;
         private String error = null;
+        private final String errorSample;
+        private final String errorSampleD;
         private final Label errorLabel = new Label();
         private boolean isError = false;
         private final int descFontSize;
         private final int Hmargin;
 
-        public ChoosingTextField(VBox container, String text, String descText, int descFontSize, int mainFontSize,
-                                 int Hmargin, int Vmargin, int height, int popUpHeight, int popUpWidth,
+        public ChoosingTextField(VBox container, String text, String descText, String errorSample, String errorSampleD,
+                                 int descFontSize, int mainFontSize, int Hmargin, int Vmargin, int height, int popUpHeight, int popUpWidth,
                                  Pane outOfBoundsContainer, ObservableList<String> items, @Nullable String textFieldText) {
 
+            this.errorSample = errorSample;
+            this.errorSampleD = errorSampleD;
             this.descFontSize = descFontSize;
             this.Hmargin = Hmargin;
             this.items = items;
@@ -278,7 +286,7 @@ public class ButtonFactory {
             return error;
         }
 
-        public void setError(String error) {
+        public void setError(@Nullable String error) {
             this.error = error;
 
             if (error != null && !error.isEmpty()) {
@@ -334,11 +342,20 @@ public class ButtonFactory {
         }
     }
 
-    public static void validateChoosingTextField(TextFieldWrapper textFieldWrapper, String errorMessage, List<String> validItems, String newValue) {
+    public static void validateChecker(TextFieldWrapper... textFieldWrappers) {
+        for (TextFieldWrapper textFieldWrapper : textFieldWrappers)
+            if (textFieldWrapper instanceof BasicTextField) {
+                validateTextField(textFieldWrapper, ((BasicTextField) textFieldWrapper).errorSample, null, null);
+            } else if (textFieldWrapper instanceof ChoosingTextField) {
+                validateTextField(textFieldWrapper, ((ChoosingTextField) textFieldWrapper).errorSample, ((ChoosingTextField) textFieldWrapper).errorSampleD, ((ChoosingTextField) textFieldWrapper).getItems());
+            }
+    }
+
+    public static void validateChoosingTextField(TextFieldWrapper textFieldWrapper, @Nullable String errorMessage, List<String> validItems) {
         boolean isValid = false;
 
         for (String item : validItems) {
-            if (Objects.equals(newValue, item)) {
+            if (Objects.equals(textFieldWrapper.getTextFieldText(), item)) {
                 isValid = true;
                 break;
             }
@@ -352,34 +369,37 @@ public class ButtonFactory {
     }
 
     // Универсальный метод для проверки текста
-    public static void validateTextField(TextFieldWrapper textFieldWrapper, String errorMessage, @Nullable List<String> validItems) {
+    public static void validateTextField(TextFieldWrapper textFieldWrapper, @Nullable String errorMessage, @Nullable String secondErrorMessage, @Nullable List<String> validItems) {
         String input = textFieldWrapper.getTextFieldText();
 
         // Если текст пустой, устанавливаем ошибку
         if (input.isEmpty()) {
             textFieldWrapper.setError(errorMessage);
             return;
-        } else if (validItems == null) {
-            textFieldWrapper.clearError();
         }
 
-        if (validItems != null) {
-            // Если текст не соответствует ни одному из допустимых значений
-            if (!validItems.contains(input)) {
-                textFieldWrapper.setError("Текст некорректный");
-            } else {
-                // Если текст валиден, очищаем ошибку
-                textFieldWrapper.clearError();
-            }
+        // Если список валидных элементов не задан, очищаем ошибку
+        if (validItems == null) {
+            textFieldWrapper.clearError();
+            return;
+        }
+
+        // Проверяем, соответствует ли введенный текст допустимым значениям
+        if (!validItems.contains(input)) {
+            textFieldWrapper.setError(secondErrorMessage);
+        } else {
+            textFieldWrapper.clearError();
         }
     }
 
 
     // Интерфейс-обёртка для текстовых полей
     public interface TextFieldWrapper {
+        TextField getTextField();
         String getTextFieldText();
         void setError(String message);
         void clearError();
+        String getErrorText();
     }
 
     private static void textFieldOptions(String text, int mainFontSize, int Hmargin, int height, @Nullable String textFieldText, TextField textField) {
