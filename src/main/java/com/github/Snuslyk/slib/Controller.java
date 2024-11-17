@@ -539,13 +539,10 @@ public class Controller implements Initializable {
             );
 
             // это вот так много кастомизации навалил, не знаю, может в рамках нашей штуки столько и не надо, завтра наверное почищу
-            BasicTextField textField = new BasicTextField(createRowContainer, "Что-то...", "Комментарий", "Ты чо, долбаёб?",
-                    20, 20, 20, 8, 40, null);
-            ChoosingTextField choosingTextField = new ChoosingTextField(createRowContainer, "Что-то...", "Мероприятия", "У тебя нихуя нет, еблан", "Ты чо пишешь, еблан?",
-                    20, 20, 20, 8, 40,
-                    99, 719, rootContainer, items, null);
-            BasicTextField textFieldD = new BasicTextField(createRowContainer, "Что-то...", "Комментарий", "Ну всё, пизда",
-                    20, 20, 20, 8, 40, null);
+            BasicTextField textField = new BasicTextField(createRowContainer, "Что-то...", "Комментарий", "Ты чо, долбаёб?", null);
+            ChoosingTextField choosingTextField = new ChoosingTextField(createRowContainer, "Что-то...", "Мероприятия",
+                    "У тебя нихуя нет, еблан", "Ты чо пишешь, еблан?", rootContainer, items, null);
+            BasicTextField textFieldD = new BasicTextField(createRowContainer, "Что-то...", "Комментарий", "Ну всё, пизда", null);
 
             // кнопка, для сохранения результатов
             javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");

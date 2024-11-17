@@ -72,34 +72,78 @@ public class ButtonFactory {
         private final TextField textField;
         private final Label errorLabel = new Label();
         private Boolean isError = false;
-        private final int descFontSize;
-        private final int Hmargin;
+
+        // Параметры дизайна с значениями по умолчанию
+        private int descFontSize = 20;
+        private int mainFontSize = 20;
+        private int Hmargin = 20;
+        private int Vmargin = 8;
+        private int height = 40;
+
         private final String errorSample;
 
-        public BasicTextField(VBox container, String text, String descText, String errorSample, int descFontSize, int mainFontSize, int Hmargin, int Vmargin, int height, @Nullable String textFieldText) {
+        public BasicTextField(VBox container, String text, String descText, String errorSample, @Nullable String textFieldText) {
             this.errorSample = errorSample;
-            this.descFontSize = descFontSize;
-            this.Hmargin = Hmargin;
             field = new VBox();
             field.setSpacing(Vmargin);
 
+            // Label с описанием
             Label descriptionLabel = new Label(descText);
             descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
 
+            // TextField
             textField = new TextField();
             textFieldOptions(text, mainFontSize, Hmargin, height, textFieldText, textField);
 
+            // Добавление элементов в контейнер
             field.getChildren().addAll(descriptionLabel, textField);
-
             container.getChildren().add(field);
         }
 
-        public Boolean getError() {
-            return isError;
+        // Методы доступа к параметрам дизайна
+        public int getDescFontSize() {
+            return descFontSize;
         }
 
-        public String getTextFieldText() {
-            return textField.getText();
+        public void setDescFontSize(int descFontSize) {
+            this.descFontSize = descFontSize;
+        }
+
+        public int getMainFontSize() {
+            return mainFontSize;
+        }
+
+        public void setMainFontSize(int mainFontSize) {
+            this.mainFontSize = mainFontSize;
+        }
+
+        public int getHmargin() {
+            return Hmargin;
+        }
+
+        public void setHmargin(int Hmargin) {
+            this.Hmargin = Hmargin;
+        }
+
+        public int getVmargin() {
+            return Vmargin;
+        }
+
+        public void setVmargin(int Vmargin) {
+            this.Vmargin = Vmargin;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public void setHeight(int height) {
+            this.height = height;
+        }
+
+        // Методы для работы с ошибками
+        public Boolean getError() {
+            return isError;
         }
 
         public void setError(String error) {
@@ -120,6 +164,11 @@ public class ButtonFactory {
         public void clearError() {
             setError(null);
         }
+
+        // Метод для получения текста из TextField
+        public String getTextFieldText() {
+            return textField.getText();
+        }
     }
 
     public static class ChoosingTextField implements TextFieldWrapper {
@@ -133,17 +182,21 @@ public class ButtonFactory {
         private final String errorSampleD;
         private final Label errorLabel = new Label();
         private boolean isError = false;
-        private final int descFontSize;
-        private final int Hmargin;
+
+        // Параметры дизайна с значениями по умолчанию
+        private int descFontSize = 20;
+        private int mainFontSize = 20;
+        private int Hmargin = 20;
+        private int Vmargin = 8;
+        private int height = 40;
+        private int popUpHeight = 99;
+        private int popUpWidth = 719;
 
         public ChoosingTextField(VBox container, String text, String descText, String errorSample, String errorSampleD,
-                                 int descFontSize, int mainFontSize, int Hmargin, int Vmargin, int height, int popUpHeight, int popUpWidth,
                                  Pane outOfBoundsContainer, ObservableList<String> items, @Nullable String textFieldText) {
 
             this.errorSample = errorSample;
             this.errorSampleD = errorSampleD;
-            this.descFontSize = descFontSize;
-            this.Hmargin = Hmargin;
             this.items = items;
             field = new VBox();
             field.setSpacing(Vmargin);
@@ -272,6 +325,63 @@ public class ButtonFactory {
                 double y = boundsInScene.getMaxY() + textField.getScene().getWindow().getY() + height - 3;
                 suggestionsPopup.show(textField, x, y);
             }
+        }
+
+        // Методы доступа к параметрам дизайна
+        public int getDescFontSize() {
+            return descFontSize;
+        }
+
+        public void setDescFontSize(int descFontSize) {
+            this.descFontSize = descFontSize;
+        }
+
+        public int getMainFontSize() {
+            return mainFontSize;
+        }
+
+        public void setMainFontSize(int mainFontSize) {
+            this.mainFontSize = mainFontSize;
+        }
+
+        public int getHmargin() {
+            return Hmargin;
+        }
+
+        public void setHmargin(int Hmargin) {
+            this.Hmargin = Hmargin;
+        }
+
+        public int getVmargin() {
+            return Vmargin;
+        }
+
+        public void setVmargin(int Vmargin) {
+            this.Vmargin = Vmargin;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public void setHeight(int height) {
+            this.height = height;
+        }
+
+        public int getPopUpHeight() {
+            return popUpHeight;
+        }
+
+        public void setPopUpHeight(int popUpHeight) {
+            this.popUpHeight = popUpHeight;
+        }
+
+        public int getPopUpWidth() {
+            return popUpWidth;
+        }
+
+        public void setPopUpWidth(int popUpWidth) {
+            this.popUpWidth = popUpWidth;
         }
 
         // Метод для получения текста из TextField
