@@ -6,6 +6,7 @@ import com.github.Snuslyk.slib.electives.ManageableElectives;
 import com.github.Snuslyk.slib.factory.ButtonFactory;
 import com.github.Snuslyk.slib.factory.Form;
 import javafx.animation.PauseTransition;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -149,6 +150,8 @@ public class Controller implements Initializable {
 
         tableView.getColumns().clear();
 
+        setupNumberColumn(tableView); // Добавляем нумерацию строк
+
         Form form = externalObjects.get(sectionIndex).get(objectIndex).getForm();
         List<Form.Column> columns = form.getColumns().get(optionIndex);
 
@@ -160,6 +163,15 @@ public class Controller implements Initializable {
 
         ObservableList<Map<String, Object>> data = fetchData(form, optionIndex, columns);
         tableView.setItems(data);
+    }
+
+    private void setupNumberColumn(TableView<Map<String, Object>> tableView) {
+        TableColumn<Map<String, Object>, Number> numberColumn = new TableColumn<>("№");
+        numberColumn.setCellValueFactory(cellData ->
+                new ReadOnlyObjectWrapper<>(tableView.getItems().indexOf(cellData.getValue()) + 1));
+        numberColumn.setSortable(false);
+        numberColumn.setStyle("-fx-alignment: CENTER-LEFT;");
+        tableView.getColumns().add(numberColumn);
     }
 
     private void setupColumns(TableView<Map<String, Object>> tableView, List<Form.Column> columns) {
