@@ -14,11 +14,7 @@ import java.util.List;
 
 public class HibernateUtil {
 
-    private static final SessionFactory sessionFactory;
-
-    static {
-        sessionFactory = new Configuration().configure().buildSessionFactory();
-    }
+    private static final SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();;
 
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
