@@ -1,7 +1,6 @@
 package com.github.Snuslyk.slib.factory;
 
 import com.sun.istack.Nullable;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -14,14 +13,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
 import javafx.stage.Popup;
 
 import java.util.List;
 import java.util.Objects;
-
-import static com.github.Snuslyk.slib.factory.ButtonFactory.validateTextField;
 
 public class ButtonFactory {
 
@@ -75,7 +70,6 @@ public class ButtonFactory {
 
         private final VBox field;
         private final TextField textField;
-        private String error = null;
         private final Label errorLabel = new Label();
         private Boolean isError = false;
         private final int descFontSize;
@@ -104,21 +98,11 @@ public class ButtonFactory {
             return isError;
         }
 
-        public String getErrorText() {
-            return error;
-        }
-
-        public TextField getTextField() {
-            return textField;
-        }
-
         public String getTextFieldText() {
             return textField.getText();
         }
 
         public void setError(String error) {
-            this.error = error;
-
             if (error != null && !error.isEmpty()) {
                 isError = true;
                 errorLabel.setText(error);
@@ -136,18 +120,6 @@ public class ButtonFactory {
         public void clearError() {
             setError(null);
         }
-
-        public VBox getContainer() {
-            return field;
-        }
-
-        public String getTextFieldValue() {
-            return textField.getText();
-        }
-
-        public void setTextFieldValue(String value) {
-            textField.setText(value);
-        }
     }
 
     public static class ChoosingTextField implements TextFieldWrapper {
@@ -157,7 +129,6 @@ public class ButtonFactory {
         private final Popup suggestionsPopup;
         private final ListView<String> listView;
         private final ObservableList<String> items;
-        private String error = null;
         private final String errorSample;
         private final String errorSampleD;
         private final Label errorLabel = new Label();
@@ -210,7 +181,6 @@ public class ButtonFactory {
             listView.setItems(items);
             suggestionsPopup.getContent().add(listView);
 
-            // Button action listener
             button.setOnAction(event -> {
                 if (button.isSelected()) {
                     popupShow(height, textField, suggestionsPopup);
@@ -219,7 +189,6 @@ public class ButtonFactory {
                 }
             });
 
-            // Toggle button state change listener
             button.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
                 if (isNowSelected) {
                     svgIcon.setContent("M1, 0L7, 6L13, 0");
@@ -228,18 +197,15 @@ public class ButtonFactory {
                 }
             });
 
-            // Popup visibility listener
             suggestionsPopup.showingProperty().addListener((obs, wasShowing, isNowShowing) -> {
                 button.setSelected(isNowShowing);
             });
 
-            // Out of bounds click listener
             outOfBoundsContainer.setOnMouseClicked(mouseEvent -> {
                 button.setSelected(false);
                 suggestionsPopup.hide();
             });
 
-            // Key released filter
             textField.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
                 String input = textField.getText();
                 if (input.isEmpty()) {
@@ -257,7 +223,6 @@ public class ButtonFactory {
                 }
             });
 
-            // TextField click listener
             textField.setOnMouseClicked(event -> {
                 if (textField.getText().isEmpty()) {
                     listView.setItems(items);
@@ -265,7 +230,6 @@ public class ButtonFactory {
                 popupShow(height, textField, suggestionsPopup);
             });
 
-            // ListView click listener
             listView.setOnMouseClicked(event -> {
                 String selectedItem = listView.getSelectionModel().getSelectedItem();
                 if (selectedItem != null) {
@@ -282,13 +246,7 @@ public class ButtonFactory {
             return isError;
         }
 
-        public String getErrorText() {
-            return error;
-        }
-
         public void setError(@Nullable String error) {
-            this.error = error;
-
             if (error != null && !error.isEmpty()) {
                 isError = true;
                 errorLabel.setText(error);
@@ -307,10 +265,6 @@ public class ButtonFactory {
             setError(null);
         }
 
-        public TextField getTextField() {
-            return textField;
-        }
-
         private void popupShow(int height, TextField textField, Popup suggestionsPopup) {
             if (!suggestionsPopup.isShowing()) {
                 Bounds boundsInScene = textField.localToScene(textField.getBoundsInLocal());
@@ -325,20 +279,9 @@ public class ButtonFactory {
             return textField.getText();
         }
 
-        // Метод для установки текста в TextField
-        public void setTextFieldText(String text) {
-            textField.setText(text);
-        }
-
         // Метод для получения списка элементов
         public ObservableList<String> getItems() {
             return items;
-        }
-
-        // Метод для изменения элементов в списке
-        public void setItems(ObservableList<String> newItems) {
-            items.setAll(newItems);
-            listView.setItems(items);
         }
     }
 
@@ -360,6 +303,7 @@ public class ButtonFactory {
         return hasErrors;
     }
 
+    // Собираюсь использовать в будущем для динамической проверки "ошибочности"
     public static void validateChoosingTextField(TextFieldWrapper textFieldWrapper, @Nullable String errorMessage, List<String> validItems) {
         boolean isValid = false;
 
@@ -404,11 +348,9 @@ public class ButtonFactory {
 
     // Интерфейс-обёртка для текстовых полей
     public interface TextFieldWrapper {
-        TextField getTextField();
         String getTextFieldText();
         void setError(String message);
         void clearError();
-        String getErrorText();
         Boolean getError();
     }
 
