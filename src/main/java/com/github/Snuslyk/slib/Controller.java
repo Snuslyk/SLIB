@@ -543,6 +543,7 @@ public class Controller implements Initializable {
             ChoosingTextField choosingTextField = new ChoosingTextField(createRowContainer, "Что-то...", "Мероприятия",
                     "У тебя нихуя нет, еблан", "Ты чо пишешь, еблан?", rootContainer, items, null);
             BasicTextField textFieldD = new BasicTextField(createRowContainer, "Что-то...", "Комментарий", "Ну всё, пизда", null);
+            DatePickerField datePickerField = new DatePickerField(createRowContainer, "Дата начала", "Дата не указанна", null);
 
             // кнопка, для сохранения результатов
             javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
@@ -550,7 +551,7 @@ public class Controller implements Initializable {
 
             // ЛИОН! ЭТА ШТУКА ПРОИЗВОДИТ ПРОВЕРКУ НА НАЛИЧИЕ ОШИБОК
             create.setOnAction(event -> {
-                boolean checker = validateChecker(textField, choosingTextField, textFieldD);
+                boolean checker = validateChecker(textField, choosingTextField, textFieldD, datePickerField);
                 if (checker) {
                     System.out.println("ОШИБКА СТОП 000000 ЭТО ЖЕ ОЧЕВИДНО, КАК ЕЁ РЕШИТЬ");
                 } else {

@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Popup;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -106,18 +107,7 @@ public class ButtonFactory {
         }
 
         public void setError(String error) {
-            if (error != null && !error.isEmpty()) {
-                isError = true;
-                errorLabel.setText(error);
-                errorLabel.setTextFill(Color.rgb(239, 48, 48));
-                descriptionTextFieldOptions(errorLabel, descFontSize, Hmargin);
-                if (!field.getChildren().contains(errorLabel)) {
-                    field.getChildren().add(errorLabel);
-                }
-            } else {
-                isError = false;
-                field.getChildren().remove(errorLabel);
-            }
+            errorSetter(error, isError, errorLabel, field, descFontSize, Hmargin);
         }
 
         public void clearError() {
@@ -259,18 +249,7 @@ public class ButtonFactory {
         }
 
         public void setError(@Nullable String error) {
-            if (error != null && !error.isEmpty()) {
-                isError = true;
-                errorLabel.setText(error);
-                errorLabel.setTextFill(Color.rgb(239, 48, 48));
-                descriptionTextFieldOptions(errorLabel, descFontSize, Hmargin);
-                if (!field.getChildren().contains(errorLabel)) {
-                    field.getChildren().add(errorLabel);
-                }
-            } else {
-                isError = false;
-                field.getChildren().remove(errorLabel);
-            }
+            errorSetter(error, isError, errorLabel, field, descFontSize, Hmargin);
         }
 
         public void clearError() {
@@ -297,6 +276,89 @@ public class ButtonFactory {
         }
     }
 
+    public static class DatePickerField implements TextFieldWrapper {
+        private final VBox field;
+        private final DatePicker datePicker;
+        private final boolean isError = false;
+        private final Label errorLabel = new Label();
+        private String errorSample;
+
+        public int descFontSize = 20;
+        public int Hmargin = 20;
+        public int mainFontSize = 20;
+        public int Vmargin = 8;
+        public int height = 40;
+
+
+        public DatePickerField(VBox container, String descText, String errorSample, @Nullable String textFieldText) {
+            this.errorSample = errorSample;
+            field = new VBox();
+            field.setSpacing(Vmargin);
+            datePicker = new DatePicker();
+
+            datePicker.setPrefHeight(height);
+            datePicker.setStyle("-fx-font-size: " + mainFontSize + "px;");
+
+            // Label с описанием
+            Label descriptionLabel = new Label(descText);
+            descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
+
+            if (textFieldText != null) {
+                // Разделяем строку по точкам
+                String[] parts = textFieldText.split("\\.");
+
+                // Преобразуем части в числа
+                int day = Integer.parseInt(parts[0]);
+                int month = Integer.parseInt(parts[1]);
+                int year = Integer.parseInt(parts[2]);
+
+                setTextFieldText(LocalDate.of(year, month, day));
+            }
+
+            field.getChildren().add(datePicker);
+            container.getChildren().add(field);
+        }
+
+        public DatePicker getDatePicker() {
+            return datePicker;
+        }
+
+        public String getTextFieldText() {
+            return datePicker.getValue().toString();
+        }
+
+        public void setTextFieldText(LocalDate localDate) {
+            datePicker.setValue(localDate);
+        }
+
+        public void setError(String error) {
+            errorSetter(error, isError, errorLabel, field, descFontSize, Hmargin);
+        }
+
+        public void clearError() {
+            setError(null);
+        }
+
+        public Boolean getError() {
+            return isError;
+        }
+    }
+
+    private static void errorSetter(String error, boolean isError, Label errorLabel, VBox field, int descFontSize, int Hmargin) {
+        if (error != null && !error.isEmpty()) {
+            isError = true;
+            errorLabel.setText(error);
+            errorLabel.setTextFill(Color.rgb(239, 48, 48));
+            descriptionTextFieldOptions(errorLabel, descFontSize, Hmargin);
+            if (!field.getChildren().contains(errorLabel)) {
+                field.getChildren().add(errorLabel);
+            }
+        } else {
+            isError = false;
+            field.getChildren().remove(errorLabel);
+        }
+    }
+
     public static Boolean validateChecker(TextFieldWrapper... textFieldWrappers) {
         boolean hasErrors = false;
 
@@ -305,6 +367,12 @@ public class ButtonFactory {
                 validateTextField(textFieldWrapper, ((BasicTextField) textFieldWrapper).errorSample, null, null);
             } else if (textFieldWrapper instanceof ChoosingTextField) {
                 validateTextField(textFieldWrapper, ((ChoosingTextField) textFieldWrapper).errorSample, ((ChoosingTextField) textFieldWrapper).errorSampleD, ((ChoosingTextField) textFieldWrapper).getItems());
+            } else if (textFieldWrapper instanceof DatePickerField) {
+                if (((DatePickerField) textFieldWrapper).getDatePicker().getValue() == null) {
+                    textFieldWrapper.setError(((DatePickerField) textFieldWrapper).errorSample);
+                } else {
+                    textFieldWrapper.clearError();
+                }
             }
 
             if (textFieldWrapper.getError()) {
