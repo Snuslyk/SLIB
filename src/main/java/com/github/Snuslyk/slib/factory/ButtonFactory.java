@@ -342,13 +342,22 @@ public class ButtonFactory {
         }
     }
 
-    public static void validateChecker(TextFieldWrapper... textFieldWrappers) {
-        for (TextFieldWrapper textFieldWrapper : textFieldWrappers)
+    public static Boolean validateChecker(TextFieldWrapper... textFieldWrappers) {
+        boolean hasErrors = false;
+
+        for (TextFieldWrapper textFieldWrapper : textFieldWrappers) {
             if (textFieldWrapper instanceof BasicTextField) {
                 validateTextField(textFieldWrapper, ((BasicTextField) textFieldWrapper).errorSample, null, null);
             } else if (textFieldWrapper instanceof ChoosingTextField) {
                 validateTextField(textFieldWrapper, ((ChoosingTextField) textFieldWrapper).errorSample, ((ChoosingTextField) textFieldWrapper).errorSampleD, ((ChoosingTextField) textFieldWrapper).getItems());
             }
+
+            if (textFieldWrapper.getError()) {
+                hasErrors = true;
+            }
+        }
+
+        return hasErrors;
     }
 
     public static void validateChoosingTextField(TextFieldWrapper textFieldWrapper, @Nullable String errorMessage, List<String> validItems) {
@@ -400,6 +409,7 @@ public class ButtonFactory {
         void setError(String message);
         void clearError();
         String getErrorText();
+        Boolean getError();
     }
 
     private static void textFieldOptions(String text, int mainFontSize, int Hmargin, int height, @Nullable String textFieldText, TextField textField) {
