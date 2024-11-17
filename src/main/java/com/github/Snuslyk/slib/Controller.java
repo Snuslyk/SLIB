@@ -3,6 +3,7 @@ package com.github.Snuslyk.slib;
 import com.github.Snuslyk.slib.electives.Button;
 import com.github.Snuslyk.slib.electives.ButtonElective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
+import com.github.Snuslyk.slib.factory.ButtonFactory;
 import com.github.Snuslyk.slib.factory.Form;
 import javafx.animation.PauseTransition;
 import javafx.beans.property.SimpleStringProperty;
@@ -16,6 +17,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -420,7 +422,7 @@ public class Controller implements Initializable {
 
     // МЕТОД СОЗДАНИЯ КНОПКИ ОПЦИЙ
     private void addOptionButton(String text, boolean isSelected) {
-        VBox Box = createUnderlinedButtons(text, isSelected, optionToggleGroup, optionsContainer, 20, 4, 9);
+        VBox Box = createUnderlinedButtons(optionsContainer, text, isSelected, optionToggleGroup, 20, 4, 9);
 
         RadioButton radioButton = (RadioButton) Box.getChildren().get(0);
 
@@ -493,6 +495,8 @@ public class Controller implements Initializable {
                 .getForm();
 
         rightSideContainer.getChildren().remove(tableView);
+        rightSideContainer.getChildren().remove(createRowContainer);
+        createRowContainer.getChildren().clear();
 
         if (form.getType()[optionIndex] == Form.Type.TABLE) {
             tableView.setPrefWidth(200);
@@ -506,10 +510,46 @@ public class Controller implements Initializable {
 
             setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
             adjustTableColumnsWidth(rightSideContainer.getWidth());
+
             rightSideContainer.getChildren().add(tableView);
         } else if (form.getType()[optionIndex] == Form.Type.CREATE) {
-            rightSideContainer.getChildren().remove(tableView);
+            createRowContainer.setPrefWidth(200);
+            createRowContainer.setPrefHeight(297);
+            AnchorPane.setTopAnchor(createRowContainer, 172.0);
+            AnchorPane.setBottomAnchor(createRowContainer, 40.0);
+            AnchorPane.setLeftAnchor(createRowContainer, 360.0);
+            AnchorPane.setRightAnchor(createRowContainer, 360.0);
+            createRowContainer.setSpacing(20);
 
+            // это значения для поля со списком, мой кастомный combo box
+            ObservableList<String> items = FXCollections.observableArrayList(
+                    "Apple", "Banana", "Cherry", "Date", "Elderberry", "Fig", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape"
+            );
+
+            // это вот так много кастомизации навалил, не знаю, может в рамках нашей штуки столько и не надо, завтра наверное почищу
+            BasicTextField textField = new BasicTextField(createRowContainer, "Что-то...", "Комментарий", "Ты чо, долбаёб?",
+                    20, 20, 20, 8, 40, null);
+            ChoosingTextField choosingTextField = new ChoosingTextField(createRowContainer, "Что-то...", "Мероприятия", "У тебя нихуя нет, еблан", "Ты чо пишешь, еблан?",
+                    20, 20, 20, 8, 40,
+                    99, 719, rootContainer, items, null);
+            BasicTextField textFieldD = new BasicTextField(createRowContainer, "Что-то...", "Комментарий", "Ну всё, пизда",
+                    20, 20, 20, 8, 40, null);
+
+            // кнопка, для сохранения результатов
+            javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
+            createRowContainer.getChildren().add(create);
+
+            // ЛИОН! ЭТА ШТУКА ПРОИЗВОДИТ ПРОВЕРКУ НА НАЛИЧИЕ ОШИБОК
+            create.setOnAction(event -> {
+                boolean checker = validateChecker(textField, choosingTextField, textFieldD);
+                if (checker) {
+                    System.out.println("ОШИБКА СТОП 000000 ЭТО ЖЕ ОЧЕВИДНО, КАК ЕЁ РЕШИТЬ");
+                } else {
+                    // ВОТ ТУТ ТЕБЕ НУЖНО ДОБАВЛЯТЬ ЗНАЧЕНИЯ В ТАБЛИЦУ, ТАК КАК ОШИБОК НЕТ
+                }
+            });
+
+            rightSideContainer.getChildren().add(createRowContainer);
         }
     }
 
