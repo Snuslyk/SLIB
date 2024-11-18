@@ -67,7 +67,7 @@ public class Controller implements Initializable {
     private AnchorPane leftSideContainer;
 
     private final TableView<Map<String, Object>> tableView = new TableView<>();
-    private VBox createRowContainer = new VBox();
+    private final VBox createRowContainer = new VBox();
 
     private Section selectedSection;
 

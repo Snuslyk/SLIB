@@ -298,6 +298,7 @@ public class ButtonFactory {
 
             datePicker.setPrefHeight(height);
             datePicker.setStyle("-fx-font-size: " + mainFontSize + "px;");
+            datePicker.getEditor().setStyle("-fx-padding: 0 0 0 " + Hmargin + "px;");
 
             // Label с описанием
             Label descriptionLabel = new Label(descText);
