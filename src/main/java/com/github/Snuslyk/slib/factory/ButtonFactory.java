@@ -104,6 +104,7 @@ public class ButtonFactory {
         @Override
         public void register(VBox container) {
             field = new VBox();
+            field.setSpacing(Vmargin);
 
             // Label с описанием
             Label descriptionLabel = new Label(descText);
@@ -181,7 +182,7 @@ public class ButtonFactory {
             // TextField
             textField = new TextField();
             textFieldOptions(text, mainFontSize, Hmargin, height, textFieldText, textField);
-            textField.setMinWidth(popUpWidth + 1);
+            textField.setPrefWidth(popUpWidth + 1);
 
             // Button and SVG Icon
             button = new ToggleButton();
@@ -203,9 +204,11 @@ public class ButtonFactory {
             suggestionsPopup.setAutoHide(true);
             listView = new ListView<>();
             listView.setMaxHeight(popUpHeight);
-            listView.setPrefWidth(popUpWidth);
             listView.setItems(items);
             suggestionsPopup.getContent().add(listView);
+
+            textField.prefWidthProperty().bind(container.widthProperty());
+            listView.prefWidthProperty().bind(container.widthProperty());
 
             button.setOnAction(event -> {
                 if (button.isSelected()) {
