@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class Form {
 
@@ -20,10 +21,11 @@ public class Form {
     private final FilterIO[] filter;
     private final List<List<Column>> columns;
     private final List<List<TableActionButton>> tableButtons;
-    private final List<List<ButtonFactory.TextFieldWrapper>> createFields;
+    private final List<CreateFields> createFields;
+    private final List<ColorSupplier> columnColorSupplier;
 
     private Form(Type[] type, Class<?>[] tableClass, FilterIO[] filter, List<List<Column>> columns, List<String> options, List<List<TableActionButton>> tableButtons,
-                 List<List<ButtonFactory.TextFieldWrapper>> createFields) {
+                 List<CreateFields> createFields, List<ColorSupplier> columnColorSupplier) {
         this.options = options;
         this.type = type;
         this.tableClass = tableClass;
@@ -31,6 +33,7 @@ public class Form {
         this.columns = columns;
         this.tableButtons = tableButtons;
         this.createFields = createFields;
+        this.columnColorSupplier = columnColorSupplier;
     }
 
     public List<Object> get(int option){
@@ -58,8 +61,12 @@ public class Form {
         return tableButtons;
     }
 
-    public List<List<ButtonFactory.TextFieldWrapper>> getCreateFields() {
+    public List<CreateFields> getCreateFields() {
         return createFields;
+    }
+
+    public List<ColorSupplier> getColumnColorSupplier() {
+        return columnColorSupplier;
     }
 
     public static class Builder {
@@ -70,7 +77,8 @@ public class Form {
         private Class<?>[] tableClass;
         private FilterIO[] filter;
         private final List<List<Column>> columns = new ArrayList<>();
-        private final List<List<ButtonFactory.TextFieldWrapper>> createFields = new ArrayList<>();
+        private final List<CreateFields> createFields = new ArrayList<>();
+        private final List<ColorSupplier> columnColorSupplier = new ArrayList<>();
 
         private List<String> usedDisplays = new ArrayList<>();
 
@@ -99,16 +107,28 @@ public class Form {
             tableButtons.get(optionId).add(tableActionButton);
             return this;
         }
+        public Builder tableColumnColorSupplier(ColorSupplier supplier){
+            columnColorSupplier.remove(columnColorSupplier.size()-1);
+            columnColorSupplier.add(supplier);
+            return this;
+        }
+
+        public <T> Builder createClass(Class<?> clazz, CreateSupplier<T> supplier){
+            createFields.remove(createFields.size()-1);
+            createFields.add(new CreateFields(clazz, new ArrayList<>(), supplier));
+            return this;
+        }
+
         public Builder createTextField(String key, String name, String description, String errorSample, @Nullable String textFieldText){
-            createFields.get(optionId).add(new ButtonFactory.BasicTextField(key, name, description, errorSample, textFieldText));
+            createFields.get(optionId).fields.add(new ButtonFactory.BasicTextField(key, name, description, errorSample, textFieldText));
             return this;
         }
         public Builder createChooseField(String key, String name, String description, String errorSample, String errorSampleD, ObservableList<String> items, @Nullable String textFieldText){
-            createFields.get(optionId).add(new ButtonFactory.ChoosingTextField(key, name, description, errorSample, errorSampleD, items, textFieldText));
+            createFields.get(optionId).fields.add(new ButtonFactory.ChoosingTextField(key, name, description, errorSample, errorSampleD, items, textFieldText));
             return this;
         }
         public Builder createDatePickerField(String key, String description, String errorSample, @Nullable String textFieldText){
-            createFields.get(optionId).add(new ButtonFactory.DatePickerField(key, description, errorSample, textFieldText));
+            createFields.get(optionId).fields.add(new ButtonFactory.DatePickerField(key, description, errorSample, textFieldText));
             return this;
         }
 
@@ -138,12 +158,13 @@ public class Form {
             options.add(name);
             columns.add(new ArrayList<>());
             tableButtons.add(new ArrayList<>());
-            createFields.add(new ArrayList<>());
+            createFields.add(null);
+            columnColorSupplier.add(null);
             return this;
         }
 
         public Form build(){
-            return new Form(type, tableClass, filter, columns, options, tableButtons, createFields);
+            return new Form(type, tableClass, filter, columns, options, tableButtons, createFields, columnColorSupplier);
         }
     }
 
@@ -155,6 +176,16 @@ public class Form {
     public record Column(String displayName, String key){}
 
     public record TableActionButton(String display, Color color, @Nullable String svg, @Nullable TableActionButtonIO io){}
+
+    public record CreateFields<T>(Class<T> clazz, List<ButtonFactory.TextFieldWrapper> fields, CreateSupplier<T> createSupplier) {}
+
+    public interface CreateSupplier<T> {
+        T get(List<ButtonFactory.TextFieldWrapper> fields);
+    }
+
+    public interface ColorSupplier {
+        Color get(Controller controller, Map<String, Object> rowData);
+    }
 
     public interface TableActionButtonIO{
         void run(Controller controller, Map<String, Object> rowData);
@@ -169,6 +200,7 @@ public class Form {
                     System.out.println("asdasdasd" + list);
 
                     // Получаем id из rowData
+                    System.out.println(data.toString());
                     int id = (int) data.get("id");
 
                     // Находим объект с совпадающим id в списке list

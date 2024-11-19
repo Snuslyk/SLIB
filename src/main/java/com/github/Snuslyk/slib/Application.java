@@ -1,6 +1,5 @@
 package com.github.Snuslyk.slib;
 
-import com.github.Snuslyk.slib.factory.Form;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -11,6 +10,8 @@ public class Application extends javafx.application.Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        HibernateUtil.addAnnotatedClass(User.class);
+
         Controller controller = new Controller();
         options(controller);
 
