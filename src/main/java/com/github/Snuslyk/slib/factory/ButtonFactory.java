@@ -18,6 +18,7 @@ import javafx.stage.Popup;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 public class ButtonFactory {
 
@@ -148,7 +149,7 @@ public class ButtonFactory {
         private ToggleButton button;
         private Popup suggestionsPopup;
         private ListView<String> listView;
-        private final ObservableList<String> items;
+        private final Supplier<ObservableList<String>> items;
         private final String errorSample;
         private final String errorSampleD;
         private final Label errorLabel = new Label();
@@ -156,7 +157,7 @@ public class ButtonFactory {
         private Pane outOfBoundsContainer;
         private boolean isError = false;
 
-        public ChoosingTextField(String key, String text, String descText, String errorSample, String errorSampleD, ObservableList<String> items, @Nullable String textFieldText) {
+        public ChoosingTextField(String key, String text, String descText, String errorSample, String errorSampleD, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
             this.errorSample = errorSample;
             this.errorSampleD = errorSampleD;
             this.items = items;
@@ -204,7 +205,7 @@ public class ButtonFactory {
             suggestionsPopup.setAutoHide(true);
             listView = new ListView<>();
             listView.setMaxHeight(popUpHeight);
-            listView.setItems(items);
+            listView.setItems(items.get());
             suggestionsPopup.getContent().add(listView);
 
             textField.prefWidthProperty().bind(container.widthProperty());
@@ -238,11 +239,11 @@ public class ButtonFactory {
             textField.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
                 String input = textField.getText();
                 if (input.isEmpty()) {
-                    listView.setItems(items);
+                    listView.setItems(items.get());
                     return;
                 }
 
-                ObservableList<String> filteredItems = items.filtered(item -> item.toLowerCase().contains(input.toLowerCase()));
+                ObservableList<String> filteredItems = items.get().filtered(item -> item.toLowerCase().contains(input.toLowerCase()));
 
                 if (filteredItems.isEmpty()) {
                     suggestionsPopup.hide();
@@ -254,7 +255,7 @@ public class ButtonFactory {
 
             textField.setOnMouseClicked(event -> {
                 if (textField.getText().isEmpty()) {
-                    listView.setItems(items);
+                    listView.setItems(items.get());
                 }
                 popupShow(height, textField, suggestionsPopup);
             });
@@ -303,7 +304,7 @@ public class ButtonFactory {
 
         // Метод для получения списка элементов
         public ObservableList<String> getItems() {
-            return items;
+            return items.get();
         }
     }
 

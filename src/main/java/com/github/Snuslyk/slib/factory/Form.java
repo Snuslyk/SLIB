@@ -126,7 +126,7 @@ public class Form {
             createFields.get(optionId).fields.add(new ButtonFactory.BasicTextField(key, name, description, errorSample, textFieldText));
             return this;
         }
-        public Builder createChooseField(String key, String name, String description, String errorSample, String errorSampleD, ObservableList<String> items, @Nullable String textFieldText){
+        public Builder createChooseField(String key, String name, String description, String errorSample, String errorSampleD, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
             createFields.get(optionId).fields.add(new ButtonFactory.ChoosingTextField(key, name, description, errorSample, errorSampleD, items, textFieldText));
             return this;
         }
