@@ -527,12 +527,16 @@ public class Controller implements Initializable {
         } else if (form.getType()[optionIndex] == Form.Type.CREATE) {
             createRowContainer.setPrefWidth(720);
             createRowContainer.setPrefHeight(297);
+            createRowContainer.setAlignment(Pos.TOP_CENTER);
             AnchorPane.setTopAnchor(createRowContainer, 172.0);
             AnchorPane.setBottomAnchor(createRowContainer, 40.0);
             if (rightSideContainer.getWidth() > createRowContainer.getPrefWidth()) {
                 double horizontalCenter = (rightSideContainer.getWidth() - createRowContainer.getPrefWidth()) / 2;
                 AnchorPane.setLeftAnchor(createRowContainer, horizontalCenter);
                 AnchorPane.setRightAnchor(createRowContainer, horizontalCenter);
+            } else {
+                AnchorPane.setLeftAnchor(createRowContainer, 0.0);
+                AnchorPane.setRightAnchor(createRowContainer, 0.0);
             }
             rightSideContainer.widthProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal.doubleValue() > createRowContainer.getPrefWidth()) {
