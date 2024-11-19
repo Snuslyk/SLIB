@@ -525,6 +525,8 @@ public class Controller implements Initializable {
         rightSideContainer.getChildren().remove(createRowContainer);
         createRowContainer.getChildren().clear();
 
+        tableView.getStyleClass().add("tableD");
+
         if (form.getType()[optionIndex] == Form.Type.TABLE) {
             tableView.setPrefWidth(200);
             tableView.setPrefHeight(297);
@@ -532,8 +534,6 @@ public class Controller implements Initializable {
             AnchorPane.setBottomAnchor(tableView, 40.0);
             AnchorPane.setLeftAnchor(tableView, -1.0);
             AnchorPane.setRightAnchor(tableView, -1.0);
-            tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-            tableView.getStyleClass().add("tableD");
 
             setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
             adjustTableColumnsWidth(rightSideContainer.getWidth());
