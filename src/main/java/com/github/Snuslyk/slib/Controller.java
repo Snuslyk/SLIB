@@ -29,6 +29,7 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.*;
+import java.util.function.Supplier;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.*;
 
@@ -340,7 +341,6 @@ public class Controller implements Initializable {
         ObservableList<Map<String, Object>> data = FXCollections.observableArrayList();
         List<Map<String, Object>> rows = new ArrayList<>();
         List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], form.getFilter()[optionIndex]);
-        System.out.println(list);
 
         try {
             for (Object object : list) {
@@ -557,7 +557,10 @@ public class Controller implements Initializable {
             });
             createRowContainer.setSpacing(20);
 
-            List<ButtonFactory.TextFieldWrapper> fields = form.getCreateFields().get(optionIndex);
+            Form.CreateFields createFields = form.getCreateFields().get(optionIndex);
+
+            List<ButtonFactory.TextFieldWrapper> fields = createFields.fields();
+            Form.CreateSupplier<?> supplier = createFields.createSupplier();
 
             for (ButtonFactory.TextFieldWrapper field : fields){
                 if (field instanceof ChoosingTextField choosingTextField)
@@ -590,9 +593,8 @@ public class Controller implements Initializable {
                 if (checker) {
                     System.out.println("ОШИБКА СТОП 000000 ЭТО ЖЕ ОЧЕВИДНО, КАК ЕЁ РЕШИТЬ");
                 } else {
-                    for (ButtonFactory.TextFieldWrapper field : fields){
-                        field.getKey();
-                    }
+                    Object object = supplier.get(fields);
+                    if (object != null) HibernateUtil.fastSave(object);
                     // ВОТ ТУТ ТЕБЕ НУЖНО ДОБАВЛЯТЬ ЗНАЧЕНИЯ В ТАБЛИЦУ, ТАК КАК ОШИБОК НЕТ
                 }
             });

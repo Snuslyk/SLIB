@@ -3,6 +3,7 @@ package com.github.Snuslyk.slib;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.boot.jaxb.spi.Binding;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
@@ -14,19 +15,32 @@ import java.util.List;
 
 public class HibernateUtil {
 
-    private static final SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();;
+    private static SessionFactory sessionFactory;
+    private static final List<Class<?>> annotatedClassed = new ArrayList<>();
+    private static boolean builded = false;
 
-    public static SessionFactory getSessionFactory() {
-        return sessionFactory;
+    public static void addAnnotatedClass(Class<?> clazz){
+        annotatedClassed.add(clazz);
+        if (builded) {
+            System.out.println(clazz.getSimpleName() + " is not added to mappings because they builded");
+        }
     }
 
-    private static SessionFactory buildSessionFactory() {
+
+    public static SessionFactory getSessionFactory() {
+        if (sessionFactory != null) return sessionFactory;
         try {
             Configuration configuration = new Configuration();
             configuration.configure("hibernate.cfg.xml");
-            return configuration.buildSessionFactory(new StandardServiceRegistryBuilder()
+            annotatedClassed.forEach(configuration::addAnnotatedClass);
+            builded = true;
+            SessionFactory factory = configuration.buildSessionFactory(new StandardServiceRegistryBuilder()
                     .applySettings(configuration.getProperties()).build());
+            sessionFactory = factory;
+            entityManager = factory.createEntityManager();
+            return factory;
         } catch (Throwable ex) {
+            ex.printStackTrace();
             throw new ExceptionInInitializerError(ex);
         }
     }
@@ -71,7 +85,7 @@ public class HibernateUtil {
         return get;
     }
 
-    private static final EntityManager entityManager = sessionFactory.createEntityManager();
+    private static EntityManager entityManager;
 
     public static <T> List<T> getObjectWithFilter(Class<T> clazz, FilterIO... filters){
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
