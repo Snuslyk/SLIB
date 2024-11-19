@@ -69,24 +69,41 @@ public class ButtonFactory {
 
     public static class BasicTextField implements TextFieldWrapper {
 
-        private final VBox field;
-        private final TextField textField;
+        // Параметры дизайна с значениями по умолчанию
+        private static final int descFontSize = 20;
+        private static final int mainFontSize = 20;
+        private static final int Hmargin = 20;
+        private static final int Vmargin = 8;
+        private static final int height = 40;
+
+        private VBox field;
+        private TextField textField;
         private final Label errorLabel = new Label();
         private Boolean isError = false;
-
-        // Параметры дизайна с значениями по умолчанию
-        public int descFontSize = 20;
-        public int mainFontSize = 20;
-        public int Hmargin = 20;
-        public int Vmargin = 8;
-        public int height = 40;
+        private final String text, descText, textFieldText, key;
 
         private final String errorSample;
 
-        public BasicTextField(VBox container, String text, String descText, String errorSample, @Nullable String textFieldText) {
+        public BasicTextField(String key, String text, String descText, String errorSample, @Nullable String textFieldText) {
+            this.key = key;
             this.errorSample = errorSample;
+            this.text = text;
+            this.descText = descText;
+            this.textFieldText = textFieldText;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        // Методы для работы с ошибками
+        public Boolean getError() {
+            return isError;
+        }
+
+        @Override
+        public void register(VBox container) {
             field = new VBox();
-            field.setSpacing(Vmargin);
 
             // Label с описанием
             Label descriptionLabel = new Label(descText);
@@ -99,11 +116,6 @@ public class ButtonFactory {
             // Добавление элементов в контейнер
             field.getChildren().addAll(descriptionLabel, textField);
             container.getChildren().add(field);
-        }
-
-        // Методы для работы с ошибками
-        public Boolean getError() {
-            return isError;
         }
 
         public void setError(String error) {
@@ -121,32 +133,44 @@ public class ButtonFactory {
     }
 
     public static class ChoosingTextField implements TextFieldWrapper {
-        private final VBox field;
-        private final TextField textField;
-        private final ToggleButton button;
-        private final Popup suggestionsPopup;
-        private final ListView<String> listView;
+        // Параметры дизайна с значениями по умолчанию
+        private static final int descFontSize = 20;
+        private static final int mainFontSize = 20;
+        private static final int Hmargin = 20;
+        private static final int Vmargin = 8;
+        private static final int height = 40;
+        private static final int popUpHeight = 99;
+        private static final int popUpWidth = 719;
+
+        private VBox field;
+        private TextField textField;
+        private ToggleButton button;
+        private Popup suggestionsPopup;
+        private ListView<String> listView;
         private final ObservableList<String> items;
         private final String errorSample;
         private final String errorSampleD;
         private final Label errorLabel = new Label();
+        private final String text, descText, textFieldText, key;
+        private Pane outOfBoundsContainer;
         private boolean isError = false;
 
-        // Параметры дизайна с значениями по умолчанию
-        public int descFontSize = 20;
-        public int mainFontSize = 20;
-        public int Hmargin = 20;
-        public int Vmargin = 8;
-        public int height = 40;
-        public int popUpHeight = 99;
-        public int popUpWidth = 719;
-
-        public ChoosingTextField(VBox container, String text, String descText, String errorSample, String errorSampleD,
-                                 Pane outOfBoundsContainer, ObservableList<String> items, @Nullable String textFieldText) {
-
+        public ChoosingTextField(String key, String text, String descText, String errorSample, String errorSampleD, ObservableList<String> items, @Nullable String textFieldText) {
             this.errorSample = errorSample;
             this.errorSampleD = errorSampleD;
             this.items = items;
+
+            this.text = text;
+            this.descText = descText;
+            this.textFieldText = textFieldText;
+            this.key = key;
+        }
+        public void register(VBox container, Pane outOfBoundsContainer){
+            this.outOfBoundsContainer = outOfBoundsContainer;
+            register(container);
+        }
+        @Override
+        public void register(VBox container) {
             field = new VBox();
             field.setSpacing(Vmargin);
 
@@ -244,6 +268,10 @@ public class ButtonFactory {
             container.getChildren().add(field);
         }
 
+        public String getKey() {
+            return key;
+        }
+
         public Boolean getError() {
             return isError;
         }
@@ -277,21 +305,29 @@ public class ButtonFactory {
     }
 
     public static class DatePickerField implements TextFieldWrapper {
-        private final VBox field;
-        private final DatePicker datePicker;
+
+        private static final int descFontSize = 20;
+        private static final int Hmargin = 20;
+        private static final int mainFontSize = 20;
+        private static final int Vmargin = 8;
+        private static final int height = 40;
+
+        private VBox field;
+        private DatePicker datePicker;
         private final boolean isError = false;
         private final Label errorLabel = new Label();
-        private String errorSample;
-
-        public int descFontSize = 20;
-        public int Hmargin = 20;
-        public int mainFontSize = 20;
-        public int Vmargin = 8;
-        public int height = 40;
+        private final String errorSample, descText, textFieldText, key;
 
 
-        public DatePickerField(VBox container, String descText, String errorSample, @Nullable String textFieldText) {
+        public DatePickerField(String key, String descText, String errorSample, @Nullable String textFieldText) {
+            this.key = key;
             this.errorSample = errorSample;
+            this.descText = descText;
+            this.textFieldText = textFieldText;
+        }
+
+        @Override
+        public void register(VBox container) {
             field = new VBox();
             field.setSpacing(Vmargin);
             datePicker = new DatePicker();
@@ -318,6 +354,10 @@ public class ButtonFactory {
 
             field.getChildren().addAll(descriptionLabel, datePicker);
             container.getChildren().add(field);
+        }
+
+        public String getKey() {
+            return key;
         }
 
         public DatePicker getDatePicker() {
@@ -360,7 +400,7 @@ public class ButtonFactory {
         }
     }
 
-    public static Boolean validateChecker(TextFieldWrapper... textFieldWrappers) {
+    public static boolean validateChecker(TextFieldWrapper... textFieldWrappers) {
         boolean hasErrors = false;
 
         for (TextFieldWrapper textFieldWrapper : textFieldWrappers) {
@@ -433,6 +473,7 @@ public class ButtonFactory {
         void setError(String message);
         void clearError();
         Boolean getError();
+        void register(VBox container);
     }
 
     private static void textFieldOptions(String text, int mainFontSize, int Hmargin, int height, @Nullable String textFieldText, TextField textField) {

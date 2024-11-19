@@ -546,17 +546,28 @@ public class Controller implements Initializable {
             });
             createRowContainer.setSpacing(20);
 
-            // это значения для поля со списком, мой кастомный combo box
-            ObservableList<String> items = FXCollections.observableArrayList(
-                    "Apple", "Banana", "Cherry", "Date", "Elderberry", "Fig", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape"
-            );
+            List<ButtonFactory.TextFieldWrapper> fields = form.getCreateFields().get(optionIndex);
 
-            // это вот так много кастомизации навалил, не знаю, может в рамках нашей штуки столько и не надо, завтра наверное почищу
-            BasicTextField textField = new BasicTextField(createRowContainer, "Что-то...", "Комментарий", "Ты чо, долбаёб?", null);
-            ChoosingTextField choosingTextField = new ChoosingTextField(createRowContainer, "Что-то...", "Мероприятия",
-                    "У тебя нихуя нет, еблан", "Ты чо пишешь, еблан?", rootContainer, items, null);
-            BasicTextField textFieldD = new BasicTextField(createRowContainer, "Что-то...", "Комментарий", "Ну всё, пизда", null);
-            DatePickerField datePickerField = new DatePickerField(createRowContainer, "Дата начала", "Дата не указанна", null);
+            for (ButtonFactory.TextFieldWrapper field : fields){
+                if (field instanceof ChoosingTextField choosingTextField)
+                    choosingTextField.register(createRowContainer,rootContainer);
+                else
+                    field.register(createRowContainer);
+            }
+
+
+           //// это значения для поля со списком, мой кастомный combo box
+           //ObservableList<String> items = FXCollections.observableArrayList(
+           //        "Apple", "Banana", "Cherry", "Date", "Elderberry", "Fig", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape"
+           //);
+
+           //// это вот так много кастомизации навалил, не знаю, может в рамках нашей штуки столько и не надо, завтра наверное почищу
+           //BasicTextField textField = new BasicTextField("Что-то...", "Комментарий", "Ты чо, долбаёб?", null);
+           //ChoosingTextField choosingTextField = new ChoosingTextField("Что-то...", "Мероприятия",
+           //        "У тебя нихуя нет, еблан", "Ты чо пишешь, еблан?", rootContainer, items, null);
+           //BasicTextField textFieldD = new BasicTextField( "Что-то...", "Комментарий", "Ну всё, пизда", null);
+           //DatePickerField datePickerField = new DatePickerField( "Дата начала", "Дата не указанна", null);
+
 
             // кнопка, для сохранения результатов
             javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
@@ -564,7 +575,7 @@ public class Controller implements Initializable {
 
             // ЛИОН! ЭТА ШТУКА ПРОИЗВОДИТ ПРОВЕРКУ НА НАЛИЧИЕ ОШИБОК
             create.setOnAction(event -> {
-                boolean checker = validateChecker(textField, choosingTextField, textFieldD, datePickerField);
+                boolean checker = validateChecker(fields.toArray(new TextFieldWrapper[]{}));
                 if (checker) {
                     System.out.println("ОШИБКА СТОП 000000 ЭТО ЖЕ ОЧЕВИДНО, КАК ЕЁ РЕШИТЬ");
                 } else {
