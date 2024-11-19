@@ -346,6 +346,7 @@ public class Controller implements Initializable {
         ObservableList<Map<String, Object>> data = FXCollections.observableArrayList();
         List<Map<String, Object>> rows = new ArrayList<>();
         List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], form.getFilter()[optionIndex]);
+        System.out.println(list);
 
         try {
             for (Object object : list) {
@@ -358,8 +359,8 @@ public class Controller implements Initializable {
                     int id = Integer.parseInt(parts[1]);
                     row.put("id", id);  // Сначала добавляем ID в row
 
-                    //String colorData = form.getColumnColorSupplier().get(getOptionIndex()).get(this,row).toString();
-                    //row.put("colorData", colorData);
+                    String colorData = form.getColumnColorSupplier().get(getOptionIndex()).get(this, row).toString();
+                    row.put("colorData", colorData);
                 }
 
                 // Добавляем остальные колонки
