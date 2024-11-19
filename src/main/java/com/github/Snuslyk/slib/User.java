@@ -10,14 +10,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
 
+    @Column(name = "colorData")
+    public Integer colorData;
     @Column(name = "name")
     public String name;
     @Column(name = "age")
     public int age;
-    @Column(name = "colorData")
-    public Integer colorData;
     @Override
     public String toString() {
-        return "User: " + id + " " + name + " " + age;
+        return "User: " + id + " " + colorData + " " + name + " " + age;
     }
 }

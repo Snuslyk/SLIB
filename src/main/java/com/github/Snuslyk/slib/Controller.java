@@ -327,8 +327,12 @@ public class Controller implements Initializable {
             row.itemProperty().addListener((obs, oldItem, newItem) -> {
                 if (newItem != null) {
                     row.pseudoClassStateChanged(filled, true);
-                    //String colorStyle = "-fx-border-color: " + toWebColor(color) + ";";
-                    //row.setStyle(colorStyle);
+
+                    Color color = getRowColor((int) newItem.get("colorData"));
+                    if (color != null) {
+                        String colorStyle = "-fx-border-color: " + toWebColor(color) + ";";
+                        row.setStyle(colorStyle);
+                    }
                 } else {
                     row.pseudoClassStateChanged(filled, false);
                     row.setStyle(""); // Очистка стиля, если строки пустые
@@ -336,6 +340,15 @@ public class Controller implements Initializable {
             });
             return row;
         });
+    }
+
+    private Color getRowColor(int num) {
+        return switch (num) {
+            case 1 -> Color.web("#FF9858");
+            case 2 -> Color.web("#FFEC58");
+            case 3 -> Color.web("#8DFF58");
+            default -> null;
+        };
     }
 
     private String toWebColor(Color color) {
@@ -359,7 +372,7 @@ public class Controller implements Initializable {
                     int id = Integer.parseInt(parts[1]);
                     row.put("id", id);  // Сначала добавляем ID в row
 
-                    String colorData = form.getColumnColorSupplier().get(getOptionIndex()).get(this, row).toString();
+                    int colorData = Integer.parseInt(parts[2]);
                     row.put("colorData", colorData);
                 }
 
