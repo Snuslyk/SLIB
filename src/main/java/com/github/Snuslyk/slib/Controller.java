@@ -184,17 +184,6 @@ public class Controller implements Initializable {
                 idColumnsDisplay = column.displayName();
             }
 
-            Color color = Color.AQUA;
-            tableView.setRowFactory(tv -> new TableRow<>() {
-                @Override
-                protected void updateItem(Map<String, Object> item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    setStyle("-fx-background-color: " + color.toString() + ";");
-
-                }
-            });
-
             tableColumn.setCellValueFactory(cellData -> {
                 Map<String, Object> rowData = cellData.getValue();
                 Object cellValue = rowData.get(column.displayName());
@@ -330,14 +319,21 @@ public class Controller implements Initializable {
 
     private void setupRowFactory(TableView<Map<String, Object>> tableView) {
         PseudoClass filled = PseudoClass.getPseudoClass("filled");
+        Color color = Color.AQUA;
+
         tableView.setRowFactory(tv -> {
             TableRow<Map<String, Object>> row = new TableRow<>();
             row.itemProperty().addListener((obs, oldItem, newItem) -> {
                 row.pseudoClassStateChanged(filled, newItem != null);
+                String colorStyle = "-fx-border-color: " + toWebColor(color) + ";";
+                row.setStyle(colorStyle);
             });
-
             return row;
         });
+    }
+
+    private String toWebColor(Color color) {
+        return color.toString().replace("0x", "#");
     }
 
     private ObservableList<Map<String, Object>> fetchData(Form form, int optionIndex, List<Form.Column> columns) {
