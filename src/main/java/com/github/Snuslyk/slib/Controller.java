@@ -184,6 +184,17 @@ public class Controller implements Initializable {
                 idColumnsDisplay = column.displayName();
             }
 
+            Color color = Color.AQUA;
+            tableView.setRowFactory(tv -> new TableRow<>() {
+                @Override
+                protected void updateItem(Map<String, Object> item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    setStyle("-fx-background-color: " + color.toString() + ";");
+
+                }
+            });
+
             tableColumn.setCellValueFactory(cellData -> {
                 Map<String, Object> rowData = cellData.getValue();
                 Object cellValue = rowData.get(column.displayName());
