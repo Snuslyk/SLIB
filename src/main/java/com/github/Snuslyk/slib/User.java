@@ -15,7 +15,7 @@ public class User {
     @Column(name = "age")
     public int age;
     @Column(name = "colorData")
-    public int colorData;
+    public Integer colorData;
     @Override
     public String toString() {
         return "User: " + id + " " + name + " " + age;
