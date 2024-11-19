@@ -324,13 +324,11 @@ public class Controller implements Initializable {
         tableView.setRowFactory(tv -> {
             TableRow<Map<String, Object>> row = new TableRow<>();
 
-            
-
             row.itemProperty().addListener((obs, oldItem, newItem) -> {
                 if (newItem != null) {
                     row.pseudoClassStateChanged(filled, true);
-                    String colorStyle = "-fx-border-color: " + toWebColor(color) + ";";
-                    row.setStyle(colorStyle);
+                    //String colorStyle = "-fx-border-color: " + toWebColor(color) + ";";
+                    //row.setStyle(colorStyle);
                 } else {
                     row.pseudoClassStateChanged(filled, false);
                     row.setStyle(""); // Очистка стиля, если строки пустые
@@ -359,11 +357,14 @@ public class Controller implements Initializable {
                 if (parts.length > 1) {
                     int id = Integer.parseInt(parts[1]);
                     row.put("id", id);  // Сначала добавляем ID в row
+
+                    //String colorData = form.getColumnColorSupplier().get(getOptionIndex()).get(this,row).toString();
+                    //row.put("colorData", colorData);
                 }
 
                 // Добавляем остальные колонки
                 for (Form.Column column : columns) {
-                    row.put(column.displayName(), object.getClass().getField(column.key()).get(object));
+                    row.put(column.displayName(), column.columnInterface().get(object.getClass().getField(column.key()).get(object)));
                 }
 
                 rows.add(row);

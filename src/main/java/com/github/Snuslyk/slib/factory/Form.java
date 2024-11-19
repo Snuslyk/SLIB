@@ -71,6 +71,7 @@ public class Form {
 
     public static class Builder {
         private static final ColorSupplier defaultColorSupplier = (controller, rowData) -> Color.WHITE;
+        private static final ColumnInterface defaultColumnInterface = a -> a;
 
         private int optionSize;
         private int optionId = -1;
@@ -138,15 +139,21 @@ public class Form {
             this.filter[optionId] = filter;
             return this;
         }
-        public Builder column(String displayName, String key){
+
+        public Builder column(String displayName, String key, ColumnInterface columnInterface){
             if (usedDisplays.contains(displayName)) {
                 System.out.println("Уже есть колонна с таким названием!!!");
                 return this;
             }
-            this.columns.get(optionId).add(new Column(displayName, key));
+            if (columnInterface == null) columnInterface = defaultColumnInterface;
+            this.columns.get(optionId).add(new Column(displayName, key, columnInterface));
             usedDisplays.add(displayName);
             return this;
         }
+        public Builder column(String displayName, String key){
+            return column(displayName, key, null);
+        }
+
         public Builder sizeOfOption(int size){
             optionSize = size;
             type = new Type[size];
@@ -175,7 +182,11 @@ public class Form {
         CREATE
     }
 
-    public record Column(String displayName, String key){}
+    public record Column(String displayName, String key, ColumnInterface columnInterface){}
+
+    public interface ColumnInterface{
+        Object get(Object object);
+    }
 
     public record TableActionButton(String display, Color color, @Nullable String svg, @Nullable TableActionButtonIO io){}
 
