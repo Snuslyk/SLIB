@@ -580,7 +580,7 @@ public class Controller implements Initializable {
                     System.out.println("ОШИБКА СТОП 000000 ЭТО ЖЕ ОЧЕВИДНО, КАК ЕЁ РЕШИТЬ");
                 } else {
                     for (ButtonFactory.TextFieldWrapper field : fields){
-                        field.
+                        field.getKey();
                     }
                     // ВОТ ТУТ ТЕБЕ НУЖНО ДОБАВЛЯТЬ ЗНАЧЕНИЯ В ТАБЛИЦУ, ТАК КАК ОШИБОК НЕТ
                 }
