@@ -325,9 +325,14 @@ public class Controller implements Initializable {
         tableView.setRowFactory(tv -> {
             TableRow<Map<String, Object>> row = new TableRow<>();
             row.itemProperty().addListener((obs, oldItem, newItem) -> {
-                row.pseudoClassStateChanged(filled, newItem != null);
-                String colorStyle = "-fx-border-color: " + toWebColor(color) + ";";
-                row.setStyle(colorStyle);
+                if (newItem != null) {
+                    row.pseudoClassStateChanged(filled, true);
+                    String colorStyle = "-fx-border-color: " + toWebColor(color) + ";";
+                    row.setStyle(colorStyle);
+                } else {
+                    row.pseudoClassStateChanged(filled, false);
+                    row.setStyle(""); // Очистка стиля, если строки пустые
+                }
             });
             return row;
         });
