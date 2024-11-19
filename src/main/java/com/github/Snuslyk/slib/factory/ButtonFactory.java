@@ -474,6 +474,7 @@ public class ButtonFactory {
         void clearError();
         Boolean getError();
         void register(VBox container);
+        String 
     }
 
     private static void textFieldOptions(String text, int mainFontSize, int Hmargin, int height, @Nullable String textFieldText, TextField textField) {
