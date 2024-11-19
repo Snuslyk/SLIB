@@ -70,6 +70,8 @@ public class Form {
     }
 
     public static class Builder {
+        private static final ColorSupplier defaultColorSupplier = (controller, rowData) -> Color.WHITE;
+
         private int optionSize;
         private int optionId = -1;
         private final List<String> options = new ArrayList<>();
@@ -159,7 +161,7 @@ public class Form {
             columns.add(new ArrayList<>());
             tableButtons.add(new ArrayList<>());
             createFields.add(null);
-            columnColorSupplier.add(null);
+            columnColorSupplier.add(defaultColorSupplier);
             return this;
         }
 
