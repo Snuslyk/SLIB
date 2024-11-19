@@ -158,7 +158,7 @@ public class Controller implements Initializable {
 
         setupColumns(tableView, columns);
         setupButtonColumn(tableView);
-        setupRowFactory(tableView);
+        setupRowFactory(tableView, form);
 
         rightSideContainer.widthProperty().addListener((obs, oldWidth, newWidth) -> adjustTableColumnsWidth(newWidth.doubleValue()));
 
@@ -318,12 +318,14 @@ public class Controller implements Initializable {
         }
     }
 
-    private void setupRowFactory(TableView<Map<String, Object>> tableView) {
+    private void setupRowFactory(TableView<Map<String, Object>> tableView, Form form) {
         PseudoClass filled = PseudoClass.getPseudoClass("filled");
-        Color color = Color.AQUA;
 
         tableView.setRowFactory(tv -> {
             TableRow<Map<String, Object>> row = new TableRow<>();
+
+            
+
             row.itemProperty().addListener((obs, oldItem, newItem) -> {
                 row.pseudoClassStateChanged(filled, newItem != null);
                 String colorStyle = "-fx-border-color: " + toWebColor(color) + ";";
