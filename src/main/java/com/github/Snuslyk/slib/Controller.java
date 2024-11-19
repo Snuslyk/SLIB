@@ -525,12 +525,25 @@ public class Controller implements Initializable {
 
             rightSideContainer.getChildren().add(tableView);
         } else if (form.getType()[optionIndex] == Form.Type.CREATE) {
-            createRowContainer.setPrefWidth(200);
+            createRowContainer.setPrefWidth(720);
             createRowContainer.setPrefHeight(297);
             AnchorPane.setTopAnchor(createRowContainer, 172.0);
             AnchorPane.setBottomAnchor(createRowContainer, 40.0);
-            AnchorPane.setLeftAnchor(createRowContainer, 360.0);
-            AnchorPane.setRightAnchor(createRowContainer, 360.0);
+            if (rightSideContainer.getWidth() > createRowContainer.getPrefWidth()) {
+                double horizontalCenter = (rightSideContainer.getWidth() - createRowContainer.getPrefWidth()) / 2;
+                AnchorPane.setLeftAnchor(createRowContainer, horizontalCenter);
+                AnchorPane.setRightAnchor(createRowContainer, horizontalCenter);
+            }
+            rightSideContainer.widthProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal.doubleValue() > createRowContainer.getPrefWidth()) {
+                    double horizontalCenterD = (newVal.doubleValue() - createRowContainer.getPrefWidth()) / 2;
+                    AnchorPane.setLeftAnchor(createRowContainer, horizontalCenterD);
+                    AnchorPane.setRightAnchor(createRowContainer, horizontalCenterD);
+                } else {
+                    AnchorPane.setLeftAnchor(createRowContainer, 0.0);
+                    AnchorPane.setRightAnchor(createRowContainer, 0.0);
+                }
+            });
             createRowContainer.setSpacing(20);
 
             List<ButtonFactory.TextFieldWrapper> fields = form.getCreateFields().get(optionIndex);
