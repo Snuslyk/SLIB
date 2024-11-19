@@ -14,6 +14,8 @@ public class User {
     public String name;
     @Column(name = "age")
     public int age;
+    @Column(name = "colorData")
+    public int colorData;
     @Override
     public String toString() {
         return "User: " + id + " " + name + " " + age;
