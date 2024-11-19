@@ -4,6 +4,7 @@ import com.github.Snuslyk.slib.Controller;
 import com.github.Snuslyk.slib.FilterIO;
 import com.github.Snuslyk.slib.HibernateUtil;
 import com.sun.istack.Nullable;
+import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -19,14 +20,17 @@ public class Form {
     private final FilterIO[] filter;
     private final List<List<Column>> columns;
     private final List<List<TableActionButton>> tableButtons;
+    private final List<List<ButtonFactory.TextFieldWrapper>> createFields;
 
-    private Form(Type[] type, Class<?>[] tableClass, FilterIO[] filter, List<List<Column>> columns, List<String> options, List<List<TableActionButton>> tableButtons) {
+    private Form(Type[] type, Class<?>[] tableClass, FilterIO[] filter, List<List<Column>> columns, List<String> options, List<List<TableActionButton>> tableButtons,
+                 List<List<ButtonFactory.TextFieldWrapper>> createFields) {
         this.options = options;
         this.type = type;
         this.tableClass = tableClass;
         this.filter = filter;
         this.columns = columns;
         this.tableButtons = tableButtons;
+        this.createFields = createFields;
     }
 
     public List<Object> get(int option){
@@ -54,6 +58,10 @@ public class Form {
         return tableButtons;
     }
 
+    public List<List<ButtonFactory.TextFieldWrapper>> getCreateFields() {
+        return createFields;
+    }
+
     public static class Builder {
         private int optionSize;
         private int optionId = -1;
@@ -62,6 +70,7 @@ public class Form {
         private Class<?>[] tableClass;
         private FilterIO[] filter;
         private final List<List<Column>> columns = new ArrayList<>();
+        private final List<List<ButtonFactory.TextFieldWrapper>> createFields = new ArrayList<>();
 
         private List<String> usedDisplays = new ArrayList<>();
 
@@ -88,6 +97,18 @@ public class Form {
         }
         public Builder tableActionButton(TableActionButton tableActionButton){
             tableButtons.get(optionId).add(tableActionButton);
+            return this;
+        }
+        public Builder createTextField(String key, String name, String description, String errorSample, @Nullable String textFieldText){
+            createFields.get(optionId).add(new ButtonFactory.BasicTextField(key, name, description, errorSample, textFieldText));
+            return this;
+        }
+        public Builder createChooseField(String key, String name, String description, String errorSample, String errorSampleD, ObservableList<String> items, @Nullable String textFieldText){
+            createFields.get(optionId).add(new ButtonFactory.ChoosingTextField(key, name, description, errorSample, errorSampleD, items, textFieldText));
+            return this;
+        }
+        public Builder createDatePickerField(String key, String description, String errorSample, @Nullable String textFieldText){
+            createFields.get(optionId).add(new ButtonFactory.DatePickerField(key, description, errorSample, textFieldText));
             return this;
         }
 
@@ -117,11 +138,12 @@ public class Form {
             options.add(name);
             columns.add(new ArrayList<>());
             tableButtons.add(new ArrayList<>());
+            createFields.add(new ArrayList<>());
             return this;
         }
 
         public Form build(){
-            return new Form(type, tableClass, filter, columns, options, tableButtons);
+            return new Form(type, tableClass, filter, columns, options, tableButtons, createFields);
         }
     }
 
