@@ -381,18 +381,6 @@ public class Controller implements Initializable {
                     row.put("colorData", d.getColorData());
                 }
 
-                //String objString = object.toString();
-                //String[] parts = objString.split(" ");
-                //if (parts.length > 1) {
-                //    int id = Integer.parseInt(parts[1]);
-                //    row.put("id", id);  // Сначала добавляем ID в row
-//
-                //    if (parts.length > 2){
-                //        int colorData = Integer.parseInt(parts[2]);
-                //        row.put("colorData", colorData);
-                //    }
-                //}
-
                 // Добавляем остальные колонки
                 for (Form.Column column : columns) {
                     row.put(column.displayName(), column.columnInterface().get(object.getClass().getField(column.key()).get(object)));
