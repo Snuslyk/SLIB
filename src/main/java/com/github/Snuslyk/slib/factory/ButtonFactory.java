@@ -1,9 +1,12 @@
 package com.github.Snuslyk.slib.factory;
 
+import com.github.Snuslyk.slib.Application;
 import com.sun.istack.Nullable;
 import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
@@ -12,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Popup;
 
@@ -74,7 +78,7 @@ public class ButtonFactory {
         private static final int descFontSize = 20;
         private static final int mainFontSize = 20;
         private static final int Hmargin = 20;
-        private static final int Vmargin = 8;
+        private static final int Vmargin = 5;
         private static final int height = 40;
 
         private VBox field;
@@ -113,7 +117,7 @@ public class ButtonFactory {
 
             // TextField
             textField = new TextField();
-            textFieldOptions(text, mainFontSize, Hmargin, height, textFieldText, textField);
+            textFieldOptions(text, mainFontSize, Hmargin - 2, height, textFieldText, textField);
 
             // Добавление элементов в контейнер
             field.getChildren().addAll(descriptionLabel, textField);
@@ -139,7 +143,7 @@ public class ButtonFactory {
         private static final int descFontSize = 20;
         private static final int mainFontSize = 20;
         private static final int Hmargin = 20;
-        private static final int Vmargin = 8;
+        private static final int Vmargin = 5;
         private static final int height = 40;
         private static final int popUpHeight = 99;
         private static final int popUpWidth = 719;
@@ -188,7 +192,7 @@ public class ButtonFactory {
             // Button and SVG Icon
             button = new ToggleButton();
             SVGPath svgIcon = new SVGPath();
-            svgIcon.setContent("M1, 7L7, 0.999999L13, 7");
+            svgIcon.setContent("M1, 0L7, 6L13, 0");
             svgIcon.setFill(Color.TRANSPARENT);
             svgIcon.setStroke(Color.web("#3D3D3D"));
             svgIcon.setStrokeWidth(1.0);
@@ -204,9 +208,42 @@ public class ButtonFactory {
             suggestionsPopup = new Popup();
             suggestionsPopup.setAutoHide(true);
             listView = new ListView<>();
-            listView.setMaxHeight(popUpHeight);
+            listView.setMaxHeight(popUpHeight + 1);
             listView.setItems(items.get());
             suggestionsPopup.getContent().add(listView);
+            listView.getStyleClass().remove(0);
+            listView.getStylesheets().add(Application.class.getResource("application.css").toExternalForm());
+            listView.getStyleClass().add("text-field-list-view");
+            listView.setCellFactory(lv -> {
+                ListCell<String> cell = new ListCell<>() {
+                    private final PseudoClass emptyPseudoClass = PseudoClass.getPseudoClass("empty");
+
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                            setGraphic(null);
+                            pseudoClassStateChanged(emptyPseudoClass, true);
+                        } else {
+                            setText(item);
+                            pseudoClassStateChanged(emptyPseudoClass, false);
+                        }
+                    }
+                };
+                cell.getStyleClass().add("text-field-list-view-cell");
+                cell.setPrefHeight(40);
+                return cell;
+            });
+            Rectangle clip = new Rectangle();
+            clip.setArcWidth(26);
+            clip.setArcHeight(26);
+            listView.setClip(clip);
+
+            listView.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
+                clip.setWidth(newBounds.getWidth());
+                clip.setHeight(newBounds.getHeight());
+            });
 
             textField.prefWidthProperty().bind(container.widthProperty());
             listView.prefWidthProperty().bind(container.widthProperty());
@@ -220,7 +257,7 @@ public class ButtonFactory {
             });
 
             button.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
-                if (isNowSelected) {
+                if (!isNowSelected) {
                     svgIcon.setContent("M1, 0L7, 6L13, 0");
                 } else {
                     svgIcon.setContent("M1, 7L7, 0.999999L13, 7");
@@ -292,7 +329,7 @@ public class ButtonFactory {
             if (!suggestionsPopup.isShowing()) {
                 Bounds boundsInScene = textField.localToScene(textField.getBoundsInLocal());
                 double x = boundsInScene.getMinX() + textField.getScene().getWindow().getX() + 8;
-                double y = boundsInScene.getMaxY() + textField.getScene().getWindow().getY() + height - 3;
+                double y = boundsInScene.getMaxY() + textField.getScene().getWindow().getY() + height - 1;
                 suggestionsPopup.show(textField, x, y);
             }
         }
@@ -313,7 +350,7 @@ public class ButtonFactory {
         private static final int descFontSize = 20;
         private static final int Hmargin = 20;
         private static final int mainFontSize = 20;
-        private static final int Vmargin = 8;
+        private static final int Vmargin = 5;
         private static final int height = 40;
 
         private VBox field;
@@ -337,8 +374,8 @@ public class ButtonFactory {
             datePicker = new DatePicker();
 
             datePicker.setPrefHeight(height);
-            datePicker.setStyle("-fx-font-size: " + mainFontSize + "px;");
-            datePicker.getEditor().setStyle("-fx-padding: 0 0 0 " + Hmargin + "px;");
+            datePicker.setStyle("-fx-font-size: " + mainFontSize + ";");
+            datePicker.getEditor().setStyle("-fx-padding: 0 0 0 " + Hmargin + ";");
 
             // Label с описанием
             Label descriptionLabel = new Label(descText);
@@ -393,8 +430,9 @@ public class ButtonFactory {
         if (error != null && !error.isEmpty()) {
             isError = true;
             errorLabel.setText(error);
-            errorLabel.setTextFill(Color.rgb(239, 48, 48));
             descriptionTextFieldOptions(errorLabel, descFontSize, Hmargin);
+            errorLabel.setPadding(new Insets(0, 0, 0, Hmargin));
+            errorLabel.setStyle("-fx-text-fill: rgb(239, 48, 48);");
             if (!field.getChildren().contains(errorLabel)) {
                 field.getChildren().add(errorLabel);
             }
@@ -488,14 +526,14 @@ public class ButtonFactory {
         if (textFieldText != null) {
             textField.setText(textFieldText);
         }
-        textField.setStyle("-fx-padding: 0 0 0 " + Hmargin + "px;");
+        textField.setStyle("-fx-padding: 0 0 0 " + Hmargin + ";");
         textField.setPrefHeight(height);
     }
 
     private static void descriptionTextFieldOptions(Label descriptionText, int descFontSize, int Hmargin) {
         descriptionText.getStyleClass().add("textfield-desc");
         descriptionText.setStyle("-fx-font-size: " + descFontSize + ";");
-        descriptionText.setStyle("-fx-padding: 0 0 0 " + Hmargin + "px;");
+        descriptionText.setStyle("-fx-padding: 0 0 0 " + Hmargin + ";");
     }
 
 }

@@ -262,3 +262,130 @@
     -fx-background-radius: 8;
     -fx-border-radius: 8;
 }
+
+.textfield-form {
+    -fx-background-color: transparent;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-border-color: #3D3D3D;
+    -fx-border-width: 1;
+    -fx-font-size: 20;
+    -fx-font-family: "Futura Cyrillic Book";
+    -fx-prompt-text-fill: #3D3D3D;
+    -fx-text-fill: white;
+}
+.textfield-form:focused {
+    -fx-border-color: #888888;
+}
+.textfield-desc {
+    -fx-text-fill: #3D3D3D;
+    -fx-font-size: 20;
+    -fx-font-family: "Futura Cyrillic Book";
+}
+.save-button {
+    -fx-background-color: #FF9858;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-font-size: 20;
+    -fx-font-family: "Futura Cyrillic Book";
+    -fx-text-fill: black;
+    -fx-cursor: hand;
+}
+.text-field-with-button .toggle-button {
+    -fx-background-color: transparent;
+}
+/*.text-field-popup {
+    -fx-background-color: #121212;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-border-color: #3D3D3D;
+    -fx-border-width: 1;
+    -fx-font-size: 20;
+    -fx-font-family: "Futura Cyrillic Book";
+    -fx-text-fill: white;
+}*/
+
+/* Ваш CSS файл
+.popup-content {
+    -fx-background-color: white;
+    -fx-border-color: gray;
+    -fx-border-width: 1px;
+    -fx-padding: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);
+} */
+
+.text-field-list-view {
+    -fx-background-color: #121212;
+    -fx-border-color: #3D3D3D;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
+
+.text-field-list-view .scroll-bar {
+    -fx-background-color: transparent; /* Фон прокрутки */
+}
+
+.text-field-list-view .scroll-bar:horizontal .thumb {
+    -fx-background-color: #3D3D3D; /* Цвет бегунка в горизонтальном ScrollBar */
+    -fx-background-radius: 6;      /* Радиус бегунка */
+}
+
+.text-field-list-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #3D3D3D; /* Цвет бегунка в вертикальном ScrollBar */
+    -fx-background-radius: 6;
+}
+
+.text-field-list-view .scroll-bar .increment-button,
+.text-field-list-view .scroll-bar .decrement-button {
+    -fx-padding: 0;
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}
+
+.text-field-list-view .scroll-bar .increment-arrow,
+.text-field-list-view .scroll-bar .decrement-arrow {
+    -fx-background-color: transparent;
+}
+
+.text-field-list-view .scroll-bar .track {
+    -fx-background-color: transparent; /* Цвет фона трека */
+}
+
+.text-field-list-view .scroll-bar:vertical {
+    -fx-translate-x: -5;
+    -fx-pref-width: 8;
+    -fx-padding: 5 0 5 0;
+}
+
+.text-field-list-view-cell {
+    -fx-background-color: transparent;
+    -fx-font-size: 20;
+    -fx-font-family: "Futura Cyrillic Book";
+    -fx-text-fill: white;
+    -fx-label-padding: 0 0 0 7;
+    -fx-cursor: hand;
+}
+
+.text-field-list-view-cell:hover {
+    -fx-background-color: #1c1c1c;
+}
+
+.text-field-list-view-cell:empty {
+    -fx-background-color: transparent; /* Убираем фон при наведении */
+    -fx-cursor: default; /* Сбрасываем курсор */
+}
+
+.text-field-list-first-item {
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
+
+.text-field-list-last-item {
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}

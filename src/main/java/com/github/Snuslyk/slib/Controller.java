@@ -328,14 +328,23 @@ public class Controller implements Initializable {
                 if (newItem != null) {
                     row.pseudoClassStateChanged(filled, true);
 
-                    Color color = getRowColor((int) newItem.get("colorData"));
-                    if (color != null) {
-                        String colorStyle = "-fx-border-color: " + toWebColor(color) + ";";
-                        row.setStyle(colorStyle);
+                    // Проверяем наличие ключа "colorData" и его значения
+                    Object colorDataObj = newItem.get("colorData");
+                    if (colorDataObj instanceof Integer) {
+                        int colorData = (Integer) colorDataObj;
+                        Color color = getRowColor(colorData);
+                        if (color != null) {
+                            String colorStyle = "-fx-border-color: " + toWebColor(color) + ";";
+                            row.setStyle(colorStyle);
+                        } else {
+                            row.setStyle(""); // Очистка стиля, если цвет не определен
+                        }
+                    } else {
+                        row.setStyle(""); // Очистка стиля, если colorData отсутствует
                     }
                 } else {
                     row.pseudoClassStateChanged(filled, false);
-                    row.setStyle(""); // Очистка стиля, если строки пустые
+                    row.setStyle(""); // Очистка стиля для пустых строк
                 }
             });
             return row;
@@ -372,8 +381,10 @@ public class Controller implements Initializable {
                     int id = Integer.parseInt(parts[1]);
                     row.put("id", id);  // Сначала добавляем ID в row
 
-                    int colorData = Integer.parseInt(parts[2]);
-                    row.put("colorData", colorData);
+                    if (parts.length > 2){
+                        int colorData = Integer.parseInt(parts[2]);
+                        row.put("colorData", colorData);
+                    }
                 }
 
                 // Добавляем остальные колонки
@@ -607,6 +618,11 @@ public class Controller implements Initializable {
 
             // кнопка, для сохранения результатов
             javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
+            create.getStyleClass().add("save-button");
+            create.setPrefWidth(720);
+            create.setMaxHeight(39);
+            create.setMinHeight(39);
+            create.setTranslateY(20);
             createRowContainer.getChildren().add(create);
 
             // ЛИОН! ЭТА ШТУКА ПРОИЗВОДИТ ПРОВЕРКУ НА НАЛИЧИЕ ОШИБОК
