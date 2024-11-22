@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements RowData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,5 +19,15 @@ public class User {
     @Override
     public String toString() {
         return "User: " + id + " " + colorData + " " + name + " " + age;
+    }
+
+    @Override
+    public int getID() {
+        return id;
+    }
+
+    @Override
+    public int getColorData() {
+        return -1;
     }
 }

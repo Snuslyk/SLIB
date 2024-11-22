@@ -375,17 +375,23 @@ public class Controller implements Initializable {
                 Map<String, Object> row = new LinkedHashMap<>();
 
                 // Извлекаем ID из строки объекта
-                String objString = object.toString();
-                String[] parts = objString.split(" ");
-                if (parts.length > 1) {
-                    int id = Integer.parseInt(parts[1]);
-                    row.put("id", id);  // Сначала добавляем ID в row
 
-                    if (parts.length > 2){
-                        int colorData = Integer.parseInt(parts[2]);
-                        row.put("colorData", colorData);
-                    }
+                if (object instanceof RowData d){
+                    row.put("id", d.getID());
+                    row.put("colorData", d.getColorData());
                 }
+
+                //String objString = object.toString();
+                //String[] parts = objString.split(" ");
+                //if (parts.length > 1) {
+                //    int id = Integer.parseInt(parts[1]);
+                //    row.put("id", id);  // Сначала добавляем ID в row
+//
+                //    if (parts.length > 2){
+                //        int colorData = Integer.parseInt(parts[2]);
+                //        row.put("colorData", colorData);
+                //    }
+                //}
 
                 // Добавляем остальные колонки
                 for (Form.Column column : columns) {
