@@ -375,7 +375,6 @@ public class Controller implements Initializable {
                 Map<String, Object> row = new LinkedHashMap<>();
 
                 // Извлекаем ID из строки объекта
-
                 if (object instanceof RowData d){
                     row.put("id", d.getID());
                     row.put("colorData", d.getColorData());

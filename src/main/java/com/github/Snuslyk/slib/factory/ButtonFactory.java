@@ -426,6 +426,75 @@ public class ButtonFactory {
         }
     }
 
+    public static class ChoiceBoxField implements TextFieldWrapper {
+        private static final int descFontSize = 20;
+        private static final int Hmargin = 20;
+        private static final int mainFontSize = 20;
+        private static final int Vmargin = 5;
+        private static final int height = 40;
+
+        private VBox field;
+        private ChoiceBox<String> choiceBox;
+        private final boolean isError = false;
+        private final Label errorLabel = new Label();
+        private final Supplier<ObservableList<String>> items;
+
+        private final String errorSample, descText, textFieldText, key;
+
+        public ChoiceBoxField(String key, String descText, String errorSample, @Nullable String textFieldText, Supplier<ObservableList<String>> items) {
+            this.items = items;
+            this.key = key;
+            this.errorSample = errorSample;
+            this.descText = descText;
+            this.textFieldText = textFieldText;
+        }
+
+        @Override
+        public void register(VBox container) {
+            field = new VBox();
+            field.setSpacing(Vmargin);
+            choiceBox = new ChoiceBox<String>();
+
+            choiceBox.setItems(items.get());
+
+            choiceBox.setPrefHeight(height);
+            choiceBox.setStyle("-fx-font-size: " + mainFontSize + ";");
+            choiceBox.setStyle("-fx-padding: 0 0 0 " + Hmargin + ";");
+
+            // Label с описанием
+            Label descriptionLabel = new Label(descText);
+            descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
+
+            field.getChildren().addAll(descriptionLabel, choiceBox);
+            container.getChildren().add(field);
+        }
+
+        @Override
+        public String getTextFieldText() {
+            return textFieldText;
+        }
+
+        @Override
+        public void setError(String error) {
+            errorSetter(error, isError, errorLabel, field, descFontSize, Hmargin);
+        }
+
+        @Override
+        public void clearError() {
+            setError(null);
+        }
+
+        @Override
+        public Boolean getError() {
+            return isError;
+        }
+
+        @Override
+        public String getKey() {
+            return key;
+        }
+    }
+
     private static void errorSetter(String error, boolean isError, Label errorLabel, VBox field, int descFontSize, int Hmargin) {
         if (error != null && !error.isEmpty()) {
             isError = true;
