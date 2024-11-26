@@ -1,5 +1,6 @@
 package com.github.Snuslyk.slib;
 
+import javafx.scene.input.ScrollEvent;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -49,8 +50,9 @@ public class HibernateUtil {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        session.save(object);
+        session.persist(object);
 
+        session.flush();
         session.getTransaction().commit();
         session.close();
     }
@@ -60,6 +62,7 @@ public class HibernateUtil {
 
         session.remove(object);
 
+        session.flush();
         session.getTransaction().commit();
         session.close();
     }
@@ -108,8 +111,13 @@ public class HibernateUtil {
 
         }
 
-        Query query = entityManager.createQuery(criteriaQuery);
-        return query.getResultList();
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        session.flush();
+        Query query = session.createQuery(criteriaQuery);
+        List<T> list =  query.getResultList();
+        session.close();
+        return list;
     }
 
 }
