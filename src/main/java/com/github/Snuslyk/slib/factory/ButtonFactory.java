@@ -85,7 +85,10 @@ public class ButtonFactory {
         private TextField textField;
         private final Label errorLabel = new Label();
         private Boolean isError = false;
-        private final String text, descText, textFieldText, key;
+        private final String text;
+        private final String descText;
+        private String textFieldText;
+        private final String key;
 
         private final String errorSample;
 
@@ -136,6 +139,10 @@ public class ButtonFactory {
         public String getTextFieldText() {
             return textField.getText();
         }
+
+        public void setTextFieldText(String text) {
+            textFieldText = text;
+        }
     }
 
     public static class ChoosingTextField implements TextFieldWrapper {
@@ -157,7 +164,10 @@ public class ButtonFactory {
         private final String errorSample;
         private final String errorSampleD;
         private final Label errorLabel = new Label();
-        private final String text, descText, textFieldText, key;
+        private final String text;
+        private final String descText;
+        private String textFieldText;
+        private final String key;
         private Pane outOfBoundsContainer;
         private boolean isError = false;
 
@@ -339,6 +349,10 @@ public class ButtonFactory {
             return textField.getText();
         }
 
+        public void setTextFieldText(String text) {
+            textFieldText = text;
+        }
+
         // Метод для получения списка элементов
         public ObservableList<String> getItems() {
             return items.get();
@@ -357,7 +371,10 @@ public class ButtonFactory {
         private DatePicker datePicker;
         private final boolean isError = false;
         private final Label errorLabel = new Label();
-        private final String errorSample, descText, textFieldText, key;
+        private final String errorSample;
+        private final String descText;
+        private String textFieldText;
+        private final String key;
 
 
         public DatePickerField(String key, String descText, String errorSample, @Nullable String textFieldText) {
@@ -409,6 +426,10 @@ public class ButtonFactory {
             return datePicker.getValue().toString();
         }
 
+        public void setTextFieldText(String text) {
+            textFieldText = text;
+        }
+
         public void setTextFieldText(LocalDate localDate) {
             datePicker.setValue(localDate);
         }
@@ -439,7 +460,10 @@ public class ButtonFactory {
         private final Label errorLabel = new Label();
         private final Supplier<ObservableList<String>> items;
 
-        private final String errorSample, descText, textFieldText, key;
+        private final String errorSample;
+        private final String descText;
+        private String textFieldText;
+        private final String key;
 
         public ChoiceBoxField(String key, String descText, String errorSample, @Nullable String textFieldText, Supplier<ObservableList<String>> items) {
             this.items = items;
@@ -472,6 +496,10 @@ public class ButtonFactory {
         @Override
         public String getTextFieldText() {
             return textFieldText;
+        }
+
+        public void setTextFieldText(String text) {
+            textFieldText = text;
         }
 
         @Override
@@ -581,6 +609,7 @@ public class ButtonFactory {
     // Интерфейс-обёртка для текстовых полей
     public interface TextFieldWrapper {
         String getTextFieldText();
+        void setTextFieldText(String text);
         void setError(String message);
         void clearError();
         Boolean getError();

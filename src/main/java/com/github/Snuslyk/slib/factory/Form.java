@@ -5,6 +5,8 @@ import com.github.Snuslyk.slib.FilterIO;
 import com.github.Snuslyk.slib.HibernateUtil;
 import com.sun.istack.Nullable;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
+import javafx.scene.control.RadioButton;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -12,6 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import static com.github.Snuslyk.slib.factory.ButtonFactory.validateChecker;
 
 public class Form {
 
@@ -192,7 +196,31 @@ public class Form {
         Object get(Object object);
     }
 
-    public record TableActionButton(String display, Color color, @Nullable String svg, @Nullable TableActionButtonIO io){}
+    public record TableActionButton(
+            String display,
+            Color color,
+            @Nullable String svg,
+            @Nullable TableActionButtonIO io,
+            int extraParam // Дополнительный параметр
+    ) {
+        // Конструктор для создания кнопки без параметра
+        public TableActionButton(String display, Color color, @Nullable String svg, @Nullable TableActionButtonIO io) {
+            this(display, color, svg, io, 0); // Значение по умолчанию для extraParam
+        }
+
+        // Метод для создания новой кнопки с измененным параметром
+        public TableActionButton withExtraParam(int extraParam) {
+            return new TableActionButton(display, color, svg, io, extraParam); // Создаем новый объект с переданным параметром
+        }
+
+        // Метод для вызова действия с учетом параметра
+        public void execute(Controller controller, Map<String, Object> data) {
+            if (io != null) {
+                io.handle(controller, data, extraParam); // Передаем параметр в обработчик
+            }
+        }
+    }
+
 
     public record CreateFields<T>(Class<T> clazz, List<ButtonFactory.TextFieldWrapper> fields, CreateSupplier<T> createSupplier) {}
 
@@ -204,14 +232,15 @@ public class Form {
         Color get(Controller controller, Map<String, Object> rowData);
     }
 
-    public interface TableActionButtonIO{
-        void run(Controller controller, Map<String, Object> rowData);
+    @FunctionalInterface
+    public interface TableActionButtonIO {
+        void handle(Controller controller, Map<String, Object> data, int extraParam);
     }
 
     public static class TableActionButtons{
         public static final TableActionButton DELETE = new TableActionButton("Удалить", Color.rgb(239, 48, 48),
                 "M1 3.4H2.22222M2.22222 3.4H12.9997M2.22222 3.4V11.8C2.22222 12.1183 2.35099 12.4235 2.5802 12.6485C2.80941 12.8736 3.12029 13 3.44444 13H10.5552C10.8794 13 11.1903 12.8736 11.4195 12.6485C11.6487 12.4235 11.7775 12.1183 11.7775 11.8V3.4M4.05556 3.4V2.2C4.05556 1.88174 4.18433 1.57652 4.41354 1.35147C4.64275 1.12643 4.95362 1 5.27778 1H8.7219C9.04605 1 9.35693 1.12643 9.58614 1.35147C9.81535 1.57652 9.94412 1.88174 9.94412 2.2V3.4M5.27778 6.4V10M8.7219 6.4V10",
-                (controller, data) -> {
+                (controller, data, index) -> {
                     Form form = controller.getExternalObjects().get(controller.getSectionIndex()).get(controller.getObjectIndex()).getForm();
                     List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[controller.getOptionIndex()], form.getFilter()[controller.getOptionIndex()]);
                     System.out.println("asdasdasd" + list);
@@ -242,7 +271,54 @@ public class Form {
                     }
                 }
         );
-        public static final TableActionButton EDIT = new TableActionButton("Редактировать", Color.WHITE, "M6.36744 2.26512H2.19276C1.87642 2.26512 1.57304 2.39078 1.34935 2.61447C1.12567 2.83816 1 3.14154 1 3.45788V11.8072C1 12.1236 1.12567 12.427 1.34935 12.6506C1.57304 12.8743 1.87642 13 2.19276 13H10.5421C10.8585 13 11.1618 12.8743 11.3855 12.6506C11.6092 12.427 11.7349 12.1236 11.7349 11.8072V7.63256M10.8403 1.37054C11.0776 1.13329 11.3994 1 11.7349 1C12.0704 1 12.3922 1.13329 12.6295 1.37054C12.8667 1.6078 13 1.92959 13 2.26512C13 2.60065 12.8667 2.92244 12.6295 3.15969L6.96382 8.82532L4.57829 9.42171L5.17468 7.03618L10.8403 1.37054Z", (controller, data) -> {
+        public static final TableActionButton EDIT = new TableActionButton("Редактировать", Color.WHITE, "M6.36744 2.26512H2.19276C1.87642 2.26512 1.57304 2.39078 1.34935 2.61447C1.12567 2.83816 1 3.14154 1 3.45788V11.8072C1 12.1236 1.12567 12.427 1.34935 12.6506C1.57304 12.8743 1.87642 13 2.19276 13H10.5421C10.8585 13 11.1618 12.8743 11.3855 12.6506C11.6092 12.427 11.7349 12.1236 11.7349 11.8072V7.63256M10.8403 1.37054C11.0776 1.13329 11.3994 1 11.7349 1C12.0704 1 12.3922 1.13329 12.6295 1.37054C12.8667 1.6078 13 1.92959 13 2.26512C13 2.60065 12.8667 2.92244 12.6295 3.15969L6.96382 8.82532L4.57829 9.42171L5.17468 7.03618L10.8403 1.37054Z", (controller, data, index) -> {
+            if (controller.getOptionToggleGroup().getSelectedToggle() == null) return;
+
+            controller.getOptionToggleGroup().getSelectedToggle().setSelected(false);
+            controller.modelUpdate();
+
+            // Получаем форму и текущую опцию
+            Form form = controller.getExternalObjects().get(controller.getSectionIndex())
+                    .get(controller.getObjectIndex()).getForm();
+
+            Form.CreateFields createFields = form.getCreateFields().get(index);
+            List<ButtonFactory.TextFieldWrapper> fields = createFields.fields();
+
+            for (ButtonFactory.TextFieldWrapper field : fields) {
+                field.setTextFieldText((String) data.get(field.getKey()));
+            }
+
+            if (!fields.isEmpty()) {
+                controller.createRowContainer.setPrefSize(720, 297);
+                controller.createRowContainer.setAlignment(Pos.TOP_CENTER);
+                controller.createRowContainer.setSpacing(20);
+                controller.adjustCreateRowContainerAlignment();
+
+                controller.registerFields(fields);
+
+                javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
+                create.getStyleClass().add("save-button");
+                create.setPrefSize(720, 39);
+                create.setTranslateY(20);
+
+                create.setOnAction(event -> {
+                    if (validateChecker(fields.toArray(new ButtonFactory.TextFieldWrapper[0]))) {
+                        System.out.println("ОШИБКА: Проверьте введенные данные.");
+                    } else {
+                        Object object = createFields.createSupplier.get(fields);
+                        System.out.println(object);
+                        if (object != null) {
+                            HibernateUtil.fastSave(object); // ЛИОН! ВОТ ТУТ НАДО ВМЕСТО СОХРАНЕНИЯ ДЕЛАТЬ ОБНОВЛЕНИЕ ОБЪЕКТА
+                        }
+                    }
+                });
+                controller.createRowContainer.getChildren().add(create);
+
+                controller.rightSideContainer.getChildren().add(controller.createRowContainer);
+
+            } else {
+                System.out.println("Нет полей для редактирования.");
+            }
 
         });
     }
