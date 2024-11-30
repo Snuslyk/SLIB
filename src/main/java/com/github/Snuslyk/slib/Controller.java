@@ -580,6 +580,7 @@ public class Controller implements Initializable {
 
         Form.CreateFields createFields = form.getCreateFields().get(optionIndex);
         List<ButtonFactory.TextFieldWrapper> fields = createFields.fields();
+        fields.forEach(field -> field.setTextFieldText(""));
 
         registerFields(fields);
         addSaveButton(fields, createFields.createSupplier());

@@ -6,6 +6,7 @@ import com.github.Snuslyk.slib.HibernateUtil;
 import com.sun.istack.Nullable;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.paint.Color;
 
@@ -281,12 +282,16 @@ public class Form {
             Form form = controller.getExternalObjects().get(controller.getSectionIndex())
                     .get(controller.getObjectIndex()).getForm();
 
-            Form.CreateFields createFields = form.getCreateFields().get(index);
-            List<ButtonFactory.TextFieldWrapper> fields = createFields.fields();
-
-            for (ButtonFactory.TextFieldWrapper field : fields) {
-                field.setTextFieldText((String) data.get(field.getKey()));
+            for (int i = 0; i <= form.getOptions().size(); i++) {
+                if (form.getType()[i] == Type.CREATE) {
+                    index = i;
+                    break;
+                }
             }
+
+            CreateFields createFields = form.getCreateFields().get(index);
+            List<ButtonFactory.TextFieldWrapper> fields = createFields.fields();
+            fields.forEach(field -> field.setTextFieldText((String) data.get(field.getKey())));
 
             if (!fields.isEmpty()) {
                 controller.createRowContainer.setPrefSize(720, 297);
@@ -296,7 +301,7 @@ public class Form {
 
                 controller.registerFields(fields);
 
-                javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
+                Button create = new Button("Сохранить");
                 create.getStyleClass().add("save-button");
                 create.setPrefSize(720, 39);
                 create.setTranslateY(20);
