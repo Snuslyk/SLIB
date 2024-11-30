@@ -74,7 +74,6 @@ public class Form {
     }
 
     public static class Builder {
-        private static final ColorSupplier defaultColorSupplier = (controller, rowData) -> Color.WHITE;
         private static final ColumnInterface defaultColumnInterface = a -> a;
 
         private int optionSize;
@@ -115,8 +114,7 @@ public class Form {
             return this;
         }
         public Builder tableColumnColorSupplier(ColorSupplier supplier){
-            columnColorSupplier.remove(columnColorSupplier.size()-1);
-            columnColorSupplier.add(supplier);
+            columnColorSupplier.set(columnColorSupplier.size()-1, supplier);
             return this;
         }
 
@@ -176,7 +174,7 @@ public class Form {
             columns.add(new ArrayList<>());
             tableButtons.add(new ArrayList<>());
             createFields.add(null);
-            columnColorSupplier.add(defaultColorSupplier);
+            columnColorSupplier.add(null);;
             return this;
         }
 
