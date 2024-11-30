@@ -205,7 +205,7 @@ public class Form {
     ) {
         // Конструктор для создания кнопки без параметра
         public TableActionButton(String display, Color color, @Nullable String svg, @Nullable TableActionButtonIO io) {
-            this(display, color, svg, io, 0); // Значение по умолчанию для extraParam
+            this(display, color, svg, io, -1); // Значение по умолчанию для extraParam
         }
 
         // Метод для создания новой кнопки с измененным параметром
@@ -281,10 +281,12 @@ public class Form {
             Form form = controller.getExternalObjects().get(controller.getSectionIndex())
                     .get(controller.getObjectIndex()).getForm();
 
-            for (int i = 0; i <= form.getOptions().size(); i++) {
-                if (form.getType()[i] == Type.CREATE) {
-                    index = i;
-                    break;
+            if (index == -1) {
+                for (int i = 0; i <= form.getOptions().size(); i++) {
+                    if (form.getType()[i] == Type.CREATE) {
+                        index = i;
+                        break;
+                    }
                 }
             }
 
