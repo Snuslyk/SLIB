@@ -583,7 +583,7 @@ public class Controller implements Initializable {
         fields.forEach(field -> field.setTextFieldText(""));
 
         registerFields(fields);
-        addSaveButton(fields, createFields.createSupplier());
+        addSaveButton(fields, createFields.createSupplier(), form, optionIndex);
 
         rightSideContainer.getChildren().add(createRowContainer);
     }
@@ -607,21 +607,21 @@ public class Controller implements Initializable {
         }
     }
 
-    private void addSaveButton(List<ButtonFactory.TextFieldWrapper> fields, Form.CreateSupplier<?> supplier) {
+    private void addSaveButton(List<ButtonFactory.TextFieldWrapper> fields, Form.CreateSupplier<?> supplier, Form form, int optionIndex) {
         javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
         create.getStyleClass().add("save-button");
         create.setPrefSize(720, 39);
         create.setTranslateY(20);
 
-        create.setOnAction(event -> handleSaveAction(fields, supplier));
+        create.setOnAction(event -> handleSaveAction(fields, supplier, form, optionIndex));
         createRowContainer.getChildren().add(create);
     }
 
-    private void handleSaveAction(List<ButtonFactory.TextFieldWrapper> fields, Form.CreateSupplier<?> supplier) {
+    private void handleSaveAction(List<ButtonFactory.TextFieldWrapper> fields, Form.CreateSupplier<?> supplier, Form form, int optionIndex) {
         if (validateChecker(fields.toArray(new TextFieldWrapper[0]))) {
             System.out.println("ОШИБКА: Проверьте введенные данные.");
         } else {
-            Object object = supplier.get(fields);
+            Object object = supplier.get(form.getCreateFields().get(optionIndex).supplier().get(), fields);
             if (object != null) {
                 HibernateUtil.fastSave(object);
                 // Добавьте объект в таблицу

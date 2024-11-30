@@ -14,6 +14,7 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 public class HibernateUtil {
 
@@ -51,11 +52,30 @@ public class HibernateUtil {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        session.save(object);
+        session.persist(object);
 
         session.getTransaction().commit();
         session.close();
     }
+
+    public static <T> void update(Class<T> clazz, int id, Update<T> update){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        T old = session.get(clazz, id);
+        session.evict(old);
+        old = update.update(old);
+        session.merge(old);
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    public interface Update<T> {
+        T update(T old);
+    }
+
+
     public static void remove(Object object){
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
