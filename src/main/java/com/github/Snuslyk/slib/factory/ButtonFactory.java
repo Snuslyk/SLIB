@@ -391,21 +391,26 @@ public class ButtonFactory {
             datePicker.setPrefHeight(height);
             datePicker.setStyle("-fx-font-size: " + mainFontSize + ";");
             datePicker.getEditor().setStyle("-fx-padding: 0 0 0 " + Hmargin + ";");
-
-            // Label с описанием
+            
             Label descriptionLabel = new Label(descText);
             descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
 
-            if (textFieldText != null) {
-                // Разделяем строку по точкам
+            if (textFieldText != null && !textFieldText.isEmpty()) {
                 String[] parts = textFieldText.split("\\.");
 
-                // Преобразуем части в числа
-                int day = Integer.parseInt(parts[0]);
-                int month = Integer.parseInt(parts[1]);
-                int year = Integer.parseInt(parts[2]);
+                if (parts.length == 3) {
+                    try {
+                        int day = Integer.parseInt(parts[0]);
+                        int month = Integer.parseInt(parts[1]);
+                        int year = Integer.parseInt(parts[2]);
 
-                setTextFieldText(LocalDate.of(year, month, day));
+                        setTextFieldText(LocalDate.of(year, month, day));
+                    } catch (NumberFormatException e) {
+                        setError("Invalid date format");
+                    }
+                } else {
+                    setError("Invalid date format");
+                }
             }
 
             field.getChildren().addAll(descriptionLabel, datePicker);
