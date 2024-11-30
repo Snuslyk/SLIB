@@ -329,12 +329,17 @@ public class Controller implements Initializable {
     private void setupRowFactory(TableView<Map<String, Object>> tableView, int sectionIndex, int objectIndex, int optionIndex) {
         PseudoClass filled = PseudoClass.getPseudoClass("filled");
 
+        final int finalS = sectionIndex;
+        System.out.println(finalS);
+
         tableView.setRowFactory(tv -> {
             TableRow<Map<String, Object>> row = new TableRow<>();
 
             row.itemProperty().addListener((obs, oldItem, newItem) -> {
                 if (newItem != null) {
                     row.pseudoClassStateChanged(filled, true);
+
+                    System.out.println(finalS);
 
                     Form form = externalObjects.get(sectionIndex).get(objectIndex).getForm();
                     Form.ColorSupplier colorSupplier = form.getColumnColorSupplier().get(optionIndex);
