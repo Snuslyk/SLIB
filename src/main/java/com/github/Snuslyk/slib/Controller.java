@@ -17,11 +17,13 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
@@ -64,12 +66,12 @@ public class Controller implements Initializable {
     private VBox sectionsContainer;
 
     @FXML
-    private AnchorPane rightSideContainer;
+    public AnchorPane rightSideContainer;
     @FXML
     private AnchorPane leftSideContainer;
 
     private final TableView<Map<String, Object>> tableView = new TableView<>();
-    private final VBox createRowContainer = new VBox();
+    public final VBox createRowContainer = new VBox();
 
     private Section selectedSection;
 
@@ -188,7 +190,7 @@ public class Controller implements Initializable {
 
             tableColumn.setCellValueFactory(cellData -> {
                 Map<String, Object> rowData = cellData.getValue();
-                Object cellValue = rowData.get(column.displayName());
+                Object cellValue = rowData.get(column.key());
                 return new SimpleStringProperty(cellValue != null ? cellValue.toString() : "");
             });
 
@@ -281,6 +283,7 @@ public class Controller implements Initializable {
             getTableView().setOnMouseClicked(event -> closeEditPopUp());
 
             Form form = externalObjects.get(getSectionIndex()).get(getObjectIndex()).getForm();
+            if (getOptionToggleGroup().getSelectedToggle() == null) return;
             List<Form.TableActionButton> buttons = form.getTableButtons().get(getOptionIndex());
             if (buttons == null) return;
             if (!editPopUp.getChildren().isEmpty()) return;
@@ -288,7 +291,7 @@ public class Controller implements Initializable {
             // Перебираем кнопки и добавляем их с соответствующими классами
             for (int i = 0; i < buttons.size(); i++) {
                 Form.TableActionButton actionButton = buttons.get(i);
-                javafx.scene.control.Button editButton = addEditButton(actionButton.display(), actionButton.color(), actionButton.svg(), actionButton.io(), rowData);
+                javafx.scene.control.Button editButton = addEditButton(actionButton, rowData);
 
                 editButton.setOnMouseClicked(event -> closeEditPopUp());
 
@@ -382,7 +385,12 @@ public class Controller implements Initializable {
 
                 // Добавляем остальные колонки
                 for (Form.Column column : columns) {
-                    row.put(column.displayName(), column.columnInterface().get(object.getClass().getField(column.key()).get(object)));
+                    String key = column.key(); // внутренний ключ
+                    String displayName = column.displayName(); // отображаемое имя для UI (если нужно)
+                    Object value = object.getClass().getField(key).get(object);
+
+                    row.put(key, column.columnInterface().get(value));  // храним данные с оригинальным ключом
+                    // Используйте displayName для отображения в таблице, если необходимо
                 }
 
                 rows.add(row);
@@ -404,22 +412,21 @@ public class Controller implements Initializable {
     }
 
 
-    private javafx.scene.control.Button addEditButton(String text, Color color, String logo, Form.TableActionButtonIO io, Map<String, Object> rowData) {
+    private javafx.scene.control.Button addEditButton(Form.TableActionButton tableActionButton, Map<String, Object> rowData) {
         HBox contentBox = new HBox();
         contentBox.setSpacing(7);
-        Label label = new Label(text);
+        Label label = new Label(tableActionButton.display()); // Используем display из TableActionButton
 
-        // Проверяем, есть ли логотип для создания SVGPath
-        if (logo != null && !logo.isEmpty()) {
+        // Проверяем, есть ли логотип (SVGPath) для создания и добавления в HBox
+        if (tableActionButton.svg() != null && !tableActionButton.svg().isEmpty()) {
             SVGPath svgIcon = new SVGPath();
-            svgIcon.setContent(logo);
-            svgIcon.setStroke(color);
+            svgIcon.setContent(tableActionButton.svg());
+            svgIcon.setStroke(tableActionButton.color());
             svgIcon.setFill(null);
             svgIcon.setStrokeWidth(1);
 
             // Устанавливаем отступ для SVGPath
             HBox.setMargin(svgIcon, new Insets(0, 0, 0, 7));
-
             contentBox.getChildren().add(svgIcon);
         } else {
             // Устанавливаем отступ для текста, если нет SVG
@@ -427,7 +434,7 @@ public class Controller implements Initializable {
         }
 
         // Добавляем текст в любом случае
-        label.setTextFill(color);
+        label.setTextFill(tableActionButton.color());
         contentBox.getChildren().add(label);
 
         // Настраиваем размеры HBox
@@ -440,12 +447,14 @@ public class Controller implements Initializable {
         button.getStyleClass().add("editButton");
         button.setMinHeight(28);
 
-        if (io != null) {
-            button.setOnAction(event -> io.run(this, rowData));
+        // Настраиваем обработчик событий кнопки
+        if (tableActionButton.io() != null) {
+            button.setOnAction(event -> tableActionButton.execute(this, rowData));  // Вызываем execute с учетом extraParam
         }
 
         return button;
     }
+
 
 
 
@@ -531,117 +540,125 @@ public class Controller implements Initializable {
     }
 
     public void modelUpdate() {
+        clearRightSideContainer();
+
+        if (getOptionToggleGroup().getSelectedToggle() == null) return;
         int sectionIndex = getSectionIndex();
         int objectIndex = getObjectIndex();
         int optionIndex = getOptionIndex();
 
-        Form form = externalObjects.get(sectionIndex)
-                .get(objectIndex)
-                .getForm();
+        Form form = externalObjects.get(sectionIndex).get(objectIndex).getForm();
+        Form.Type formType = form.getType()[optionIndex];
 
-        rightSideContainer.getChildren().remove(tableView);
-        rightSideContainer.getChildren().remove(createRowContainer);
-        createRowContainer.getChildren().clear();
-
-        tableView.getStyleClass().add("tableD");
-
-        if (form.getType()[optionIndex] == Form.Type.TABLE) {
-            tableView.setPrefWidth(200);
-            tableView.setPrefHeight(297);
-            AnchorPane.setTopAnchor(tableView, 172.0);
-            AnchorPane.setBottomAnchor(tableView, 40.0);
-            AnchorPane.setLeftAnchor(tableView, -1.0);
-            AnchorPane.setRightAnchor(tableView, -1.0);
-
-            setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
-            adjustTableColumnsWidth(rightSideContainer.getWidth());
-
-            rightSideContainer.getChildren().add(tableView);
-        } else if (form.getType()[optionIndex] == Form.Type.CREATE) {
-            createRowContainer.setPrefWidth(720);
-            createRowContainer.setPrefHeight(297);
-            createRowContainer.setAlignment(Pos.TOP_CENTER);
-            AnchorPane.setTopAnchor(createRowContainer, 172.0);
-            AnchorPane.setBottomAnchor(createRowContainer, 40.0);
-            if (rightSideContainer.getWidth() > createRowContainer.getPrefWidth()) {
-                double horizontalCenter = (rightSideContainer.getWidth() - createRowContainer.getPrefWidth()) / 2;
-                AnchorPane.setLeftAnchor(createRowContainer, horizontalCenter);
-                AnchorPane.setRightAnchor(createRowContainer, horizontalCenter);
-            } else {
-                AnchorPane.setLeftAnchor(createRowContainer, 0.0);
-                AnchorPane.setRightAnchor(createRowContainer, 0.0);
-            }
-            rightSideContainer.widthProperty().addListener((obs, oldVal, newVal) -> {
-                if (newVal.doubleValue() > createRowContainer.getPrefWidth()) {
-                    double horizontalCenterD = (newVal.doubleValue() - createRowContainer.getPrefWidth()) / 2;
-                    AnchorPane.setLeftAnchor(createRowContainer, horizontalCenterD);
-                    AnchorPane.setRightAnchor(createRowContainer, horizontalCenterD);
-                } else {
-                    AnchorPane.setLeftAnchor(createRowContainer, 0.0);
-                    AnchorPane.setRightAnchor(createRowContainer, 0.0);
-                }
-            });
-            createRowContainer.setSpacing(20);
-
-            Form.CreateFields createFields = form.getCreateFields().get(optionIndex);
-
-            List<ButtonFactory.TextFieldWrapper> fields = createFields.fields();
-            Form.CreateSupplier<?> supplier = createFields.createSupplier();
-
-            for (ButtonFactory.TextFieldWrapper field : fields){
-                if (field instanceof ChoosingTextField choosingTextField)
-                    choosingTextField.register(createRowContainer,rootContainer);
-                else
-                    field.register(createRowContainer);
-            }
-
-
-           //// это значения для поля со списком, мой кастомный combo box
-           //ObservableList<String> items = FXCollections.observableArrayList(
-           //        "Apple", "Banana", "Cherry", "Date", "Elderberry", "Fig", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape", "Grape"
-           //);
-
-           //// это вот так много кастомизации навалил, не знаю, может в рамках нашей штуки столько и не надо, завтра наверное почищу
-           //BasicTextField textField = new BasicTextField("Что-то...", "Комментарий", "Ты чо, долбаёб?", null);
-           //ChoosingTextField choosingTextField = new ChoosingTextField("Что-то...", "Мероприятия",
-           //        "У тебя нихуя нет, еблан", "Ты чо пишешь, еблан?", rootContainer, items, null);
-           //BasicTextField textFieldD = new BasicTextField( "Что-то...", "Комментарий", "Ну всё, пизда", null);
-           //DatePickerField datePickerField = new DatePickerField( "Дата начала", "Дата не указанна", null);
-
-
-            // кнопка, для сохранения результатов
-            javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
-            create.getStyleClass().add("save-button");
-            create.setPrefWidth(720);
-            create.setMaxHeight(39);
-            create.setMinHeight(39);
-            create.setTranslateY(20);
-            createRowContainer.getChildren().add(create);
-
-            // ЛИОН! ЭТА ШТУКА ПРОИЗВОДИТ ПРОВЕРКУ НА НАЛИЧИЕ ОШИБОК
-            create.setOnAction(event -> {
-                boolean checker = validateChecker(fields.toArray(new TextFieldWrapper[]{}));
-                if (checker) {
-                    System.out.println("ОШИБКА СТОП 000000 ЭТО ЖЕ ОЧЕВИДНО, КАК ЕЁ РЕШИТЬ");
-                } else {
-                    Object object = supplier.get(fields);
-                    if (object != null) HibernateUtil.fastSave(object);
-                    // ВОТ ТУТ ТЕБЕ НУЖНО ДОБАВЛЯТЬ ЗНАЧЕНИЯ В ТАБЛИЦУ, ТАК КАК ОШИБОК НЕТ
-                }
-            });
-
-            rightSideContainer.getChildren().add(createRowContainer);
+        switch (formType) {
+            case TABLE -> setupTable(sectionIndex, objectIndex, optionIndex, form);
+            case CREATE -> setupCreateForm(sectionIndex, objectIndex, optionIndex, form);
         }
     }
 
-    public int getSectionIndex(){
+    private void clearRightSideContainer() {
+        rightSideContainer.getChildren().removeAll(tableView, createRowContainer);
+        createRowContainer.getChildren().clear();
+    }
+
+    private void setupTable(int sectionIndex, int objectIndex, int optionIndex, Form form) {
+        tableView.getStyleClass().add("tableD");
+        tableView.setPrefSize(200, 297);
+        setAnchors(tableView, 172.0, 40.0, -1.0, -1.0);
+
+        setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
+        adjustTableColumnsWidth(rightSideContainer.getWidth());
+
+        rightSideContainer.getChildren().add(tableView);
+    }
+
+    private void setupCreateForm(int sectionIndex, int objectIndex, int optionIndex, Form form) {
+        createRowContainer.setPrefSize(720, 297);
+        createRowContainer.setAlignment(Pos.TOP_CENTER);
+        createRowContainer.setSpacing(20);
+        adjustCreateRowContainerAlignment();
+
+        Form.CreateFields createFields = form.getCreateFields().get(optionIndex);
+        List<ButtonFactory.TextFieldWrapper> fields = createFields.fields();
+
+        registerFields(fields);
+        addSaveButton(fields, createFields.createSupplier());
+
+        rightSideContainer.getChildren().add(createRowContainer);
+    }
+
+    public void adjustCreateRowContainerAlignment() {
+        AnchorPane.setTopAnchor(createRowContainer, 172.0);
+        AnchorPane.setBottomAnchor(createRowContainer, 40.0);
+        rightSideContainer.widthProperty().addListener((obs, oldVal, newVal) ->
+                alignHorizontally(createRowContainer, newVal.doubleValue(), createRowContainer.getPrefWidth())
+        );
+        alignHorizontally(createRowContainer, rightSideContainer.getWidth(), createRowContainer.getPrefWidth());
+    }
+
+    public void registerFields(List<ButtonFactory.TextFieldWrapper> fields) {
+        for (ButtonFactory.TextFieldWrapper field : fields) {
+            if (field instanceof ChoosingTextField choosingTextField) {
+                choosingTextField.register(createRowContainer, rootContainer);
+            } else {
+                field.register(createRowContainer);
+            }
+        }
+    }
+
+    private void addSaveButton(List<ButtonFactory.TextFieldWrapper> fields, Form.CreateSupplier<?> supplier) {
+        javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
+        create.getStyleClass().add("save-button");
+        create.setPrefSize(720, 39);
+        create.setTranslateY(20);
+
+        create.setOnAction(event -> handleSaveAction(fields, supplier));
+        createRowContainer.getChildren().add(create);
+    }
+
+    private void handleSaveAction(List<ButtonFactory.TextFieldWrapper> fields, Form.CreateSupplier<?> supplier) {
+        if (validateChecker(fields.toArray(new TextFieldWrapper[0]))) {
+            System.out.println("ОШИБКА: Проверьте введенные данные.");
+        } else {
+            Object object = supplier.get(fields);
+            if (object != null) {
+                HibernateUtil.fastSave(object);
+                // Добавьте объект в таблицу
+            }
+        }
+    }
+
+    private void setAnchors(Node node, double top, double bottom, double left, double right) {
+        AnchorPane.setTopAnchor(node, top);
+        AnchorPane.setBottomAnchor(node, bottom);
+        AnchorPane.setLeftAnchor(node, left);
+        AnchorPane.setRightAnchor(node, right);
+    }
+
+    private void alignHorizontally(Node node, double containerWidth, double nodeWidth) {
+        if (containerWidth > nodeWidth) {
+            double horizontalCenter = (containerWidth - nodeWidth) / 2;
+            AnchorPane.setLeftAnchor(node, horizontalCenter);
+            AnchorPane.setRightAnchor(node, horizontalCenter);
+        } else {
+            AnchorPane.setLeftAnchor(node, 0.0);
+            AnchorPane.setRightAnchor(node, 0.0);
+        }
+    }
+
+
+    public int getSectionIndex() {
         return sectionsContainer.getChildren().indexOf((RadioButton) sectionToggleGroup.getSelectedToggle());
     }
-    public int getObjectIndex(){
+    public int getObjectIndex() {
         return objectContainer.getChildren().indexOf((RadioButton) objectToggleGroup.getSelectedToggle());
     }
-    public int getOptionIndex(){
+    public int getOptionIndex() {
         return optionsContainer.getChildren().indexOf(((RadioButton) optionToggleGroup.getSelectedToggle()).getParent());
+    }
+
+    public ToggleGroup getOptionToggleGroup() {
+        return optionToggleGroup;
     }
 
     public List<List<Button>> getExternalObjects() {
