@@ -13,6 +13,7 @@ import javax.persistence.Query;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class HibernateUtil {
 
@@ -50,9 +51,8 @@ public class HibernateUtil {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        session.persist(object);
+        session.save(object);
 
-        session.flush();
         session.getTransaction().commit();
         session.close();
     }
@@ -62,7 +62,6 @@ public class HibernateUtil {
 
         session.remove(object);
 
-        session.flush();
         session.getTransaction().commit();
         session.close();
     }
@@ -94,7 +93,6 @@ public class HibernateUtil {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(clazz);
         Root<T> root = criteriaQuery.from(clazz);
-
 
         criteriaQuery.select(root);
 
