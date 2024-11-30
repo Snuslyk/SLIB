@@ -426,14 +426,7 @@ public class ButtonFactory {
         }
 
         public String getTextFieldText() {
-            if (datePicker.getValue() != null) {
-                int day = datePicker.getValue().getDayOfMonth();
-                int month = datePicker.getValue().getMonthValue();
-                int year = datePicker.getValue().getYear();
-                
-                return day + "." + month + "." + year;
-            }
-            return ""; // Возвращаем пустую строку, если дата не выбрана
+            return datePicker.getValue().toString();
         }
 
         public void setTextFieldText(String text) {
