@@ -160,12 +160,11 @@ public class Controller implements Initializable {
         setupNumberColumn(tableView); // Добавляем нумерацию строк
 
         Form form = externalObjects.get(sectionIndex).get(objectIndex).getForm();
-        System.out.println(externalObjects.get(sectionIndex));
         List<Form.Column> columns = form.getColumns().get(optionIndex);
 
         setupColumns(tableView, columns);
         setupButtonColumn(tableView);
-        setupRowFactory(tableView, sectionIndex, objectIndex, optionIndex);
+        setupRowFactory(tableView);
 
         rightSideContainer.widthProperty().addListener((obs, oldWidth, newWidth) -> adjustTableColumnsWidth(newWidth.doubleValue()));
 
@@ -326,11 +325,8 @@ public class Controller implements Initializable {
         }
     }
 
-    private void setupRowFactory(TableView<Map<String, Object>> tableView, int sectionIndex, int objectIndex, int optionIndex) {
+    private void setupRowFactory(TableView<Map<String, Object>> tableView) {
         PseudoClass filled = PseudoClass.getPseudoClass("filled");
-
-        final int finalS = sectionIndex;
-        System.out.println(finalS);
 
         tableView.setRowFactory(tv -> {
             TableRow<Map<String, Object>> row = new TableRow<>();
@@ -339,15 +335,12 @@ public class Controller implements Initializable {
                 if (newItem != null) {
                     row.pseudoClassStateChanged(filled, true);
 
-                    System.out.println(finalS);
 
-                    Form form = externalObjects.get(sectionIndex).get(objectIndex).getForm();
-                    Form.ColorSupplier colorSupplier = form.getColumnColorSupplier().get(optionIndex);
+                    Form form = externalObjects.get(getSectionIndex()).get(getObjectIndex()).getForm();
+                    Form.ColorSupplier colorSupplier = form.getColumnColorSupplier().get(getOptionIndex());
 
-                    System.out.println("sup is null: " + (colorSupplier == null));
                     if (colorSupplier != null) {
                         Color color = colorSupplier.get(this, newItem);
-                        System.out.println("col is null: " + (color == null));
                         if (color != null) {
                             String colorStyle = "-fx-border-color: " + toWebColor(color) + ";";
                             row.setStyle(colorStyle);
