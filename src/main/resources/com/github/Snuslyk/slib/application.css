@@ -294,25 +294,6 @@
 .text-field-with-button .toggle-button {
     -fx-background-color: transparent;
 }
-/*.text-field-popup {
-    -fx-background-color: #121212;
-    -fx-border-radius: 12;
-    -fx-background-radius: 12;
-    -fx-border-color: #3D3D3D;
-    -fx-border-width: 1;
-    -fx-font-size: 20;
-    -fx-font-family: "Futura Cyrillic Book";
-    -fx-text-fill: white;
-}*/
-
-/* Ваш CSS файл
-.popup-content {
-    -fx-background-color: white;
-    -fx-border-color: gray;
-    -fx-border-width: 1px;
-    -fx-padding: 5px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);
-} */
 
 .text-field-list-view {
     -fx-background-color: #121212;
@@ -389,3 +370,58 @@
     -fx-border-radius: 12;
     -fx-background-radius: 12;
 }
+
+.choice-box {
+    -fx-background-color: transparent;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-border-color: #3D3D3D;
+    -fx-border-width: 1;
+    -fx-font-size: 20;
+    -fx-font-family: "Futura Cyrillic Book";
+    -fx-prompt-text-fill: #3D3D3D;
+    -fx-text-fill: white;
+}
+
+.choice-box:focused {
+    -fx-border-color: #888888;
+}
+
+.choice-box .list-view {
+    -fx-background-color: #121212;
+    -fx-border-color: #3D3D3D;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
+
+/* Стилизация раскрывающегося списка */
+.choice-box .list-cell {
+    -fx-background-color: #66BB6A;   /* Фон ячеек */
+    -fx-text-fill: white;            /* Цвет текста ячеек */
+    -fx-font-size: 14px;
+}
+
+.choice-box .list-cell:hover {
+    -fx-background-color: #121212;
+    -fx-border-color: #3D3D3D;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
+
+/* Стилизация стрелки раскрытия */
+.choice-box .arrow {
+    -fx-stroke: #3D3D3D;
+    -fx-stroke-width: 2;
+    -fx-background-color: transparent;
+    -fx-shape: "M1, 0L7, 6L13, 0"; /* Треугольная стрелка */
+}
+
+.choice-box:showing .arrow {
+    -fx-stroke: #3D3D3D;
+    -fx-stroke-width: 2;
+    -fx-background-color: transparent;
+    -fx-shape: "M1, 7L7, 0.999999L13, 7"; /* Треугольная стрелка */
+}
+

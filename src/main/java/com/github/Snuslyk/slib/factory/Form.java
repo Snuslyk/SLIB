@@ -139,8 +139,8 @@ public class Form {
             createFields.get(optionId).fields.add(new ButtonFactory.DatePickerField(key, description, errorSample, textFieldText));
             return this;
         }
-        public Builder createChoiceBox(String key, String description, String errorSample, @Nullable String textFieldText, Supplier<ObservableList<String>> items){
-            createFields.get(optionId).fields.add(new ButtonFactory.ChoiceBoxField(key, description, errorSample, textFieldText, items));
+        public Builder createChoiceBox(String key, String description, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
+            createFields.get(optionId).fields.add(new ButtonFactory.ChoiceBoxField(key, description, errorSample, items, textFieldText));
             return this;
         }
 

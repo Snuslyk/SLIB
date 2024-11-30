@@ -153,7 +153,6 @@ public class ButtonFactory {
         private static final int Vmargin = 5;
         private static final int height = 40;
         private static final int popUpHeight = 99;
-        private static final int popUpWidth = 719;
 
         private VBox field;
         private TextField textField;
@@ -197,7 +196,6 @@ public class ButtonFactory {
             // TextField
             textField = new TextField();
             textFieldOptions(text, mainFontSize, Hmargin, height, textFieldText, textField);
-            textField.setPrefWidth(popUpWidth + 1);
 
             // Button and SVG Icon
             button = new ToggleButton();
@@ -449,7 +447,7 @@ public class ButtonFactory {
 
     public static class ChoiceBoxField implements TextFieldWrapper {
         private static final int descFontSize = 20;
-        private static final int Hmargin = 20;
+        private static final int Hmargin = 10;
         private static final int mainFontSize = 20;
         private static final int Vmargin = 5;
         private static final int height = 40;
@@ -465,7 +463,7 @@ public class ButtonFactory {
         private String textFieldText;
         private final String key;
 
-        public ChoiceBoxField(String key, String descText, String errorSample, @Nullable String textFieldText, Supplier<ObservableList<String>> items) {
+        public ChoiceBoxField(String key, String descText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
             this.items = items;
             this.key = key;
             this.errorSample = errorSample;
@@ -481,15 +479,39 @@ public class ButtonFactory {
 
             choiceBox.setItems(items.get());
 
+            // Создание SVGPath для стрелки
+            SVGPath arrow = new SVGPath();
+            arrow.setContent("M1, 0L7, 6L13, 0"); // Стрелка вниз
+            arrow.setFill(Color.TRANSPARENT);
+            arrow.setStroke(Color.web("#3D3D3D"));
+            arrow.setStrokeWidth(1.0);
+
             choiceBox.setPrefHeight(height);
             choiceBox.setStyle("-fx-font-size: " + mainFontSize + ";");
             choiceBox.setStyle("-fx-padding: 0 0 0 " + Hmargin + ";");
+            choiceBox.prefWidthProperty().bind(container.widthProperty());
+            choiceBox.getStyleClass().add("choice-box");
 
             // Label с описанием
             Label descriptionLabel = new Label(descText);
             descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
 
-            field.getChildren().addAll(descriptionLabel, choiceBox);
+            // Контейнер для размещения ChoiceBox и стрелки
+            HBox hContainer = new HBox(-41, choiceBox, arrow); // Хранит ChoiceBox и стрелку
+            hContainer.setAlignment(Pos.CENTER_LEFT);
+
+            // Обновление стрелки в зависимости от состояния ChoiceBox (раскрыт/не раскрыт)
+            choiceBox.showingProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal) {
+                    // Когда список раскрыт, стрелка вверх
+                    arrow.setContent("M1, 7L7, 0.999999L13, 7");
+                } else {
+                    // Когда список закрыт, стрелка вниз
+                    arrow.setContent("M1, 0L7, 6L13, 0");
+                }
+            });
+
+            field.getChildren().addAll(descriptionLabel, hContainer);
             container.getChildren().add(field);
         }
 
