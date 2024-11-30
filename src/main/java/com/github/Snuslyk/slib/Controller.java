@@ -29,6 +29,7 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.*;
@@ -368,7 +369,6 @@ public class Controller implements Initializable {
         ObservableList<Map<String, Object>> data = FXCollections.observableArrayList();
         List<Map<String, Object>> rows = new ArrayList<>();
         List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], form.getFilter()[optionIndex]);
-        System.out.println(list);
 
         try {
             for (Object object : list) {
