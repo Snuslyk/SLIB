@@ -7,7 +7,6 @@ import com.sun.istack.Nullable;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -121,9 +120,9 @@ public class Form {
             return this;
         }
 
-        public <T> Builder createClass(Class<?> clazz, CreateSupplier<T> supplier){
+        public <T> Builder createClass(Class<?> clazz, Supplier<T> supplier1, CreateSupplier<T> supplier){
             createFields.remove(createFields.size()-1);
-            createFields.add(new CreateFields(clazz, new ArrayList<>(), supplier));
+            createFields.add(new CreateFields(clazz, new ArrayList<>(), supplier1,  supplier));
             return this;
         }
 
@@ -223,10 +222,10 @@ public class Form {
     }
 
 
-    public record CreateFields<T>(Class<T> clazz, List<ButtonFactory.TextFieldWrapper> fields, CreateSupplier<T> createSupplier) {}
+    public record CreateFields<T>(Class<T> clazz, List<ButtonFactory.TextFieldWrapper> fields, Supplier<T> supplier, CreateSupplier<T> createSupplier) {}
 
     public interface CreateSupplier<T> {
-        T get(List<ButtonFactory.TextFieldWrapper> fields);
+        T get(Object object, List<ButtonFactory.TextFieldWrapper> fields);
     }
 
     public interface ColorSupplier {
@@ -295,6 +294,8 @@ public class Form {
             List<ButtonFactory.TextFieldWrapper> fields = createFields.fields();
             fields.forEach(field -> field.setTextFieldText((String) data.get(field.getKey())));
 
+            int id = (int) data.get("id");
+
             if (!fields.isEmpty()) {
                 controller.createRowContainer.setPrefSize(720, 297);
                 controller.createRowContainer.setAlignment(Pos.TOP_CENTER);
@@ -312,11 +313,11 @@ public class Form {
                     if (validateChecker(fields.toArray(new ButtonFactory.TextFieldWrapper[0]))) {
                         System.out.println("ОШИБКА: Проверьте введенные данные.");
                     } else {
-                        Object object = createFields.createSupplier.get(fields);
-                        System.out.println(object);
-                        if (object != null) {
-                            HibernateUtil.fastSave(object); // ЛИОН! ВОТ ТУТ НАДО ВМЕСТО СОХРАНЕНИЯ ДЕЛАТЬ ОБНОВЛЕНИЕ ОБЪЕКТА
-                        }
+                        //Object object = createFields.createSupplier.get(HibernateUtil.getObjectById(Object.class, id), fields);
+                        HibernateUtil.update(createFields.clazz, id, update -> {
+                            update = createFields.createSupplier.get(update, fields);
+                            return update;
+                        }); // ЛИОН! ВОТ ТУТ НАДО ВМЕСТО СОХРАНЕНИЯ ДЕЛАТЬ ОБНОВЛЕНИЕ ОБЪЕКТА
                     }
                 });
                 controller.createRowContainer.getChildren().add(create);
