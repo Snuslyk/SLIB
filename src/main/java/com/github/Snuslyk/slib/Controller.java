@@ -5,6 +5,7 @@ import com.github.Snuslyk.slib.electives.ButtonElective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
 import com.github.Snuslyk.slib.factory.ButtonFactory;
 import com.github.Snuslyk.slib.factory.Form;
+import com.github.Snuslyk.slib.util.ColorUtil;
 import javafx.animation.PauseTransition;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
@@ -28,9 +29,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
+import org.hibernate.procedure.internal.Util;
 
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -157,11 +160,12 @@ public class Controller implements Initializable {
         setupNumberColumn(tableView); // Добавляем нумерацию строк
 
         Form form = externalObjects.get(sectionIndex).get(objectIndex).getForm();
+        System.out.println(externalObjects.get(sectionIndex));
         List<Form.Column> columns = form.getColumns().get(optionIndex);
 
         setupColumns(tableView, columns);
         setupButtonColumn(tableView);
-        setupRowFactory(tableView, form);
+        setupRowFactory(tableView, sectionIndex, objectIndex, optionIndex);
 
         rightSideContainer.widthProperty().addListener((obs, oldWidth, newWidth) -> adjustTableColumnsWidth(newWidth.doubleValue()));
 
@@ -322,7 +326,7 @@ public class Controller implements Initializable {
         }
     }
 
-    private void setupRowFactory(TableView<Map<String, Object>> tableView, Form form) {
+    private void setupRowFactory(TableView<Map<String, Object>> tableView, int sectionIndex, int objectIndex, int optionIndex) {
         PseudoClass filled = PseudoClass.getPseudoClass("filled");
 
         tableView.setRowFactory(tv -> {
@@ -332,19 +336,17 @@ public class Controller implements Initializable {
                 if (newItem != null) {
                     row.pseudoClassStateChanged(filled, true);
 
-                    // Проверяем наличие ключа "colorData" и его значения
-                    Object colorDataObj = newItem.get("colorData");
-                    if (colorDataObj instanceof Integer) {
-                        int colorData = (Integer) colorDataObj;
-                        Color color = getRowColor(colorData);
+                    Form form = externalObjects.get(sectionIndex).get(objectIndex).getForm();
+                    Form.ColorSupplier colorSupplier = form.getColumnColorSupplier().get(optionIndex);
+
+                    System.out.println("sup is null: " + (colorSupplier == null));
+                    if (colorSupplier != null) {
+                        Color color = colorSupplier.get(this, newItem);
+                        System.out.println("col is null: " + (color == null));
                         if (color != null) {
                             String colorStyle = "-fx-border-color: " + toWebColor(color) + ";";
                             row.setStyle(colorStyle);
-                        } else {
-                            row.setStyle(""); // Очистка стиля, если цвет не определен
                         }
-                    } else {
-                        row.setStyle(""); // Очистка стиля, если colorData отсутствует
                     }
                 } else {
                     row.pseudoClassStateChanged(filled, false);
@@ -355,14 +357,6 @@ public class Controller implements Initializable {
         });
     }
 
-    private Color getRowColor(int num) {
-        return switch (num) {
-            case 1 -> Color.web("#FF9858");
-            case 2 -> Color.web("#FFEC58");
-            case 3 -> Color.web("#8DFF58");
-            default -> null;
-        };
-    }
 
     private String toWebColor(Color color) {
         return color.toString().replace("0x", "#");
