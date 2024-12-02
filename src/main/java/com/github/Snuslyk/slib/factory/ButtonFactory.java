@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
@@ -452,13 +451,13 @@ public class ButtonFactory {
 
     public static class ChoiceBoxField implements TextFieldWrapper {
         private static final int descFontSize = 20;
-        private static final int Hmargin = 10;
+        private static final int Hmargin = 20;
         private static final int mainFontSize = 20;
         private static final int Vmargin = 5;
         private static final int height = 40;
 
         private VBox field;
-        private ChoiceBox<String> choiceBox;
+        private ComboBox<String> comboBox;
         private final boolean isError = false;
         private final Label errorLabel = new Label();
         private final Supplier<ObservableList<String>> items;
@@ -480,9 +479,9 @@ public class ButtonFactory {
         public void register(VBox container) {
             field = new VBox();
             field.setSpacing(Vmargin);
-            choiceBox = new ChoiceBox<String>();
+            comboBox = new ComboBox<String>();
 
-            choiceBox.setItems(items.get());
+            comboBox.setItems(items.get());
 
             // Создание SVGPath для стрелки
             SVGPath arrow = new SVGPath();
@@ -491,22 +490,59 @@ public class ButtonFactory {
             arrow.setStroke(Color.web("#3D3D3D"));
             arrow.setStrokeWidth(1.0);
 
-            choiceBox.setPrefHeight(height);
-            choiceBox.setStyle("-fx-font-size: " + mainFontSize + ";");
-            choiceBox.setStyle("-fx-padding: 0 0 0 " + Hmargin + ";");
-            choiceBox.prefWidthProperty().bind(container.widthProperty());
-            choiceBox.getStyleClass().add("choice-box");
+            comboBox.setMinHeight(height);
+            comboBox.setMaxHeight(height);
+            comboBox.setStyle("-fx-font-size: " + mainFontSize + ";");
+            comboBox.setStyle("-fx-padding: 0 0 0 " + Hmargin + ";");
+            comboBox.prefWidthProperty().bind(container.widthProperty());
+            comboBox.getStyleClass().add("combo-box-field");
+
+            comboBox.setCellFactory(lv -> new ListCell<String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setText(null);
+                        setStyle(""); // Очищаем стиль для пустых ячеек
+                    } else {
+                        setText(item);
+                        setPrefWidth(comboBox.getPrefWidth() - 30);
+                        if (getIndex() == 0) { // Первый элемент
+                            setStyle("-fx-border-color: #3D3D3D; -fx-border-width: 1 1 0 1; -fx-border-radius: 12 12 0 0; -fx-background-radius: 12 12 0 0;");
+                        } else if (getIndex() == comboBox.getItems().size() - 1) { // Последний элемент
+                            setStyle("-fx-border-color: #3D3D3D; -fx-border-width: 0 1 1 1; -fx-border-radius: 0 0 12 12; -fx-background-radius: 0 0 12 12;");
+                        } else {
+                            setStyle("-fx-border-color: #3D3D3D; -fx-border-width: 0 1 0 1;");
+                        }
+                    }
+                }
+            });
+
+            comboBox.setButtonCell(new ListCell<String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(item);
+                        setTranslateX(-14);
+                        setTranslateY(-1);
+                        setStyle("-fx-background-color: transparent; -fx-text-fill: white;");
+                    }
+                }
+            });
 
             // Label с описанием
             Label descriptionLabel = new Label(descText);
             descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
 
             // Контейнер для размещения ChoiceBox и стрелки
-            HBox hContainer = new HBox(-41, choiceBox, arrow); // Хранит ChoiceBox и стрелку
+            HBox hContainer = new HBox(-33, comboBox, arrow); // Хранит ChoiceBox и стрелку
             hContainer.setAlignment(Pos.CENTER_LEFT);
 
             // Обновление стрелки в зависимости от состояния ChoiceBox (раскрыт/не раскрыт)
-            choiceBox.showingProperty().addListener((obs, oldVal, newVal) -> {
+            comboBox.showingProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal) {
                     // Когда список раскрыт, стрелка вверх
                     arrow.setContent("M1, 7L7, 0.999999L13, 7");

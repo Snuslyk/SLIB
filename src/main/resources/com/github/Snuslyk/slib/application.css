@@ -371,7 +371,7 @@
     -fx-background-radius: 12;
 }
 
-.choice-box {
+.combo-box-field {
     -fx-background-color: transparent;
     -fx-border-radius: 12;
     -fx-background-radius: 12;
@@ -381,37 +381,41 @@
     -fx-font-family: "Futura Cyrillic Book";
     -fx-prompt-text-fill: #3D3D3D;
     -fx-text-fill: white;
+    -fx-cursor: hand;
 }
 
-.choice-box:focused {
+.combo-box-field:hover {
+    -fx-background-color: transparent;
+}
+
+.combo-box-field:focused {
     -fx-border-color: #888888;
 }
 
-.choice-box .context-menu {
-    -fx-background-color: #121212;
-    -fx-border-color: #3D3D3D;
-    -fx-border-width: 1;
-    -fx-border-radius: 12;
-    -fx-background-radius: 12;
+.combo-box-field .combo-box-popup .list-view {
+    -fx-background-color: transparent;
 }
 
-/* Стилизация раскрывающегося списка */
-.choice-box .menu-item {
-    -fx-background-color: #121212;   /* Фон ячеек */
-    -fx-text-fill: white;            /* Цвет текста ячеек */
-    -fx-font-size: 14px;
+.combo-box-field .combo-box-popup .list-view {
+    -fx-translate-y: 7;
+    -fx-translate-x: -1;
 }
 
-.choice-box .menu-item:hover {
+.combo-box-field .list-cell {
+    -fx-background-color: transparent;
+}
+
+.combo-box-field .cell:hover {
+    -fx-background-color: #1c1c1c;
+}
+
+.combo-box-field .cell {
     -fx-background-color: #121212;
-    -fx-border-color: #3D3D3D;
-    -fx-border-width: 1;
-    -fx-border-radius: 12;
-    -fx-background-radius: 12;
+    -fx-padding: 7 0 7 19;
 }
 
 /* Стилизация стрелки раскрытия */
-.choice-box .arrow {
+.combo-box-field .arrow {
     -fx-background-color: transparent;
 }
 
