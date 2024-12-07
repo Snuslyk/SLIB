@@ -498,6 +498,7 @@ public class ButtonFactory {
             field = new VBox();
             field.setSpacing(Vmargin);
             comboBox = new ComboBox<String>();
+            comboBox.setValue(textFieldText);
 
             comboBox.setItems(items.get());
 
@@ -580,7 +581,7 @@ public class ButtonFactory {
         }
 
         public void setTextFieldText(String text) {
-            comboBox.setValue(text);
+            textFieldText = text;
         }
 
         @Override
