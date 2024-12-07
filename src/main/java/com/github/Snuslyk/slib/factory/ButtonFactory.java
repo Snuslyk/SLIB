@@ -576,11 +576,11 @@ public class ButtonFactory {
 
         @Override
         public String getTextFieldText() {
-            return textFieldText;
+            return comboBox.getValue();
         }
 
         public void setTextFieldText(String text) {
-            textFieldText = text;
+            comboBox.setValue(text);
         }
 
         @Override
