@@ -1,6 +1,7 @@
 package com.github.Snuslyk.slib.util;
 
 import com.github.Snuslyk.slib.factory.ButtonFactory;
+import javafx.scene.control.DatePicker;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -17,6 +18,12 @@ public class TimeUtil {
     }
 
     public static long parseDataPicker(ButtonFactory.TextFieldWrapper field){
+
+        DatePicker datePicker = ((ButtonFactory.DatePickerField) field).getDatePicker();
+        if (datePicker.getValue() == null){
+            return 0;
+        }
+
         return ((ButtonFactory.DatePickerField) field).getDatePicker().getValue().toEpochSecond(LocalTime.now(), ZoneOffset.UTC);
     }
 

@@ -63,9 +63,11 @@ public class HibernateUtil {
         session.beginTransaction();
 
         T old = session.get(clazz, id);
-        session.evict(old);
-        old = update.update(old);
-        session.merge(old);
+        if (old != null) {
+            session.evict(old);
+            old = update.update(old);
+            if (old != null) session.merge(old);
+        }
 
         session.getTransaction().commit();
         session.close();
