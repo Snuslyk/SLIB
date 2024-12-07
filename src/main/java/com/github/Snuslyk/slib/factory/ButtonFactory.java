@@ -390,9 +390,27 @@ public class ButtonFactory {
             datePicker.setPrefHeight(height);
             datePicker.setStyle("-fx-font-size: " + mainFontSize + ";");
             datePicker.getEditor().setStyle("-fx-padding: 0 0 0 " + Hmargin + ";");
+            datePicker.prefWidthProperty().bind(container.widthProperty());
             
             Label descriptionLabel = new Label(descText);
             descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
+
+            SVGPath svgIcon = new SVGPath();
+            svgIcon.setContent("M11.8333 1V4.2M5.16667 1V4.2M1 7.4H16M2.66667 2.6H14.3333C15.2538 2.6 16 3.31634 16 4.2V15.4C16 16.2837 15.2538 17 14.3333 17H2.66667C1.74619 17 1 16.2837 1 15.4V4.2C1 3.31634 1.74619 2.6 2.66667 2.6Z");
+            svgIcon.setFill(Color.TRANSPARENT);
+            svgIcon.setStroke(Color.web("#3D3D3D"));
+            svgIcon.setStrokeWidth(1.0);
+
+            // Button container
+            HBox buttonContainer = new HBox(-36);
+            buttonContainer.getChildren().addAll(datePicker, svgIcon);
+            buttonContainer.setAlignment(Pos.CENTER_LEFT);
+
+            datePicker.getEditor().setOnMouseClicked(event -> {
+                if (!datePicker.isShowing()) {
+                    datePicker.show();
+                }
+            });
 
             if (textFieldText != null && !textFieldText.isEmpty()) {
                 String[] parts = textFieldText.split("\\.");
@@ -412,7 +430,7 @@ public class ButtonFactory {
                 }
             }
 
-            field.getChildren().addAll(descriptionLabel, datePicker);
+            field.getChildren().addAll(descriptionLabel, buttonContainer);
             container.getChildren().add(field);
         }
 
