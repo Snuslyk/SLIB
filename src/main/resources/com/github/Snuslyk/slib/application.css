@@ -412,6 +412,7 @@
 .combo-box-field .cell {
     -fx-background-color: #121212;
     -fx-padding: 7 0 7 19;
+    -fx-cursor: hand;
 }
 
 /* Стилизация стрелки раскрытия */
