@@ -421,7 +421,6 @@
 }
 
 .date-picker {
-    -fx-skin: "com.sun.javafx.scene.control.skin.DatePickerSkin";
     -fx-background-color: transparent; /* Темный фон поля ввода */
     -fx-text-fill: white; /* Белый цвет текста */
     -fx-border-radius: 12;
