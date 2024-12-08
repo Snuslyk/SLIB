@@ -79,6 +79,10 @@ public class HibernateUtil {
 
 
     public static void remove(Object object){
+        if (object instanceof RowData rowData){
+            rowData.delete();
+        }
+
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
