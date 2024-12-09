@@ -134,7 +134,6 @@
 .tableD .column-header-background .label {
     -fx-text-fill: #888888;
     -fx-alignment: CENTER_LEFT;
-    -fx-label-padding: 10;
 }
 
 .tableD .table-cell {
@@ -224,6 +223,10 @@
 /* Устанавливаем высоту горизонтального скроллбара */
 .tableD .scroll-bar:horizontal {
     -fx-pref-height: 10;
+}
+
+.tableD .corner {
+    -fx-background-color: transparent;
 }
 
 .editPopUp {
@@ -338,7 +341,6 @@
 }
 
 .text-field-list-view .scroll-bar:vertical {
-    -fx-translate-x: -5;
     -fx-pref-width: 8;
     -fx-padding: 5 0 5 0;
 }
@@ -448,4 +450,103 @@
     -fx-background-color: transparent; /* Цвет стрелки */
 }
 
+.search-field-d .auto-completion-label {
+    -fx-text-fill: #3D3D3D;
+}
 
+.search-field-list-view {
+    -fx-background-color: rgba(255, 255, 255, 0.95); /* Цвет фона с прозрачностью */
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 12; /* Скругления углов */
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 12, 0.0, 0, 8); /* Тень */
+    -fx-pref-height: 200;
+}
+
+.search-field-popup {
+    -fx-background-color: transparent; /* Чтобы фон popup не перекрывал стиль списка */
+}
+
+
+.search-field-list-view {
+    -fx-background-color: #121212;
+    -fx-border-color: #3D3D3D;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 0;
+    -fx-min-height: 100;
+    -fx-max-height: 100;
+    -fx-translate-y: 8;
+}
+
+.search-field-list-view .scroll-bar {
+    -fx-background-color: transparent; /* Фон прокрутки */
+}
+
+.search-field-list-view .scroll-bar:horizontal .thumb {
+    -fx-background-color: #3D3D3D; /* Цвет бегунка в горизонтальном ScrollBar */
+    -fx-background-radius: 6;      /* Радиус бегунка */
+}
+
+.search-field-list-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #3D3D3D; /* Цвет бегунка в вертикальном ScrollBar */
+    -fx-background-radius: 6;
+}
+
+.search-field-list-view .scroll-bar .increment-button,
+.search-field-list-view .scroll-bar .decrement-button {
+    -fx-padding: 0;
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}
+
+.search-field-list-view .scroll-bar .increment-arrow,
+.search-field-list-view .scroll-bar .decrement-arrow {
+    -fx-background-color: transparent;
+}
+
+.search-field-list-view .scroll-bar .track {
+    -fx-background-color: transparent; /* Цвет фона трека */
+}
+
+.search-field-list-view .scroll-bar:vertical {
+    -fx-pref-width: 8;
+    -fx-padding: 5 0 5 0;
+}
+
+.search-field-list-view .search-field-list-cell {
+    -fx-background-color: transparent;
+    -fx-font-size: 20;
+    -fx-font-family: "Futura Cyrillic Book";
+    -fx-text-fill: white;
+    -fx-label-padding: 0 0 0 7;
+    -fx-cursor: hand;
+}
+
+.search-field-list-view .search-field-list-cell:hover {
+    -fx-background-color: #1c1c1c;
+}
+
+.search-field-list-view .search-field-list-cell:hover .text {
+    -fx-fill: white;
+}
+
+.search-field-list-view .search-field-list-cell:empty {
+    -fx-background-color: transparent; /* Убираем фон при наведении */
+    -fx-cursor: default; /* Сбрасываем курсор */
+}
+
+.search-field-list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
+    -fx-padding: 4 0 4 5;
+    /* No alternate highlighting */
+    -fx-background: -fx-control-inner-background;
+}
+
+.search-field-list-view .search-field-list-cell .text.middle {
+    -fx-underline: false;
+}

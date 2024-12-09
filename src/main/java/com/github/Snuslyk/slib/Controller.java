@@ -5,7 +5,6 @@ import com.github.Snuslyk.slib.electives.ButtonElective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
 import com.github.Snuslyk.slib.factory.ButtonFactory;
 import com.github.Snuslyk.slib.factory.Form;
-import com.github.Snuslyk.slib.util.ColorUtil;
 import javafx.animation.PauseTransition;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
@@ -20,22 +19,16 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
-import org.hibernate.procedure.internal.Util;
 
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.*;
 
@@ -72,6 +65,9 @@ public class Controller implements Initializable {
     public AnchorPane rightSideContainer;
     @FXML
     private AnchorPane leftSideContainer;
+
+    @FXML
+    private Label objectRightSideText;
 
     private final TableView<Map<String, Object>> tableView = new TableView<>();
     public final VBox createRowContainer = new VBox();
@@ -174,6 +170,9 @@ public class Controller implements Initializable {
 
     private void setupNumberColumn(TableView<Map<String, Object>> tableView) {
         TableColumn<Map<String, Object>, Number> numberColumn = new TableColumn<>("№");
+        numberColumn.setResizable(false);
+        numberColumn.setReorderable(false);
+        numberColumn.setSortable(false);
         numberColumn.setCellValueFactory(cellData ->
                 new ReadOnlyObjectWrapper<>(tableView.getItems().indexOf(cellData.getValue()) + 1));
         numberColumn.setSortable(false);
@@ -400,6 +399,7 @@ public class Controller implements Initializable {
         double columnWidth = totalWidth / tableView.getColumns().size();
         for (TableColumn<?, ?> column : tableView.getColumns()) {
             column.setPrefWidth(columnWidth);
+            column.setMinWidth(100);
         }
     }
 
@@ -538,6 +538,8 @@ public class Controller implements Initializable {
         int sectionIndex = getSectionIndex();
         int objectIndex = getObjectIndex();
         int optionIndex = getOptionIndex();
+
+        objectRightSideText.setText(((RadioButton) objectToggleGroup.getSelectedToggle()).getText());
 
         Form form = externalObjects.get(sectionIndex).get(objectIndex).getForm();
         Form.Type formType = form.getType()[optionIndex];

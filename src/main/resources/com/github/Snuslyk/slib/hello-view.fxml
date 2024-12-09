@@ -64,7 +64,7 @@
       </AnchorPane>
       <AnchorPane fx:id="rightSideContainer" layoutX="400.0" prefHeight="648.0" prefWidth="752.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="440.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="35.0">
          <children>
-            <Label text="Мероприятия" textFill="WHITE">
+            <Label fx:id="objectRightSideText" text="Мероприятия" textFill="WHITE">
                <font>
                   <Font name="Futura Cyrillic Demi" size="32.0" />
                </font>

@@ -128,8 +128,8 @@ public class Form {
             createFields.get(optionId).fields.add(new ButtonFactory.BasicTextField(key, name, description, errorSample, textFieldText));
             return this;
         }
-        public Builder createChooseField(String key, String name, String description, String errorSample, String errorSampleD, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
-            createFields.get(optionId).fields.add(new ButtonFactory.ChoosingTextField(key, name, description, errorSample, errorSampleD, items, textFieldText));
+        public Builder createChooseField(String key, String name, String description, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
+            createFields.get(optionId).fields.add(new ButtonFactory.ChoosingTextField(key, name, description, errorSample, items, textFieldText));
             return this;
         }
         public Builder createDatePickerField(String key, String description, String errorSample, @Nullable String textFieldText){

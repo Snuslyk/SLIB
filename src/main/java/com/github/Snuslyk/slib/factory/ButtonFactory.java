@@ -1,27 +1,28 @@
 package com.github.Snuslyk.slib.factory;
 
-import com.github.Snuslyk.slib.Application;
+import com.dlsc.gemsfx.SearchField;
 import com.sun.istack.Nullable;
 import javafx.collections.ObservableList;
-import javafx.css.PseudoClass;
-import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
-import javafx.stage.Popup;
+import javafx.scene.text.Font;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class ButtonFactory {
 
@@ -145,7 +146,6 @@ public class ButtonFactory {
     }
 
     public static class ChoosingTextField implements TextFieldWrapper {
-        // Параметры дизайна с значениями по умолчанию
         private static final int descFontSize = 20;
         private static final int mainFontSize = 20;
         private static final int Hmargin = 20;
@@ -153,206 +153,198 @@ public class ButtonFactory {
         private static final int height = 40;
         private static final int popUpHeight = 99;
 
-        private VBox field;
-        private TextField textField;
-        private ToggleButton button;
-        private Popup suggestionsPopup;
-        private ListView<String> listView;
         private final Supplier<ObservableList<String>> items;
+        private final String key;
+        private Pane outOfBounds;
+
+        private VBox field;
         private final String errorSample;
-        private final String errorSampleD;
         private final Label errorLabel = new Label();
         private final String text;
         private final String descText;
         private String textFieldText;
-        private final String key;
-        private Pane outOfBoundsContainer;
-        private boolean isError = false;
+        private Boolean isError;
 
-        public ChoosingTextField(String key, String text, String descText, String errorSample, String errorSampleD, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
-            this.errorSample = errorSample;
-            this.errorSampleD = errorSampleD;
+        private ChoosingSearchField searchField;
+
+        public ChoosingTextField(String key, String text, String descText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
+            this.key = key;
             this.items = items;
-
+            this.errorSample = errorSample;
             this.text = text;
             this.descText = descText;
             this.textFieldText = textFieldText;
-            this.key = key;
         }
-        public void register(VBox container, Pane outOfBoundsContainer){
-            this.outOfBoundsContainer = outOfBoundsContainer;
+
+        public void register(VBox container, Pane outOfBounds){
+            this.outOfBounds = outOfBounds;
             register(container);
         }
+
         @Override
         public void register(VBox container) {
             field = new VBox();
             field.setSpacing(Vmargin);
 
-            // Description label
+            System.out.println(items.get());
+
+            searchField = new ChoosingSearchField(outOfBounds);
+            searchField.setText(textFieldText);
+
             Label descriptionText = new Label(descText);
             descriptionTextFieldOptions(descriptionText, descFontSize, Hmargin);
 
-            // TextField
-            textField = new TextField();
-            textFieldOptions(text, mainFontSize, Hmargin, height, textFieldText, textField);
+            textFieldOptions(text, mainFontSize, Hmargin, height, textFieldText, searchField.getEditor());
+            searchField.prefWidthProperty().bind(container.widthProperty());
 
-            // Button and SVG Icon
-            button = new ToggleButton();
             SVGPath svgIcon = new SVGPath();
             svgIcon.setContent("M1, 0L7, 6L13, 0");
             svgIcon.setFill(Color.TRANSPARENT);
             svgIcon.setStroke(Color.web("#3D3D3D"));
             svgIcon.setStrokeWidth(1.0);
-            button.setGraphic(svgIcon);
-
-            // Button container
-            HBox buttonContainer = new HBox(-41);
-            buttonContainer.getChildren().addAll(textField, button);
+            HBox buttonContainer = new HBox(-33);
+            buttonContainer.getChildren().addAll(searchField, svgIcon);
             buttonContainer.setAlignment(Pos.CENTER_LEFT);
-            buttonContainer.getStyleClass().add("text-field-with-button");
 
-            // Popup
-            suggestionsPopup = new Popup();
-            suggestionsPopup.setAutoHide(true);
-            listView = new ListView<>();
-            listView.setMaxHeight(popUpHeight + 1);
-            listView.setItems(items.get());
-            suggestionsPopup.getContent().add(listView);
-            listView.getStyleClass().remove(0);
-            listView.getStylesheets().add(Application.class.getResource("application.css").toExternalForm());
-            listView.getStyleClass().add("text-field-list-view");
-            listView.setCellFactory(lv -> {
-                ListCell<String> cell = new ListCell<>() {
-                    private final PseudoClass emptyPseudoClass = PseudoClass.getPseudoClass("empty");
-
-                    @Override
-                    protected void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty || item == null) {
-                            setText(null);
-                            setGraphic(null);
-                            pseudoClassStateChanged(emptyPseudoClass, true);
-                        } else {
-                            setText(item);
-                            pseudoClassStateChanged(emptyPseudoClass, false);
-                        }
-                    }
-                };
-                cell.getStyleClass().add("text-field-list-view-cell");
-                cell.setPrefHeight(40);
-                return cell;
-            });
-            Rectangle clip = new Rectangle();
-            clip.setArcWidth(26);
-            clip.setArcHeight(26);
-            listView.setClip(clip);
-
-            listView.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
-                clip.setWidth(newBounds.getWidth());
-                clip.setHeight(newBounds.getHeight());
-            });
-
-            textField.prefWidthProperty().bind(container.widthProperty());
-            listView.prefWidthProperty().bind(container.widthProperty());
-
-            button.setOnAction(event -> {
-                if (button.isSelected()) {
-                    popupShow(height, textField, suggestionsPopup);
-                } else {
-                    suggestionsPopup.hide();
-                }
-            });
-
-            button.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+            searchField.getPopup().showingProperty().addListener(((obs, wasSelected, isNowSelected) -> {
                 if (!isNowSelected) {
                     svgIcon.setContent("M1, 0L7, 6L13, 0");
                 } else {
                     svgIcon.setContent("M1, 7L7, 0.999999L13, 7");
                 }
-            });
-
-            suggestionsPopup.showingProperty().addListener((obs, wasShowing, isNowShowing) -> {
-                button.setSelected(isNowShowing);
-            });
-
-            outOfBoundsContainer.setOnMouseClicked(mouseEvent -> {
-                button.setSelected(false);
-                suggestionsPopup.hide();
-            });
-
-            textField.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-                String input = textField.getText();
-                if (input.isEmpty()) {
-                    listView.setItems(items.get());
-                    return;
-                }
-
-                ObservableList<String> filteredItems = items.get().filtered(item -> item.toLowerCase().contains(input.toLowerCase()));
-
-                if (filteredItems.isEmpty()) {
-                    suggestionsPopup.hide();
-                } else {
-                    listView.setItems(filteredItems);
-                    popupShow(height, textField, suggestionsPopup);
-                }
-            });
-
-            textField.setOnMouseClicked(event -> {
-                if (textField.getText().isEmpty()) {
-                    listView.setItems(items.get());
-                }
-                popupShow(height, textField, suggestionsPopup);
-            });
-
-            listView.setOnMouseClicked(event -> {
-                String selectedItem = listView.getSelectionModel().getSelectedItem();
-                if (selectedItem != null) {
-                    textField.setText(selectedItem);
-                    suggestionsPopup.hide();
-                }
-            });
+            }));
 
             field.getChildren().addAll(descriptionText, buttonContainer);
             container.getChildren().add(field);
         }
 
-        public String getKey() {
-            return key;
-        }
-
-        public Boolean getError() {
-            return isError;
-        }
-
-        public void setError(@Nullable String error) {
-            errorSetter(error, isError, errorLabel, field, descFontSize, Hmargin);
-        }
-
-        public void clearError() {
-            setError(null);
-        }
-
-        private void popupShow(int height, TextField textField, Popup suggestionsPopup) {
-            if (!suggestionsPopup.isShowing()) {
-                Bounds boundsInScene = textField.localToScene(textField.getBoundsInLocal());
-                double x = boundsInScene.getMinX() + textField.getScene().getWindow().getX() + 8;
-                double y = boundsInScene.getMaxY() + textField.getScene().getWindow().getY() + height - 1;
-                suggestionsPopup.show(textField, x, y);
-            }
-        }
-
-        // Метод для получения текста из TextField
+        @Override
         public String getTextFieldText() {
-            return textField.getText();
+            return searchField.getText();
         }
 
+        @Override
         public void setTextFieldText(String text) {
             textFieldText = text;
         }
 
-        // Метод для получения списка элементов
-        public ObservableList<String> getItems() {
+        @Override
+        public void setError(String message) {
+            errorSetter(message, isError, errorLabel, field, descFontSize, Hmargin);
+        }
+
+        @Override
+        public void clearError() {
+            setError(null);
+        }
+
+        @Override
+        public Boolean getError() {
+            return isError;
+        }
+
+        @Override
+        public String getKey() {
+            return key;
+        }
+
+        public List<String> getItems() {
             return items.get();
+        }
+
+        public class ChoosingSearchField extends SearchField<String> {
+
+            public ChoosingSearchField(Pane outOfBounds) {
+                setSuggestionProvider(request -> items.get().stream()
+                        .filter(item -> item.toLowerCase().contains(request.getUserText().toLowerCase()))
+                        .collect(Collectors.toList()));
+
+                getEditor().setOnMouseClicked(mouseEvent -> {
+                    if (!getSuggestions().isEmpty() || getPlaceholder() != null) {
+                        update(items.get());
+                        getEditor().requestFocus();
+                        getPopup().show(this);
+                    }
+                });
+
+                getEditor().addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+                    String input = getEditor().getText();
+                    if (input.isEmpty()) {
+                        if (getSuggestions().isEmpty() || getPlaceholder() != null) {
+                            update(items.get());
+                            getEditor().requestFocus();
+                            getPopup().show(this);
+                        }
+                    }
+                });
+
+                setShowSearchIcon(false);
+                getStyleClass().add("search-field-d");
+
+                outOfBounds.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+                    if (getPlaceholder() != null) {
+                        getPopup().hide();
+                    }
+                });
+
+                setMatcher((item, searchText) -> item.toLowerCase().startsWith(searchText.toLowerCase()));
+                setComparator(String::compareToIgnoreCase);
+
+                Region content = (Region) getPopup().getScene().getRoot();
+                Rectangle clip = new Rectangle();
+                clip.setArcWidth(26);
+                clip.setArcHeight(26);
+                clip.widthProperty().bind(content.widthProperty());
+                clip.heightProperty().bind(content.heightProperty());
+                clip.setLayoutY(8);
+                content.setClip(clip);
+
+                setCellFactory(lv -> {
+                    ListCell<String> cell = new ListCell<>() {
+                        private final Label label = new Label();
+
+                        {
+                            label.setFont(Font.font("Futura Cyrillic Book", 20));
+                            label.setPadding(new Insets(0, 0, 0, 13));
+                        }
+
+                        @Override
+                        protected void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+
+                            if (empty || item == null) {
+                                setGraphic(null);
+                                setText(null); // Убираем текст
+                                setStyle("-fx-background-color: transparent");
+                                setOnMouseEntered(null);
+                                setOnMouseExited(null);
+                            } else {
+                                label.setText(item);
+                                setGraphic(label); // Устанавливаем Label в качестве содержимого
+                                setStyle("-fx-background-color: transparent");
+
+                                setOnMouseEntered(e -> {
+                                    setStyle("-fx-background-color: #1c1c1c");
+                                    label.setTextFill(Color.WHITE);
+                                });
+                                setOnMouseExited(e -> {
+                                    setStyle("-fx-background-color: transparent");
+                                    if (getIndex() != 0) {
+                                        label.setTextFill(Color.web("#3D3D3D"));
+                                    }
+                                });
+
+                                label.setTextFill(Color.web("#3D3D3D"));
+                                if (getIndex() == 0) {
+                                    label.setTextFill(Color.WHITE);
+                                }
+                            }
+                        }
+                    };
+                    cell.setPrefHeight(40);
+                    return cell;
+                });
+            }
         }
     }
 
@@ -512,7 +504,7 @@ public class ButtonFactory {
             comboBox.setMinHeight(height);
             comboBox.setMaxHeight(height);
             comboBox.setStyle("-fx-font-size: " + mainFontSize + ";");
-            comboBox.setStyle("-fx-padding: 0 0 0 " + Hmargin + ";");
+            comboBox.setStyle("-fx-padding: 0 0 0 " + (Hmargin - 6) + ";");
             comboBox.prefWidthProperty().bind(container.widthProperty());
             comboBox.getStyleClass().add("combo-box-field");
 
@@ -628,7 +620,7 @@ public class ButtonFactory {
             if (textFieldWrapper instanceof BasicTextField) {
                 validateTextField(textFieldWrapper, ((BasicTextField) textFieldWrapper).errorSample, null, null);
             } else if (textFieldWrapper instanceof ChoosingTextField) {
-                validateTextField(textFieldWrapper, ((ChoosingTextField) textFieldWrapper).errorSample, ((ChoosingTextField) textFieldWrapper).errorSampleD, ((ChoosingTextField) textFieldWrapper).getItems());
+                validateTextField(textFieldWrapper, ((ChoosingTextField) textFieldWrapper).errorSample, null, ((ChoosingTextField) textFieldWrapper).getItems());
             } else if (textFieldWrapper instanceof DatePickerField) {
                 if (((DatePickerField) textFieldWrapper).getDatePicker().getValue() == null) {
                     textFieldWrapper.setError(((DatePickerField) textFieldWrapper).errorSample);
