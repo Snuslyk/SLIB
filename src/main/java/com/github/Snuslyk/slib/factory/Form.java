@@ -140,6 +140,10 @@ public class Form {
             createFields.get(optionId).fields.add(new ButtonFactory.ChoiceBoxField(key, description, errorSample, items, textFieldText));
             return this;
         }
+        public Builder createMultiChooseField(String key, String name, String description, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
+            createFields.get(optionId).fields.add(new ButtonFactory.MultiChooseField(key, name, description, errorSample, items, textFieldText));
+            return this;
+        }
 
         public Builder filter(FilterIO filter){
             this.filter[optionId] = filter;

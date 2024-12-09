@@ -1,12 +1,15 @@
 package com.github.Snuslyk.slib.factory;
 
 import com.dlsc.gemsfx.SearchField;
+import com.dlsc.gemsfx.TagsField;
 import com.sun.istack.Nullable;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -594,6 +597,127 @@ public class ButtonFactory {
         @Override
         public String getKey() {
             return key;
+        }
+    }
+
+    public static class MultiChooseField implements TextFieldWrapper {
+
+        private static final int descFontSize = 20;
+        private static final int mainFontSize = 20;
+        private static final int Hmargin = 20;
+        private static final int Vmargin = 5;
+        private static final int height = 40;
+        private static final int popUpHeight = 99;
+
+        private final Supplier<ObservableList<String>> items;
+        private final String key;
+        private Pane outOfBounds;
+
+        private VBox field;
+        private final String errorSample;
+        private final Label errorLabel = new Label();
+        private final String text;
+        private final String descText;
+        private String textFieldText;
+        private Boolean isError;
+
+        private CountriesTagsField searchField;
+
+        public MultiChooseField(String key, String text, String descText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
+            this.key = key;
+            this.items = items;
+            this.errorSample = errorSample;
+            this.text = text;
+            this.descText = descText;
+            this.textFieldText = textFieldText;
+        }
+
+        public void register(VBox container, Pane outOfBounds){
+            this.outOfBounds = outOfBounds;
+            register(container);
+        }
+
+        @Override
+        public void register(VBox container) {
+            searchField = new CountriesTagsField();
+            searchField.setPromptText(textFieldText);
+            container.getChildren().add(searchField);
+        }
+
+        @Override
+        public String getTextFieldText() {
+            return searchField.getText();
+        }
+
+        @Override
+        public void setTextFieldText(String text) {
+            textFieldText = text;
+        }
+
+        @Override
+        public void setError(String message) {
+            errorSetter(message, isError, errorLabel, field, descFontSize, Hmargin);
+        }
+
+        @Override
+        public void clearError() {
+            setError(null);
+        }
+
+        @Override
+        public Boolean getError() {
+            return isError;
+        }
+
+        @Override
+        public String getKey() {
+            return key;
+        }
+
+        public List<String> getItems() {
+            return items.get();
+        }
+
+        public class CountriesTagsField extends TagsField<String> {
+
+            public CountriesTagsField() {
+                setSuggestionProvider(request -> items.get().stream().filter(item -> item.toLowerCase().contains(request.getUserText().toLowerCase())).collect(Collectors.toList()));
+
+                getEditor().addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+                    update(items.get());
+                    getEditor().requestFocus();
+                    getPopup().show(this);
+                });
+
+                getEditor().addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+                    String input = getEditor().getText();
+                    if (input.isEmpty()) {
+                        if (getSuggestions().isEmpty() || getPlaceholder() != null) {
+                            update(items.get());
+                            getEditor().requestFocus();
+                            getPopup().show(this);
+                        }
+                    }
+                });
+
+                setShowSearchIcon(false);
+                getStyleClass().add("search-field-d");
+
+                outOfBounds.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+                    if (getPlaceholder() != null) {
+                        getPopup().hide();
+                    }
+                });
+
+                setOnMouseClicked(mouseEvent -> {
+                    if (getTagSelectionModel().getSelectedItem() != null) {
+                        removeTags(getTagSelectionModel().getSelectedItem());
+                    }
+                });
+
+                setMatcher((item, searchText) -> item.toLowerCase().startsWith(searchText.toLowerCase()));
+                setComparator(String::compareToIgnoreCase);
+            }
         }
     }
 

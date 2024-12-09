@@ -595,6 +595,8 @@ public class Controller implements Initializable {
         for (ButtonFactory.TextFieldWrapper field : fields) {
             if (field instanceof ChoosingTextField choosingTextField) {
                 choosingTextField.register(createRowContainer, rootContainer);
+            } else if (field instanceof MultiChooseField multiChooseField) {
+                multiChooseField.register(createRowContainer, rootContainer);
             } else {
                 field.register(createRowContainer);
             }
