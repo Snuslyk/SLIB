@@ -4,6 +4,7 @@ import com.dlsc.gemsfx.SearchField;
 import com.dlsc.gemsfx.TagsField;
 import com.sun.istack.Nullable;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -301,52 +302,6 @@ public class ButtonFactory {
                 clip.heightProperty().bind(content.heightProperty());
                 clip.setLayoutY(8);
                 content.setClip(clip);
-
-                setCellFactory(lv -> {
-                    ListCell<String> cell = new ListCell<>() {
-                        private final Label label = new Label();
-
-                        {
-                            label.setFont(Font.font("Futura Cyrillic Book", 20));
-                            label.setPadding(new Insets(0, 0, 0, 13));
-                        }
-
-                        @Override
-                        protected void updateItem(String item, boolean empty) {
-                            super.updateItem(item, empty);
-
-                            if (empty || item == null) {
-                                setGraphic(null);
-                                setText(null); // Убираем текст
-                                setStyle("-fx-background-color: transparent");
-                                setOnMouseEntered(null);
-                                setOnMouseExited(null);
-                            } else {
-                                label.setText(item);
-                                setGraphic(label); // Устанавливаем Label в качестве содержимого
-                                setStyle("-fx-background-color: transparent");
-
-                                setOnMouseEntered(e -> {
-                                    setStyle("-fx-background-color: #1c1c1c");
-                                    label.setTextFill(Color.WHITE);
-                                });
-                                setOnMouseExited(e -> {
-                                    setStyle("-fx-background-color: transparent");
-                                    if (getIndex() != 0) {
-                                        label.setTextFill(Color.web("#3D3D3D"));
-                                    }
-                                });
-
-                                label.setTextFill(Color.web("#3D3D3D"));
-                                if (getIndex() == 0) {
-                                    label.setTextFill(Color.WHITE);
-                                }
-                            }
-                        }
-                    };
-                    cell.setPrefHeight(40);
-                    return cell;
-                });
             }
         }
     }
@@ -609,7 +564,7 @@ public class ButtonFactory {
         private static final int height = 40;
         private static final int popUpHeight = 99;
 
-        private final Supplier<ObservableList<String>> items;
+        private Supplier<ObservableList<String>> items;
         private final String key;
         private Pane outOfBounds;
 
@@ -684,7 +639,8 @@ public class ButtonFactory {
                 setSuggestionProvider(request -> items.get().stream().filter(item -> item.toLowerCase().contains(request.getUserText().toLowerCase())).collect(Collectors.toList()));
 
                 getEditor().addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
-                    update(items.get());
+                    ObservableList<String> mutableItems = FXCollections.observableArrayList(items.get());
+                    update(mutableItems);
                     getEditor().requestFocus();
                     getPopup().show(this);
                 });
@@ -693,7 +649,8 @@ public class ButtonFactory {
                     String input = getEditor().getText();
                     if (input.isEmpty()) {
                         if (getSuggestions().isEmpty() || getPlaceholder() != null) {
-                            update(items.get());
+                            ObservableList<String> mutableItems = FXCollections.observableArrayList(items.get());
+                            update(mutableItems);
                             getEditor().requestFocus();
                             getPopup().show(this);
                         }
@@ -717,6 +674,17 @@ public class ButtonFactory {
 
                 setMatcher((item, searchText) -> item.toLowerCase().startsWith(searchText.toLowerCase()));
                 setComparator(String::compareToIgnoreCase);
+
+                Region content = (Region) getPopup().getScene().getRoot();
+                Rectangle clip = new Rectangle();
+                clip.setArcWidth(26);
+                clip.setArcHeight(26);
+                clip.widthProperty().bind(content.widthProperty());
+                clip.heightProperty().bind(content.heightProperty());
+                clip.setLayoutY(8);
+                content.setClip(clip);
+
+                getEditor().setStyle("-fx-text-fill: white; -fx-prompt-text-fill: #3D3D3D;");
             }
         }
     }

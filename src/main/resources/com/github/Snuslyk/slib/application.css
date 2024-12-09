@@ -280,6 +280,7 @@
 .textfield-form:focused {
     -fx-border-color: #888888;
 }
+
 .textfield-desc {
     -fx-text-fill: #3D3D3D;
     -fx-font-size: 20;
@@ -520,6 +521,7 @@
 }
 
 .search-field-list-view .search-field-list-cell {
+    -fx-pref-height: 40;
     -fx-background-color: transparent;
     -fx-font-size: 20;
     -fx-font-family: "Futura Cyrillic Book";
@@ -536,6 +538,15 @@
     -fx-fill: white;
 }
 
+.search-field-list-view .search-field-list-cell .text {
+    -fx-translate-y: 2;
+    -fx-translate-x: 14;
+}
+
+.search-field-list-view .search-field-list-cell:focused .text {
+    -fx-fill: white;
+}
+
 .search-field-list-view .search-field-list-cell:empty {
     -fx-background-color: transparent; /* Убираем фон при наведении */
     -fx-cursor: default; /* Сбрасываем курсор */
@@ -549,4 +560,33 @@
 
 .search-field-list-view .search-field-list-cell .text.middle {
     -fx-underline: false;
+}
+
+.tags-field {
+    -fx-min-height: 40;
+    -fx-max-height: 40;
+    -fx-background-color: transparent;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-border-color: #3D3D3D;
+    -fx-border-width: 1;
+    -fx-font-size: 20;
+    -fx-font-family: "Futura Cyrillic Book";
+    -fx-padding: 0 0 0 16;
+}
+
+.tags-field:contains-focus {
+    -fx-border-color: #888888;
+}
+
+.tags-field > .flow-pane > .tag-view {
+    -fx-font-size: 16;
+    -fx-text-fill: black;
+    -fx-background-color: #FF9858;
+    -fx-padding: 2 8;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+}
+.tags-field > .flow-pane {
+    -fx-hgap: 8;
 }
