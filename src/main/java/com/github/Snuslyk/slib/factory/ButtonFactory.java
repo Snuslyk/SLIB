@@ -3,26 +3,22 @@ package com.github.Snuslyk.slib.factory;
 import com.dlsc.gemsfx.SearchField;
 import com.dlsc.gemsfx.TagsField;
 import com.sun.istack.Nullable;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
-import javafx.scene.text.Font;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -576,7 +572,7 @@ public class ButtonFactory {
         private String textFieldText;
         private Boolean isError;
 
-        private CountriesTagsField searchField;
+        private ChoosingTagsField searchField;
 
         public MultiChooseField(String key, String text, String descText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
             this.key = key;
@@ -594,9 +590,43 @@ public class ButtonFactory {
 
         @Override
         public void register(VBox container) {
-            searchField = new CountriesTagsField();
-            searchField.setPromptText(textFieldText);
-            container.getChildren().add(searchField);
+            field = new VBox();
+            field.setSpacing(Vmargin);
+            searchField = new ChoosingTagsField();
+            List<String> itemsList = Arrays.asList(textFieldText.split(",\\s*"));
+            for (String item : itemsList) {
+                searchField.select(item);
+            }
+
+            // Создание SVGPath для стрелки
+            SVGPath arrow = new SVGPath();
+            arrow.setContent("M1, 0L7, 6L13, 0"); // Стрелка вниз
+            arrow.setFill(Color.TRANSPARENT);
+            arrow.setStroke(Color.web("#3D3D3D"));
+            arrow.setStrokeWidth(1.0);
+
+            // Label с описанием
+            Label descriptionLabel = new Label(descText);
+            descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
+
+            // Обновление стрелки в зависимости от состояния ChoiceBox (раскрыт/не раскрыт)
+            searchField.getPopup().showingProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal) {
+                    // Когда список раскрыт, стрелка вверх
+                    arrow.setContent("M1, 7L7, 0.999999L13, 7");
+                } else {
+                    // Когда список закрыт, стрелка вниз
+                    arrow.setContent("M1, 0L7, 6L13, 0");
+                }
+            });
+
+            StackPane stackPane = new StackPane();
+            stackPane.getChildren().addAll(searchField, arrow);
+            StackPane.setAlignment(arrow, Pos.CENTER_RIGHT);
+            arrow.setTranslateX(-19);
+
+            field.getChildren().addAll(descriptionLabel, stackPane);
+            container.getChildren().add(field);
         }
 
         @Override
@@ -633,16 +663,25 @@ public class ButtonFactory {
             return items.get();
         }
 
-        public class CountriesTagsField extends TagsField<String> {
+        public class ChoosingTagsField extends TagsField<String> {
 
-            public CountriesTagsField() {
+            public ChoosingTagsField() {
                 setSuggestionProvider(request -> items.get().stream().filter(item -> item.toLowerCase().contains(request.getUserText().toLowerCase())).collect(Collectors.toList()));
 
                 getEditor().addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
                     ObservableList<String> mutableItems = FXCollections.observableArrayList(items.get());
                     update(mutableItems);
                     getEditor().requestFocus();
-                    getPopup().show(this);
+
+                    if (!getPopup().isShowing()) {
+                        Bounds bounds = getBoundsInLocal();
+                        Bounds screenBounds = localToScreen(bounds);
+
+                        double popupX = screenBounds.getMinX();
+                        double popupY = screenBounds.getMaxY(); // Позиция под полем
+
+                        getPopup().show(this, popupX, popupY);
+                    }
                 });
 
                 getEditor().addEventFilter(KeyEvent.KEY_RELEASED, event -> {
