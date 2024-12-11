@@ -85,6 +85,8 @@ public class Form {
         private final List<List<Column>> columns = new ArrayList<>();
         private final List<CreateFields> createFields = new ArrayList<>();
         private final List<ColorSupplier> columnColorSupplier = new ArrayList<>();
+        //private final List<>
+
 
         private List<String> usedDisplays = new ArrayList<>();
 
@@ -149,6 +151,10 @@ public class Form {
             this.filter[optionId] = filter;
             return this;
         }
+        public Builder filterButton(String displayName, Supplier<ObservableList<String>> items, String defaultItem, FilterGet filterGet){
+            return this;
+        }
+
 
         public Builder column(String displayName, String key, ColumnInterface columnInterface){
             if (usedDisplays.contains(displayName)) {
@@ -198,6 +204,9 @@ public class Form {
         Object get(Object object);
     }
 
+    public interface FilterGet {
+        List<Object> get(String item);
+    }
     public record TableActionButton(
             String display,
             Color color,
@@ -222,7 +231,6 @@ public class Form {
             }
         }
     }
-
 
     public record CreateFields<T>(Class<T> clazz, List<ButtonFactory.TextFieldWrapper> fields, Supplier<T> supplier, CreateSupplier<T> createSupplier) {}
 

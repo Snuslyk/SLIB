@@ -798,10 +798,11 @@ public class ButtonFactory {
         String input = textFieldWrapper.getTextFieldText();
 
         // Если текст пустой, устанавливаем ошибку
-        if (input.isEmpty()) {
-            textFieldWrapper.setError(errorMessage);
-            return;
-        }
+        if (input != null)
+            if (input.isEmpty()) {
+                textFieldWrapper.setError(errorMessage);
+                return;
+            }
 
         // Если список валидных элементов не задан, очищаем ошибку
         if (validItems == null) {
