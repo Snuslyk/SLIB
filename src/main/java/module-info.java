@@ -6,6 +6,7 @@ module com.github.Snuslyk.slib {
     requires java.naming;
     requires com.sun.istack.runtime;
     requires com.dlsc.gemsfx;
+    requires java.transaction;
 
 
     opens com.github.Snuslyk.slib to javafx.fxml;

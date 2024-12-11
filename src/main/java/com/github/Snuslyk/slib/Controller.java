@@ -27,6 +27,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 
+import javax.transaction.Transactional;
 import java.net.URL;
 import java.util.*;
 
@@ -613,13 +614,14 @@ public class Controller implements Initializable {
         createRowContainer.getChildren().add(create);
     }
 
+    @Transactional
     private void handleSaveAction(List<ButtonFactory.TextFieldWrapper> fields, Form.CreateSupplier<?> supplier, Form form, int optionIndex) {
         if (validateChecker(fields.toArray(new TextFieldWrapper[0]))) {
             System.out.println("ОШИБКА: Проверьте введенные данные.");
         } else {
             Object object = supplier.get(form.getCreateFields().get(optionIndex).supplier().get(), fields);
             if (object != null) {
-                HibernateUtil.fastSave(object);
+                HibernateUtil.merge(object);
                 // Добавьте объект в таблицу
             }
         }

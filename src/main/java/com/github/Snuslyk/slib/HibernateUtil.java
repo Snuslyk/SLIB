@@ -57,6 +57,25 @@ public class HibernateUtil {
         session.getTransaction().commit();
         session.close();
     }
+    public static void merge(Object object){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        session.merge(object);
+
+        session.getTransaction().commit();
+        session.close();
+    }
+    public static <T> void merge(T object, Update<T> update){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        T t = (T) session.merge(object);
+        t = update.update(t);
+
+        session.getTransaction().commit();
+        session.close();
+    }
 
     public static <T> void update(Class<T> clazz, int id, Update<T> update){
         Session session = HibernateUtil.getSessionFactory().openSession();

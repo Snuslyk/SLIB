@@ -105,7 +105,7 @@ public class ButtonFactory {
         }
 
         // Методы для работы с ошибками
-        public Boolean getError() {
+        public boolean getError() {
             return isError;
         }
 
@@ -163,7 +163,7 @@ public class ButtonFactory {
         private final String text;
         private final String descText;
         private String textFieldText;
-        private Boolean isError;
+        private boolean isError;
 
         private ChoosingSearchField searchField;
 
@@ -239,7 +239,7 @@ public class ButtonFactory {
         }
 
         @Override
-        public Boolean getError() {
+        public boolean getError() {
             return isError;
         }
 
@@ -408,7 +408,7 @@ public class ButtonFactory {
             setError(null);
         }
 
-        public Boolean getError() {
+        public boolean getError() {
             return isError;
         }
     }
@@ -541,7 +541,7 @@ public class ButtonFactory {
         }
 
         @Override
-        public Boolean getError() {
+        public boolean getError() {
             return isError;
         }
 
@@ -570,7 +570,7 @@ public class ButtonFactory {
         private final String text;
         private final String descText;
         private String textFieldText;
-        private Boolean isError;
+        private boolean isError;
 
         private ChoosingTagsField searchField;
 
@@ -631,7 +631,14 @@ public class ButtonFactory {
 
         @Override
         public String getTextFieldText() {
-            return searchField.getText();
+            StringBuilder builder = new StringBuilder();
+            searchField.getTags().forEach(tag -> {builder.append(tag).append(", ");});
+            builder.deleteCharAt(builder.length()-1);
+            builder.deleteCharAt(builder.length()-1);
+            return builder.toString();
+        }
+        public ObservableList<String> getTags(){
+            return searchField.getTags();
         }
 
         @Override
@@ -650,7 +657,7 @@ public class ButtonFactory {
         }
 
         @Override
-        public Boolean getError() {
+        public boolean getError() {
             return isError;
         }
 
@@ -817,7 +824,7 @@ public class ButtonFactory {
         void setTextFieldText(String text);
         void setError(String message);
         void clearError();
-        Boolean getError();
+        boolean getError();
         void register(VBox container);
         String getKey();
     }

@@ -239,16 +239,14 @@ public class Form {
         void handle(Controller controller, Map<String, Object> data, int extraParam);
     }
 
-    public static class TableActionButtons{
+    public static class TableActionButtons {
         public static final TableActionButton DELETE = new TableActionButton("Удалить", Color.rgb(239, 48, 48),
                 "M1 3.4H2.22222M2.22222 3.4H12.9997M2.22222 3.4V11.8C2.22222 12.1183 2.35099 12.4235 2.5802 12.6485C2.80941 12.8736 3.12029 13 3.44444 13H10.5552C10.8794 13 11.1903 12.8736 11.4195 12.6485C11.6487 12.4235 11.7775 12.1183 11.7775 11.8V3.4M4.05556 3.4V2.2C4.05556 1.88174 4.18433 1.57652 4.41354 1.35147C4.64275 1.12643 4.95362 1 5.27778 1H8.7219C9.04605 1 9.35693 1.12643 9.58614 1.35147C9.81535 1.57652 9.94412 1.88174 9.94412 2.2V3.4M5.27778 6.4V10M8.7219 6.4V10",
                 (controller, data, index) -> {
                     Form form = controller.getExternalObjects().get(controller.getSectionIndex()).get(controller.getObjectIndex()).getForm();
                     List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[controller.getOptionIndex()], form.getFilter()[controller.getOptionIndex()]);
-                    System.out.println("asdasdasd" + list);
 
                     // Получаем id из rowData
-                    System.out.println(data.toString());
                     int id = (int) data.get("id");
 
                     // Находим объект с совпадающим id в списке list
