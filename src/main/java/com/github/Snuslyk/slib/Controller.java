@@ -566,7 +566,7 @@ public class Controller implements Initializable {
 
         HBox filters = new HBox();
         for (Form.FilterButton filterButton : form.getFilterButtons().get(optionIndex)){
-            filters.getChildren().add(filterButton.button().searchField);
+            //filters.getChildren().add(filterButton.button().searchField);
             filterButton.button().register(filters,rootContainer);
             filterButton.button().searchField.setSelectedItem(filterButton.defaultItem());
             filterButton.button().searchField.setOnCommit(string -> {
