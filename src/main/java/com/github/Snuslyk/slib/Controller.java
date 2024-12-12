@@ -152,7 +152,7 @@ public class Controller implements Initializable {
         }
     }
 
-    private <T> void setupTableColumns(int sectionIndex, int objectIndex, int optionIndex, TableView<Map<String, Object>> tableView, @Nullable List<?> filterList) {
+    private <T> void setupTableColumns(int sectionIndex, int objectIndex, int optionIndex, TableView<Map<String, Object>> tableView, Class<T> clazz, @Nullable List<?> filterList) {
         if (externalObjects == null || tableView == null) return;
 
         tableView.getColumns().clear();
@@ -570,7 +570,7 @@ public class Controller implements Initializable {
             filterButton.button().register(filters, rootContainer);
             filterButton.button().searchField.setSelectedItem(filterButton.defaultItem());
             filterButton.button().searchField.setOnCommit(string -> {
-                setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, filterButton.filterGet().get(string));
+                setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getTableClass()[optionIndex], filterButton.filterGet().get(string));
             });
         }
         filters.setMinHeight(40);
@@ -578,7 +578,7 @@ public class Controller implements Initializable {
 
         setAnchors(box, 140.0, 40.0, -1.0, -1.0);
 
-        setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, null);
+        setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getTableClass()[optionIndex], null);
         adjustTableColumnsWidth(rightSideContainer.getWidth());
 
         rightSideContainer.getChildren().add(box);
