@@ -571,12 +571,8 @@ public class Controller implements Initializable {
             filterButton.button().register(filters, rootContainer);
             filterButton.button().searchField.setSelectedItem(filterButton.defaultItem());
             filterButton.button().searchField.setOnCommit(string -> {
-<<<<<<< Updated upstream
                 setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getTableClass()[optionIndex], filterButton.filterGet().get(string));
-=======
-                setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, filterButton.filterGet().get(string));
                 adjustTableColumnsWidth(rightSideContainer.getWidth());
->>>>>>> Stashed changes
             });
         }
         filters.setMinHeight(40);
