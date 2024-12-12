@@ -651,12 +651,14 @@ public class ButtonFactory {
                 }
             });
 
-            if (textFieldText != null && !textFieldText.isBlank()) {
+            if (textFieldText != null && !textFieldText.isEmpty()) {
                 String[] itemsList = textFieldText.split(",\\s*");
                 for (String item : itemsList) {
                     searchField.select(item);
                 }
             }
+
+            System.out.println(textFieldText);
 
             // Создание SVGPath для стрелки
             SVGPath arrow = new SVGPath();
