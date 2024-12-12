@@ -590,3 +590,60 @@
 .tags-field > .flow-pane {
     -fx-hgap: 8;
 }
+
+.add-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.add-scroll-pane .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.add-scroll-pane .scroll-bar:vertical .increment-button,
+.add-scroll-pane .scroll-bar:vertical .decrement-button,
+.add-scroll-pane .scroll-bar:horizontal .increment-button,
+.add-scroll-pane .scroll-bar:horizontal .decrement-button {
+    -fx-padding: 0;
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}
+
+.add-scroll-pane .scroll-bar:horizontal .increment-arrow,
+.add-scroll-pane .scroll-bar:horizontal .decrement-arrow,
+.add-scroll-pane .scroll-bar:vertical .increment-arrow,
+.add-scroll-pane .scroll-bar:vertical .decrement-arrow {
+    -fx-background-color: transparent;
+}
+
+/* Стили для ползунка скроллбара */
+.add-scroll-pane .scroll-bar .thumb {
+    -fx-background-color: #242424;
+    -fx-background-radius: 4;
+}
+
+/* Стили для hover-эффекта ползунка */
+.add-scroll-pane .scroll-bar .thumb:hover {
+    -fx-background-color: #191919;
+}
+
+/* Стили для трека скроллбара */
+.add-scroll-pane .scroll-bar .track {
+    -fx-background-color: #121212;
+}
+
+/* Устанавливаем ширину вертикального скроллбара */
+.add-scroll-pane .scroll-bar:vertical {
+    -fx-translate-x: 1;
+    -fx-translate-y: 1;
+    -fx-pref-width: 10;
+}
+
+/* Устанавливаем высоту горизонтального скроллбара */
+.add-scroll-pane .scroll-bar:horizontal {
+    -fx-pref-height: 10;
+}

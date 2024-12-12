@@ -5,8 +5,12 @@ import com.github.Snuslyk.slib.FilterIO;
 import com.github.Snuslyk.slib.HibernateUtil;
 import com.sun.istack.Nullable;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -305,10 +309,26 @@ public class Form {
             int id = (int) data.get("id");
 
             if (!fields.isEmpty()) {
+                ScrollPane scrollPane = new ScrollPane();
+                scrollPane.setFitToWidth(true);
+                scrollPane.setFitToHeight(true);
+
                 controller.createRowContainer.setPrefSize(720, 297);
                 controller.createRowContainer.setAlignment(Pos.TOP_CENTER);
-                controller.createRowContainer.setSpacing(20);
-                controller.adjustCreateRowContainerAlignment();
+                controller.createRowContainer.setSpacing(17);
+                controller.createRowContainer.setPadding(new Insets(0, 0, 20, 0));
+
+                scrollPane.setContent(controller.createRowContainer);
+                scrollPane.setMaxWidth(722);
+
+                VBox pane = new VBox(scrollPane);
+                pane.setAlignment(Pos.TOP_CENTER);
+                scrollPane.prefHeightProperty().bind(pane.heightProperty());
+
+                AnchorPane.setTopAnchor(pane, 181.0);
+                AnchorPane.setBottomAnchor(pane, 149.0);
+                AnchorPane.setRightAnchor(pane, 0.0);
+                AnchorPane.setLeftAnchor(pane, 0.0);
 
                 controller.registerFields(fields);
 
@@ -330,7 +350,7 @@ public class Form {
                 });
                 controller.createRowContainer.getChildren().add(create);
 
-                controller.rightSideContainer.getChildren().add(controller.createRowContainer);
+                controller.rightSideContainer.getChildren().add(pane);
 
             } else {
                 System.out.println("Нет полей для редактирования.");

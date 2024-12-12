@@ -22,6 +22,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
@@ -449,9 +450,6 @@ public class Controller implements Initializable {
     }
 
 
-
-
-
     // МЕТОДЫ СОЗДАНИЯ КНОПОК СЕКЦИЙ И ОБЪЕКТОВ
     private void addSectionButton(String text, boolean isSelected) {
         RadioButton sectionButton = createLeftSideButtons(sectionToggleGroup, false, text, isSelected);
@@ -559,19 +557,50 @@ public class Controller implements Initializable {
     private void setupTable(int sectionIndex, int objectIndex, int optionIndex, Form form) {
         tableView.getStyleClass().add("tableD");
         tableView.setPrefSize(200, 297);
-        setAnchors(tableView, 172.0, 40.0, -1.0, -1.0);
+        VBox box = new VBox(tableView);
+
+        HBox filters = new HBox();
+        if (filters.getChildren().isEmpty()) {
+            filters.setMinHeight(0);
+            filters.setMaxHeight(0);
+        } else {
+            filters.setMinHeight(40);
+            filters.setMaxHeight(40);
+        }
+
+        setAnchors(box, 140.0, 40.0, -1.0, -1.0);
 
         setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
         adjustTableColumnsWidth(rightSideContainer.getWidth());
 
-        rightSideContainer.getChildren().add(tableView);
+        rightSideContainer.getChildren().add(box);
     }
 
     private void setupCreateForm(int sectionIndex, int objectIndex, int optionIndex, Form form) {
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.getStyleClass().add("add-scroll-pane");
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+
         createRowContainer.setPrefSize(720, 297);
         createRowContainer.setAlignment(Pos.TOP_CENTER);
-        createRowContainer.setSpacing(20);
-        adjustCreateRowContainerAlignment();
+        createRowContainer.setSpacing(17);
+
+        // Добавляем отступы через VBox
+        VBox wrapper = new VBox(createRowContainer);
+        wrapper.setPadding(new Insets(0, 4, 24, 4));
+        scrollPane.setContent(wrapper);
+
+        scrollPane.setMaxWidth(730);
+
+        VBox pane = new VBox(scrollPane);
+        pane.setAlignment(Pos.TOP_CENTER);
+        scrollPane.prefHeightProperty().bind(pane.heightProperty());
+
+        AnchorPane.setTopAnchor(pane, 181.0);
+        AnchorPane.setBottomAnchor(pane, 149.0);
+        AnchorPane.setRightAnchor(pane, 0.0);
+        AnchorPane.setLeftAnchor(pane, 0.0);
 
         Form.CreateFields createFields = form.getCreateFields().get(optionIndex);
         List<ButtonFactory.TextFieldWrapper> fields = createFields.fields();
@@ -580,16 +609,7 @@ public class Controller implements Initializable {
         registerFields(fields);
         addSaveButton(fields, createFields.createSupplier(), form, optionIndex);
 
-        rightSideContainer.getChildren().add(createRowContainer);
-    }
-
-    public void adjustCreateRowContainerAlignment() {
-        AnchorPane.setTopAnchor(createRowContainer, 172.0);
-        AnchorPane.setBottomAnchor(createRowContainer, 40.0);
-        rightSideContainer.widthProperty().addListener((obs, oldVal, newVal) ->
-                alignHorizontally(createRowContainer, newVal.doubleValue(), createRowContainer.getPrefWidth())
-        );
-        alignHorizontally(createRowContainer, rightSideContainer.getWidth(), createRowContainer.getPrefWidth());
+        rightSideContainer.getChildren().add(pane);
     }
 
     public void registerFields(List<ButtonFactory.TextFieldWrapper> fields) {
@@ -608,7 +628,7 @@ public class Controller implements Initializable {
         javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
         create.getStyleClass().add("save-button");
         create.setPrefSize(720, 39);
-        create.setTranslateY(20);
+        create.setTranslateY(23);
 
         create.setOnAction(event -> handleSaveAction(fields, supplier, form, optionIndex));
         createRowContainer.getChildren().add(create);

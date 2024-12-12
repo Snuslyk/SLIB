@@ -16,6 +16,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -121,6 +122,8 @@ public class ButtonFactory {
             // TextField
             textField = new TextField();
             textFieldOptions(text, mainFontSize, Hmargin - 2, height, textFieldText, textField);
+            textField.setMinHeight(height);
+            textField.setMaxHeight(height);
 
             // Добавление элементов в контейнер
             field.getChildren().addAll(descriptionLabel, textField);
@@ -165,7 +168,7 @@ public class ButtonFactory {
         private String textFieldText;
         private boolean isError;
 
-        private ChoosingSearchField searchField;
+        public ChoosingSearchField searchField;
 
         public ChoosingTextField(String key, String text, String descText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
             this.key = key;
@@ -189,7 +192,16 @@ public class ButtonFactory {
             System.out.println(items.get());
 
             searchField = new ChoosingSearchField(outOfBounds);
-            searchField.setText(textFieldText);
+            searchField.setMinHeight(height);
+            searchField.setMaxHeight(height);
+
+            searchField.addEventHandler(SearchField.SearchEvent.SEARCH_FINISHED, (evt) -> {
+                if (!isAllowPopup()) {
+                    if (searchField.getPopup().isShowing()) {
+                        searchField.getPopup().hide();
+                    }
+                }
+            });
 
             Label descriptionText = new Label(descText);
             descriptionTextFieldOptions(descriptionText, descFontSize, Hmargin);
@@ -259,19 +271,33 @@ public class ButtonFactory {
                         .filter(item -> item.toLowerCase().contains(request.getUserText().toLowerCase()))
                         .collect(Collectors.toList()));
 
-                getEditor().setOnMouseClicked(mouseEvent -> {
-                    if (!getSuggestions().isEmpty() || getPlaceholder() != null) {
-                        update(items.get());
-                        getEditor().requestFocus();
-                        getPopup().show(this);
+                getEditor().addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+                    ObservableList<String> mutableItems = FXCollections.observableArrayList(items.get());
+                    update(mutableItems);
+                    getEditor().requestFocus();
+
+                    if (!isAllowPopup()) setAllowPopup(true);
+
+                    if (!getPopup().isShowing()) {
+                        Bounds bounds = getBoundsInLocal();
+                        Bounds screenBounds = localToScreen(bounds);
+
+                        double popupX = screenBounds.getMinX();
+                        double popupY = screenBounds.getMaxY(); // Позиция под полем
+
+                        getPopup().show(this, popupX, popupY);
                     }
                 });
 
                 getEditor().addEventFilter(KeyEvent.KEY_RELEASED, event -> {
                     String input = getEditor().getText();
+
+                    if (!isAllowPopup()) setAllowPopup(true);
+
                     if (input.isEmpty()) {
                         if (getSuggestions().isEmpty() || getPlaceholder() != null) {
-                            update(items.get());
+                            ObservableList<String> mutableItems = FXCollections.observableArrayList(items.get());
+                            update(mutableItems);
                             getEditor().requestFocus();
                             getPopup().show(this);
                         }
@@ -299,6 +325,16 @@ public class ButtonFactory {
                 clip.setLayoutY(8);
                 content.setClip(clip);
             }
+        }
+
+        private boolean allowPopup = false;
+
+        public void setAllowPopup(boolean allowPopup) {
+            this.allowPopup = allowPopup;
+        }
+
+        public boolean isAllowPopup() {
+            return allowPopup;
         }
     }
 
@@ -333,7 +369,8 @@ public class ButtonFactory {
             field.setSpacing(Vmargin);
             datePicker = new DatePicker();
 
-            datePicker.setPrefHeight(height);
+            datePicker.setMinHeight(height);
+            datePicker.setMaxHeight(height);
             datePicker.setStyle("-fx-font-size: " + mainFontSize + ";");
             datePicker.getEditor().setStyle("-fx-padding: 0 0 0 " + Hmargin + ";");
             datePicker.prefWidthProperty().bind(container.widthProperty());
@@ -572,7 +609,7 @@ public class ButtonFactory {
         private String textFieldText;
         private boolean isError;
 
-        private ChoosingTagsField searchField;
+        public ChoosingTagsField searchField;
 
         public MultiChooseField(String key, String text, String descText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
             this.key = key;
@@ -593,9 +630,20 @@ public class ButtonFactory {
             field = new VBox();
             field.setSpacing(Vmargin);
             searchField = new ChoosingTagsField();
-            List<String> itemsList = Arrays.asList(textFieldText.split(",\\s*"));
-            for (String item : itemsList) {
-                searchField.select(item);
+
+            searchField.addEventHandler(SearchField.SearchEvent.SEARCH_FINISHED, (evt) -> {
+                if (!isAllowPopup()) {
+                    if (searchField.getPopup().isShowing()) {
+                        searchField.getPopup().hide();
+                    }
+                }
+            });
+
+            if (!Objects.equals(textFieldText, "")) {
+                List<String> itemsList = Arrays.asList(textFieldText.split(",\\s*"));
+                for (String item : itemsList) {
+                    searchField.select(item);
+                }
             }
 
             // Создание SVGPath для стрелки
@@ -680,6 +728,8 @@ public class ButtonFactory {
                     update(mutableItems);
                     getEditor().requestFocus();
 
+                    if (!isAllowPopup()) setAllowPopup(true);
+
                     if (!getPopup().isShowing()) {
                         Bounds bounds = getBoundsInLocal();
                         Bounds screenBounds = localToScreen(bounds);
@@ -693,6 +743,9 @@ public class ButtonFactory {
 
                 getEditor().addEventFilter(KeyEvent.KEY_RELEASED, event -> {
                     String input = getEditor().getText();
+
+                    if (!isAllowPopup()) setAllowPopup(true);
+
                     if (input.isEmpty()) {
                         if (getSuggestions().isEmpty() || getPlaceholder() != null) {
                             ObservableList<String> mutableItems = FXCollections.observableArrayList(items.get());
@@ -732,6 +785,16 @@ public class ButtonFactory {
 
                 getEditor().setStyle("-fx-text-fill: white; -fx-prompt-text-fill: #3D3D3D;");
             }
+        }
+
+        private boolean allowPopup = false;
+
+        public void setAllowPopup(boolean allowPopup) {
+            this.allowPopup = allowPopup;
+        }
+
+        public boolean isAllowPopup() {
+            return allowPopup;
         }
     }
 

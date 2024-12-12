@@ -7,6 +7,7 @@ module com.github.Snuslyk.slib {
     requires com.sun.istack.runtime;
     requires com.dlsc.gemsfx;
     requires java.transaction;
+    requires org.apache.commons.lang3;
 
 
     opens com.github.Snuslyk.slib to javafx.fxml;
