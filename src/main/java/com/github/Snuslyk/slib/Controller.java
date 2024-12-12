@@ -5,6 +5,7 @@ import com.github.Snuslyk.slib.electives.ButtonElective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
 import com.github.Snuslyk.slib.factory.ButtonFactory;
 import com.github.Snuslyk.slib.factory.Form;
+import com.sun.istack.Nullable;
 import javafx.animation.PauseTransition;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
@@ -31,6 +32,7 @@ import javafx.util.Duration;
 import javax.transaction.Transactional;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.*;
 
@@ -150,7 +152,7 @@ public class Controller implements Initializable {
         }
     }
 
-    private <T> void setupTableColumns(int sectionIndex, int objectIndex, int optionIndex, TableView<Map<String, Object>> tableView, Class<T> dataClass) {
+    private <T> void setupTableColumns(int sectionIndex, int objectIndex, int optionIndex, TableView<Map<String, Object>> tableView, @Nullable List<?> filterList) {
         if (externalObjects == null || tableView == null) return;
 
         tableView.getColumns().clear();
@@ -166,7 +168,7 @@ public class Controller implements Initializable {
 
         rightSideContainer.widthProperty().addListener((obs, oldWidth, newWidth) -> adjustTableColumnsWidth(newWidth.doubleValue()));
 
-        ObservableList<Map<String, Object>> data = fetchData(form, optionIndex, columns);
+        ObservableList<Map<String, Object>> data = fetchData(form, optionIndex, columns, filterList);
         tableView.setItems(data);
     }
 
@@ -361,11 +363,14 @@ public class Controller implements Initializable {
         return color.toString().replace("0x", "#");
     }
 
-    private ObservableList<Map<String, Object>> fetchData(Form form, int optionIndex, List<Form.Column> columns) {
+    private ObservableList<Map<String, Object>> fetchData(Form form, int optionIndex, List<Form.Column> columns, List<?> filterList) {
         ObservableList<Map<String, Object>> data = FXCollections.observableArrayList();
         List<Map<String, Object>> rows = new ArrayList<>();
-        List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], form.getFilter()[optionIndex]);
-
+        List<?> list = null;
+        if (filterList == null)
+            list = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], form.getFilter()[optionIndex]);
+        else
+            list = filterList;
         try {
             for (Object object : list) {
                 Map<String, Object> row = new LinkedHashMap<>();
@@ -560,6 +565,14 @@ public class Controller implements Initializable {
         VBox box = new VBox(tableView);
 
         HBox filters = new HBox();
+        for (Form.FilterButton filterButton : form.getFilterButtons().get(optionIndex)){
+            filters.getChildren().add(filterButton.button().searchField);
+            filterButton.button().register(filters,rootContainer);
+            filterButton.button().searchField.setSelectedItem(filterButton.defaultItem());
+            filterButton.button().searchField.setOnCommit(string -> {
+                setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, filterButton.filterGet().get(string));
+            });
+        }
         if (filters.getChildren().isEmpty()) {
             filters.setMinHeight(0);
             filters.setMaxHeight(0);
@@ -570,7 +583,7 @@ public class Controller implements Initializable {
 
         setAnchors(box, 140.0, 40.0, -1.0, -1.0);
 
-        setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getClass());
+        setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, null);
         adjustTableColumnsWidth(rightSideContainer.getWidth());
 
         rightSideContainer.getChildren().add(box);

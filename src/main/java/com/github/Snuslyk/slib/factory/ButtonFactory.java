@@ -111,7 +111,7 @@ public class ButtonFactory {
         }
 
         @Override
-        public void register(VBox container) {
+        public void register(Pane container) {
             field = new VBox();
             field.setSpacing(Vmargin);
 
@@ -179,15 +179,20 @@ public class ButtonFactory {
             this.textFieldText = textFieldText;
         }
 
-        public void register(VBox container, Pane outOfBounds){
+        public void register(Pane container, Pane outOfBounds){
             this.outOfBounds = outOfBounds;
             register(container);
         }
 
         @Override
-        public void register(VBox container) {
+        public void register(Pane container) {
             field = new VBox();
             field.setSpacing(Vmargin);
+
+            VBox vBox = null;
+            if (container instanceof VBox){
+                vBox = (VBox) container;
+            }
 
             System.out.println(items.get());
 
@@ -207,7 +212,10 @@ public class ButtonFactory {
             descriptionTextFieldOptions(descriptionText, descFontSize, Hmargin);
 
             textFieldOptions(text, mainFontSize, Hmargin, height, textFieldText, searchField.getEditor());
-            searchField.prefWidthProperty().bind(container.widthProperty());
+            if (vBox == null)
+                searchField.prefWidthProperty().bind(container.widthProperty());
+            else
+                searchField.prefWidthProperty().bind(vBox.widthProperty());
 
             SVGPath svgIcon = new SVGPath();
             svgIcon.setContent("M1, 0L7, 6L13, 0");
@@ -227,7 +235,11 @@ public class ButtonFactory {
             }));
 
             field.getChildren().addAll(descriptionText, buttonContainer);
-            container.getChildren().add(field);
+            if (vBox == null)
+                container.getChildren().add(field);
+            else
+                vBox.getChildren().add(field);
+
         }
 
         @Override
@@ -364,7 +376,7 @@ public class ButtonFactory {
         }
 
         @Override
-        public void register(VBox container) {
+        public void register(Pane container) {
             field = new VBox();
             field.setSpacing(Vmargin);
             datePicker = new DatePicker();
@@ -477,7 +489,7 @@ public class ButtonFactory {
         }
 
         @Override
-        public void register(VBox container) {
+        public void register(Pane container) {
             field = new VBox();
             field.setSpacing(Vmargin);
             comboBox = new ComboBox<String>();
@@ -620,13 +632,13 @@ public class ButtonFactory {
             this.textFieldText = textFieldText;
         }
 
-        public void register(VBox container, Pane outOfBounds){
+        public void register(Pane container, Pane outOfBounds){
             this.outOfBounds = outOfBounds;
             register(container);
         }
 
         @Override
-        public void register(VBox container) {
+        public void register(Pane container) {
             field = new VBox();
             field.setSpacing(Vmargin);
             searchField = new ChoosingTagsField();
@@ -889,7 +901,7 @@ public class ButtonFactory {
         void setError(String message);
         void clearError();
         boolean getError();
-        void register(VBox container);
+        void register(Pane container);
         String getKey();
     }
 

@@ -13,10 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.validateChecker;
@@ -31,9 +28,10 @@ public class Form {
     private final List<List<TableActionButton>> tableButtons;
     private final List<CreateFields> createFields;
     private final List<ColorSupplier> columnColorSupplier;
+    private final List<List<FilterButton>> filterButtons;
 
     private Form(Type[] type, Class<?>[] tableClass, FilterIO[] filter, List<List<Column>> columns, List<String> options, List<List<TableActionButton>> tableButtons,
-                 List<CreateFields> createFields, List<ColorSupplier> columnColorSupplier) {
+                 List<CreateFields> createFields, List<ColorSupplier> columnColorSupplier, List<List<FilterButton>> filterButtons) {
         this.options = options;
         this.type = type;
         this.tableClass = tableClass;
@@ -42,6 +40,7 @@ public class Form {
         this.tableButtons = tableButtons;
         this.createFields = createFields;
         this.columnColorSupplier = columnColorSupplier;
+        this.filterButtons = filterButtons;
     }
 
     public List<Object> get(int option){
@@ -77,6 +76,10 @@ public class Form {
         return columnColorSupplier;
     }
 
+    public List<List<FilterButton>> getFilterButtons() {
+        return filterButtons;
+    }
+
     public static class Builder {
         private static final ColumnInterface defaultColumnInterface = a -> a;
 
@@ -89,6 +92,7 @@ public class Form {
         private final List<List<Column>> columns = new ArrayList<>();
         private final List<CreateFields> createFields = new ArrayList<>();
         private final List<ColorSupplier> columnColorSupplier = new ArrayList<>();
+        private final List<List<FilterButton>> filterButtons = new ArrayList<>();
         //private final List<>
 
 
@@ -156,9 +160,9 @@ public class Form {
             return this;
         }
         public Builder filterButton(String displayName, Supplier<ObservableList<String>> items, String defaultItem, FilterGet filterGet){
+            filterButtons.get(optionId).add(new FilterButton(new ButtonFactory.ChoosingTextField("", displayName, displayName,"", items, defaultItem),filterGet, defaultItem));
             return this;
         }
-
 
         public Builder column(String displayName, String key, ColumnInterface columnInterface){
             if (usedDisplays.contains(displayName)) {
@@ -188,12 +192,13 @@ public class Form {
             columns.add(new ArrayList<>());
             tableButtons.add(new ArrayList<>());
             createFields.add(null);
-            columnColorSupplier.add(null);;
+            columnColorSupplier.add(null);
+            filterButtons.add(new ArrayList<>());
             return this;
         }
 
         public Form build(){
-            return new Form(type, tableClass, filter, columns, options, tableButtons, createFields, columnColorSupplier);
+            return new Form(type, tableClass, filter, columns, options, tableButtons, createFields, columnColorSupplier, filterButtons);
         }
     }
 
@@ -211,6 +216,11 @@ public class Form {
     public interface FilterGet {
         List<Object> get(String item);
     }
+
+    public record FilterButton(ButtonFactory.ChoosingTextField button, FilterGet filterGet, String defaultItem){
+
+    }
+
     public record TableActionButton(
             String display,
             Color color,
