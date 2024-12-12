@@ -154,7 +154,7 @@ public class Controller implements Initializable {
         }
     }
 
-    private <T> void setupTableColumns(int sectionIndex, int objectIndex, int optionIndex, TableView<Map<String, Object>> tableView, Class<T> clazz, @Nullable List<?> filterList) {
+    private <T> void setupTableColumns(int sectionIndex, int objectIndex, int optionIndex, TableView<Map<String, Object>> tableView, List<FilterIO> filters) {
         if (externalObjects == null || tableView == null) return;
 
         tableView.getColumns().clear();
@@ -170,7 +170,7 @@ public class Controller implements Initializable {
 
         rightSideContainer.widthProperty().addListener((obs, oldWidth, newWidth) -> adjustTableColumnsWidth(newWidth.doubleValue()));
 
-        ObservableList<Map<String, Object>> data = fetchData(form, optionIndex, columns, filterList);
+        ObservableList<Map<String, Object>> data = fetchData(form, optionIndex, columns, filters);
         tableView.setItems(data);
     }
 
@@ -365,14 +365,12 @@ public class Controller implements Initializable {
         return color.toString().replace("0x", "#");
     }
 
-    private ObservableList<Map<String, Object>> fetchData(Form form, int optionIndex, List<Form.Column> columns, List<?> filterList) {
+    private ObservableList<Map<String, Object>> fetchData(Form form, int optionIndex, List<Form.Column> columns, List<FilterIO> filters) {
         ObservableList<Map<String, Object>> data = FXCollections.observableArrayList();
         List<Map<String, Object>> rows = new ArrayList<>();
-        List<?> list = null;
-        if (filterList == null)
-            list = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], form.getFilter()[optionIndex]);
-        else
-            list = filterList;
+        if (filters == null) filters = new ArrayList<>();
+        filters.add(form.getFilter()[optionIndex]);
+        List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], filters.toArray(new FilterIO[0]));
         try {
             for (Object object : list) {
                 Map<String, Object> row = new LinkedHashMap<>();
@@ -387,6 +385,7 @@ public class Controller implements Initializable {
                 for (Form.Column column : columns) {
                     String key = column.key(); // внутренний ключ
                     String displayName = column.displayName(); // отображаемое имя для UI (если нужно)
+                    System.out.println(Arrays.toString(object.getClass().getFields()));
                     Object value = object.getClass().getField(key).get(object);
 
                     row.put(key, column.columnInterface().get(value));  // храним данные с оригинальным ключом
@@ -571,7 +570,7 @@ public class Controller implements Initializable {
             filterButton.button().register(filters, rootContainer);
             filterButton.button().searchField.setSelectedItem(filterButton.defaultItem());
             filterButton.button().searchField.setOnCommit(string -> {
-                setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getTableClass()[optionIndex], filterButton.filterGet().get(string));
+                setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, filterButton.filterGet().get(string));
                 adjustTableColumnsWidth(rightSideContainer.getWidth());
             });
         }
@@ -582,7 +581,7 @@ public class Controller implements Initializable {
         tableWithFiltersContainer.setSpacing(40);
         setAnchors(tableWithFiltersContainer, 140.0, 40.0, -1.0, -1.0);
 
-        setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getTableClass()[optionIndex], null);
+        setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, new ArrayList<>());
         adjustTableColumnsWidth(rightSideContainer.getWidth());
 
         rightSideContainer.getChildren().add(tableWithFiltersContainer);

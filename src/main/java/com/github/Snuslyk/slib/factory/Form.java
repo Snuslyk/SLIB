@@ -214,7 +214,7 @@ public class Form {
     }
 
     public interface FilterGet {
-        List<Object> get(String item);
+        List<FilterIO> get(String item);
     }
 
     public record FilterButton(ButtonFactory.ChoosingTextField button, FilterGet filterGet, String defaultItem){
