@@ -25,7 +25,7 @@ public class HibernateUtil {
     public static void addAnnotatedClass(Class<?> clazz){
         annotatedClassed.add(clazz);
         if (builded) {
-            System.out.println(clazz.getSimpleName() + " is not added to mappings because they builded");
+            //System.out.println(clazz.getSimpleName() + " is not added to mappings because they builded");
         }
     }
 

@@ -94,6 +94,8 @@ public class Controller implements Initializable {
 
     private String idColumnsDisplay;
 
+    private VBox tableWithFiltersContainer = new VBox();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupSections();  // СЕКЦИИ
@@ -555,14 +557,13 @@ public class Controller implements Initializable {
     }
 
     private void clearRightSideContainer() {
-        rightSideContainer.getChildren().removeAll(tableView, createRowContainer);
+        rightSideContainer.getChildren().removeAll(tableWithFiltersContainer, createRowContainer);
         createRowContainer.getChildren().clear();
     }
 
     private void setupTable(int sectionIndex, int objectIndex, int optionIndex, Form form) {
         tableView.getStyleClass().add("tableD");
         tableView.setPrefSize(200, 297);
-        VBox box = new VBox(tableView);
 
         HBox filters = new HBox();
         for (Form.FilterButton filterButton : form.getFilterButtons().get(optionIndex)) {
@@ -570,18 +571,25 @@ public class Controller implements Initializable {
             filterButton.button().register(filters, rootContainer);
             filterButton.button().searchField.setSelectedItem(filterButton.defaultItem());
             filterButton.button().searchField.setOnCommit(string -> {
+<<<<<<< Updated upstream
                 setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getTableClass()[optionIndex], filterButton.filterGet().get(string));
+=======
+                setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, filterButton.filterGet().get(string));
+                adjustTableColumnsWidth(rightSideContainer.getWidth());
+>>>>>>> Stashed changes
             });
         }
         filters.setMinHeight(40);
         filters.setMaxHeight(40);
 
-        setAnchors(box, 140.0, 40.0, -1.0, -1.0);
+        tableWithFiltersContainer.getChildren().setAll(filters, tableView);
+        tableWithFiltersContainer.setSpacing(40);
+        setAnchors(tableWithFiltersContainer, 140.0, 40.0, -1.0, -1.0);
 
         setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, form.getTableClass()[optionIndex], null);
         adjustTableColumnsWidth(rightSideContainer.getWidth());
 
-        rightSideContainer.getChildren().add(box);
+        rightSideContainer.getChildren().add(tableWithFiltersContainer);
     }
 
     private void setupCreateForm(int sectionIndex, int objectIndex, int optionIndex, Form form) {
