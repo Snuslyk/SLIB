@@ -651,8 +651,8 @@ public class ButtonFactory {
                 }
             });
 
-            if (!Objects.equals(textFieldText, "")) {
-                List<String> itemsList = Arrays.asList(textFieldText.split(",\\s*"));
+            if (textFieldText != null && !textFieldText.isBlank()) {
+                String[] itemsList = textFieldText.split(",\\s*");
                 for (String item : itemsList) {
                     searchField.select(item);
                 }
@@ -692,7 +692,7 @@ public class ButtonFactory {
         @Override
         public String getTextFieldText() {
             StringBuilder builder = new StringBuilder();
-            searchField.getTags().forEach(tag -> {builder.append(tag).append(", ");});
+            searchField.getTags().forEach(tag -> builder.append(tag).append(", "));
             builder.deleteCharAt(builder.length()-1);
             builder.deleteCharAt(builder.length()-1);
             return builder.toString();
