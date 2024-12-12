@@ -565,21 +565,16 @@ public class Controller implements Initializable {
         VBox box = new VBox(tableView);
 
         HBox filters = new HBox();
-        for (Form.FilterButton filterButton : form.getFilterButtons().get(optionIndex)){
+        for (Form.FilterButton filterButton : form.getFilterButtons().get(optionIndex)) {
             //filters.getChildren().add(filterButton.button().searchField);
-            filterButton.button().register(filters,rootContainer);
+            filterButton.button().register(filters, rootContainer);
             filterButton.button().searchField.setSelectedItem(filterButton.defaultItem());
             filterButton.button().searchField.setOnCommit(string -> {
                 setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, filterButton.filterGet().get(string));
             });
         }
-        if (filters.getChildren().isEmpty()) {
-            filters.setMinHeight(0);
-            filters.setMaxHeight(0);
-        } else {
-            filters.setMinHeight(40);
-            filters.setMaxHeight(40);
-        }
+        filters.setMinHeight(40);
+        filters.setMaxHeight(40);
 
         setAnchors(box, 140.0, 40.0, -1.0, -1.0);
 
