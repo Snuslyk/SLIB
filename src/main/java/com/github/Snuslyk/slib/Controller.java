@@ -368,8 +368,10 @@ public class Controller implements Initializable {
     private ObservableList<Map<String, Object>> fetchData(Form form, int optionIndex, List<Form.Column> columns, List<FilterIO> filters) {
         ObservableList<Map<String, Object>> data = FXCollections.observableArrayList();
         List<Map<String, Object>> rows = new ArrayList<>();
-        if (filters == null) filters = new ArrayList<>();
-        filters.add(form.getFilter()[optionIndex]);
+        if (filters == null) {
+            filters = new ArrayList<>();
+            filters.add(form.getFilter()[optionIndex]);
+        }
         List<?> list = HibernateUtil.getObjectWithFilter(form.getTableClass()[optionIndex], filters.toArray(new FilterIO[0]));
         try {
             for (Object object : list) {
@@ -385,7 +387,6 @@ public class Controller implements Initializable {
                 for (Form.Column column : columns) {
                     String key = column.key(); // внутренний ключ
                     String displayName = column.displayName(); // отображаемое имя для UI (если нужно)
-                    System.out.println(Arrays.toString(object.getClass().getFields()));
                     Object value = object.getClass().getField(key).get(object);
 
                     row.put(key, column.columnInterface().get(value));  // храним данные с оригинальным ключом
