@@ -319,33 +319,35 @@ public class Form {
             int id = (int) data.get("id");
 
             if (!fields.isEmpty()) {
-                ScrollPane scrollPane = new ScrollPane();
-                scrollPane.setFitToWidth(true);
-                scrollPane.setFitToHeight(true);
+                // Добавляем отступы через VBox
+                VBox wrapper = new VBox(controller.createRowContainer);
+                wrapper.setPadding(new Insets(0, 4, 24, 4));
+
+                controller.scrollPane.setContent(wrapper);
+
+                controller.scrollPane.getStyleClass().add("add-scroll-pane");
+                controller.scrollPane.setFitToWidth(true);
+                controller.scrollPane.setFitToHeight(true);
 
                 controller.createRowContainer.setPrefSize(720, 297);
                 controller.createRowContainer.setAlignment(Pos.TOP_CENTER);
                 controller.createRowContainer.setSpacing(17);
-                controller.createRowContainer.setPadding(new Insets(0, 0, 20, 0));
 
-                scrollPane.setContent(controller.createRowContainer);
-                scrollPane.setMaxWidth(722);
+                controller.scrollPane.setContent(wrapper);
 
-                VBox pane = new VBox(scrollPane);
-                pane.setAlignment(Pos.TOP_CENTER);
-                scrollPane.prefHeightProperty().bind(pane.heightProperty());
+                controller.scrollPane.setMaxWidth(730);
 
-                AnchorPane.setTopAnchor(pane, 181.0);
-                AnchorPane.setBottomAnchor(pane, 149.0);
-                AnchorPane.setRightAnchor(pane, 0.0);
-                AnchorPane.setLeftAnchor(pane, 0.0);
+                controller.addScrollPane.setAlignment(Pos.TOP_CENTER);
+                controller.scrollPane.prefHeightProperty().bind(controller.addScrollPane.heightProperty());
+
+                controller.setAnchors(controller.addScrollPane, 181.0, 149.0, 0.0, 0.0);
 
                 controller.registerFields(fields);
 
                 Button create = new Button("Сохранить");
                 create.getStyleClass().add("save-button");
                 create.setPrefSize(720, 39);
-                create.setTranslateY(20);
+                create.setTranslateY(23);
 
                 create.setOnAction(event -> {
                     if (validateChecker(fields.toArray(new ButtonFactory.TextFieldWrapper[0]))) {
@@ -360,7 +362,7 @@ public class Form {
                 });
                 controller.createRowContainer.getChildren().add(create);
 
-                controller.rightSideContainer.getChildren().add(pane);
+                controller.rightSideContainer.getChildren().add(controller.addScrollPane);
 
             } else {
                 System.out.println("Нет полей для редактирования.");

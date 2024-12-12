@@ -21,10 +21,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
@@ -556,7 +553,7 @@ public class Controller implements Initializable {
     }
 
     private void clearRightSideContainer() {
-        rightSideContainer.getChildren().removeAll(tableWithFiltersContainer, createRowContainer);
+        rightSideContainer.getChildren().removeAll(tableWithFiltersContainer, createRowContainer, addScrollPane);
         createRowContainer.getChildren().clear();
     }
 
@@ -565,6 +562,7 @@ public class Controller implements Initializable {
         tableView.setPrefSize(200, 297);
 
         HBox filters = new HBox();
+
         for (Form.FilterButton filterButton : form.getFilterButtons().get(optionIndex)) {
             //filters.getChildren().add(filterButton.button().searchField);
             filterButton.button().register(filters, rootContainer);
@@ -574,12 +572,18 @@ public class Controller implements Initializable {
                 adjustTableColumnsWidth(rightSideContainer.getWidth());
             });
         }
-        filters.setMinHeight(40);
-        filters.setMaxHeight(40);
+        if (filters.getChildren().isEmpty()) {
+            filters.setMinHeight(0);
+            filters.setMaxHeight(0);
+        } else {
+            filters.setMinHeight(40);
+            filters.setMaxHeight(40);
+        }
 
+        VBox.setVgrow(tableView, Priority.ALWAYS);
         tableWithFiltersContainer.getChildren().setAll(filters, tableView);
-        tableWithFiltersContainer.setSpacing(40);
-        setAnchors(tableWithFiltersContainer, 140.0, 40.0, -1.0, -1.0);
+        tableWithFiltersContainer.setSpacing(50);
+        setAnchors(tableWithFiltersContainer, 110.0, 40.0, -1.0, -1.0);
 
         setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, new ArrayList<>());
         adjustTableColumnsWidth(rightSideContainer.getWidth());
@@ -587,8 +591,16 @@ public class Controller implements Initializable {
         rightSideContainer.getChildren().add(tableWithFiltersContainer);
     }
 
+    public final ScrollPane scrollPane = new ScrollPane();
+    public final VBox addScrollPane = new VBox(scrollPane);
+
     private void setupCreateForm(int sectionIndex, int objectIndex, int optionIndex, Form form) {
-        ScrollPane scrollPane = new ScrollPane();
+        // Добавляем отступы через VBox
+        VBox wrapper = new VBox(createRowContainer);
+        wrapper.setPadding(new Insets(0, 4, 24, 4));
+
+        scrollPane.setContent(wrapper);
+
         scrollPane.getStyleClass().add("add-scroll-pane");
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
@@ -597,21 +609,14 @@ public class Controller implements Initializable {
         createRowContainer.setAlignment(Pos.TOP_CENTER);
         createRowContainer.setSpacing(17);
 
-        // Добавляем отступы через VBox
-        VBox wrapper = new VBox(createRowContainer);
-        wrapper.setPadding(new Insets(0, 4, 24, 4));
         scrollPane.setContent(wrapper);
 
         scrollPane.setMaxWidth(730);
 
-        VBox pane = new VBox(scrollPane);
-        pane.setAlignment(Pos.TOP_CENTER);
-        scrollPane.prefHeightProperty().bind(pane.heightProperty());
+        addScrollPane.setAlignment(Pos.TOP_CENTER);
+        scrollPane.prefHeightProperty().bind(addScrollPane.heightProperty());
 
-        AnchorPane.setTopAnchor(pane, 181.0);
-        AnchorPane.setBottomAnchor(pane, 149.0);
-        AnchorPane.setRightAnchor(pane, 0.0);
-        AnchorPane.setLeftAnchor(pane, 0.0);
+        setAnchors(addScrollPane, 181.0, 149.0, 0.0, 0.0);
 
         Form.CreateFields createFields = form.getCreateFields().get(optionIndex);
         List<ButtonFactory.TextFieldWrapper> fields = createFields.fields();
@@ -620,7 +625,7 @@ public class Controller implements Initializable {
         registerFields(fields);
         addSaveButton(fields, createFields.createSupplier(), form, optionIndex);
 
-        rightSideContainer.getChildren().add(pane);
+        rightSideContainer.getChildren().add(addScrollPane);
     }
 
     public void registerFields(List<ButtonFactory.TextFieldWrapper> fields) {
@@ -658,7 +663,7 @@ public class Controller implements Initializable {
         }
     }
 
-    private void setAnchors(Node node, double top, double bottom, double left, double right) {
+    public void setAnchors(Node node, double top, double bottom, double left, double right) {
         AnchorPane.setTopAnchor(node, top);
         AnchorPane.setBottomAnchor(node, bottom);
         AnchorPane.setLeftAnchor(node, left);
