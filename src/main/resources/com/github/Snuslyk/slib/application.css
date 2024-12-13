@@ -229,6 +229,10 @@
     -fx-background-color: transparent;
 }
 
+.table-view #number-column .label {
+    -fx-translate-x: 10;
+}
+
 .editPopUp {
     -fx-background-color: #242424;
     -fx-background-radius: 8;

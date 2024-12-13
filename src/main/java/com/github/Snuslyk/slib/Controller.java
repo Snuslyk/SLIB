@@ -180,6 +180,7 @@ public class Controller implements Initializable {
                 new ReadOnlyObjectWrapper<>(tableView.getItems().indexOf(cellData.getValue()) + 1));
         numberColumn.setSortable(false);
         numberColumn.setStyle("-fx-alignment: CENTER-LEFT;");
+        numberColumn.setId("number-column");
         tableView.getColumns().add(numberColumn);
     }
 

@@ -148,7 +148,7 @@ public class ButtonFactory {
         }
     }
 
-    public static class ChoosingTextField implements TextFieldWrapper {
+    public static class ChoosingTextField implements TextFieldWrapper, AllowPopup {
         private static final int descFontSize = 20;
         private static final int mainFontSize = 20;
         private static final int Hmargin = 20;
@@ -600,7 +600,7 @@ public class ButtonFactory {
         }
     }
 
-    public static class MultiChooseField implements TextFieldWrapper {
+    public static class MultiChooseField implements TextFieldWrapper, AllowPopup {
 
         private static final int descFontSize = 20;
         private static final int mainFontSize = 20;
@@ -905,6 +905,11 @@ public class ButtonFactory {
         boolean getError();
         void register(Pane container);
         String getKey();
+    }
+
+    public interface AllowPopup {
+        boolean isAllowPopup();
+        void setAllowPopup(boolean allowPopup);
     }
 
     private static void textFieldOptions(String text, int mainFontSize, int Hmargin, int height, @Nullable String textFieldText, TextField textField) {

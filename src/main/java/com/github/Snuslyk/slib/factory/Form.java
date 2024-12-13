@@ -316,6 +316,9 @@ public class Form {
             List<ButtonFactory.TextFieldWrapper> fields = createFields.fields();
             fields.forEach(field -> {
                 field.setTextFieldText(data.get(field.getKey()).toString());
+                if (field instanceof ButtonFactory.AllowPopup allowPopup && allowPopup.isAllowPopup()) {
+                    allowPopup.setAllowPopup(false);
+                }
             });
 
             int id = (int) data.get("id");
