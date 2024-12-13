@@ -315,8 +315,7 @@ public class Form {
             CreateFields createFields = form.getCreateFields().get(index);
             List<ButtonFactory.TextFieldWrapper> fields = createFields.fields();
             fields.forEach(field -> {
-                field.setTextFieldText((String) data.get(field.getKey()));
-                System.out.println((String) data.get(field.getKey()));
+                field.setTextFieldText(data.get(field.getKey()).toString());
             });
 
             int id = (int) data.get("id");
