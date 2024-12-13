@@ -29,9 +29,10 @@ public class Form {
     private final List<CreateFields> createFields;
     private final List<ColorSupplier> columnColorSupplier;
     private final List<List<FilterButton>> filterButtons;
+    private final List<Integer> createReturnOption;
 
     private Form(Type[] type, Class<?>[] tableClass, FilterIO[] filter, List<List<Column>> columns, List<String> options, List<List<TableActionButton>> tableButtons,
-                 List<CreateFields> createFields, List<ColorSupplier> columnColorSupplier, List<List<FilterButton>> filterButtons) {
+                 List<CreateFields> createFields, List<ColorSupplier> columnColorSupplier, List<List<FilterButton>> filterButtons, List<Integer> createReturnOption) {
         this.options = options;
         this.type = type;
         this.tableClass = tableClass;
@@ -41,6 +42,7 @@ public class Form {
         this.createFields = createFields;
         this.columnColorSupplier = columnColorSupplier;
         this.filterButtons = filterButtons;
+        this.createReturnOption = createReturnOption;
     }
 
     public List<Object> get(int option){
@@ -80,6 +82,10 @@ public class Form {
         return filterButtons;
     }
 
+    public List<Integer> getCreateReturnOption() {
+        return createReturnOption;
+    }
+
     public static class Builder {
         private static final ColumnInterface defaultColumnInterface = a -> a;
 
@@ -93,6 +99,7 @@ public class Form {
         private final List<CreateFields> createFields = new ArrayList<>();
         private final List<ColorSupplier> columnColorSupplier = new ArrayList<>();
         private final List<List<FilterButton>> filterButtons = new ArrayList<>();
+        private final List<Integer> createReturnOption = new ArrayList<>();
         //private final List<>
 
 
@@ -155,6 +162,11 @@ public class Form {
             return this;
         }
 
+        public Builder createReturnOption(int optionIdReturn){
+            createReturnOption.set(optionId, optionIdReturn);
+            return this;
+        }
+
         public Builder filter(FilterIO filter){
             this.filter[optionId] = filter;
             return this;
@@ -194,11 +206,12 @@ public class Form {
             createFields.add(null);
             columnColorSupplier.add(null);
             filterButtons.add(new ArrayList<>());
+            createReturnOption.add(0);
             return this;
         }
 
         public Form build(){
-            return new Form(type, tableClass, filter, columns, options, tableButtons, createFields, columnColorSupplier, filterButtons);
+            return new Form(type, tableClass, filter, columns, options, tableButtons, createFields, columnColorSupplier, filterButtons, createReturnOption);
         }
     }
 
