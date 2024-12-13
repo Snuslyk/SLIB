@@ -367,15 +367,18 @@ public class Form {
                 create.setPrefSize(720, 39);
                 create.setTranslateY(23);
 
+                final int finalIndex = index;
+
                 create.setOnAction(event -> {
                     if (validateChecker(fields.toArray(new ButtonFactory.TextFieldWrapper[0]))) {
                         System.out.println("ОШИБКА: Проверьте введенные данные.");
                     } else {
-                        //Object object = createFields.createSupplier.get(HibernateUtil.getObjectById(Object.class, id), fields);
                         HibernateUtil.update(createFields.clazz, id, update -> {
                             update = createFields.createSupplier.get(update, fields);
                             return update;
-                        }); // ЛИОН! ВОТ ТУТ НАДО ВМЕСТО СОХРАНЕНИЯ ДЕЛАТЬ ОБНОВЛЕНИЕ ОБЪЕКТА
+                        });
+                        controller.getOptionToggleGroup().selectToggle(controller.getOptionToggleGroup().getToggles().get(form.getCreateReturnOption().get(finalIndex)));
+                        controller.modelUpdate();
                     }
                 });
                 controller.createRowContainer.getChildren().add(create);

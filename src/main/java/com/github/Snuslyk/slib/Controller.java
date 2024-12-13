@@ -660,7 +660,8 @@ public class Controller implements Initializable {
             Object object = supplier.get(form.getCreateFields().get(optionIndex).supplier().get(), fields);
             if (object != null) {
                 HibernateUtil.merge(object);
-                // Добавьте объект в таблицу
+                optionToggleGroup.selectToggle(optionToggleGroup.getToggles().get(form.getCreateReturnOption().get(optionIndex)));
+                modelUpdate();
             }
         }
     }
