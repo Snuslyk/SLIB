@@ -692,7 +692,8 @@ public class Controller implements Initializable {
         return objectContainer.getChildren().indexOf((RadioButton) objectToggleGroup.getSelectedToggle());
     }
     public int getOptionIndex() {
-        return optionsContainer.getChildren().indexOf(((RadioButton) optionToggleGroup.getSelectedToggle()).getParent());
+        int index = optionsContainer.getChildren().indexOf(((RadioButton) optionToggleGroup.getSelectedToggle()).getParent());
+        return index == -1 ? 0 : index;
     }
 
     public ToggleGroup getOptionToggleGroup() {

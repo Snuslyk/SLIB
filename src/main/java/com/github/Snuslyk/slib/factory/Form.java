@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.validateChecker;
@@ -367,18 +368,23 @@ public class Form {
                 create.setPrefSize(720, 39);
                 create.setTranslateY(23);
 
-                final int finalIndex = index;
+                final int finalIndex = index == -1 ? 0 : index;
 
                 create.setOnAction(event -> {
                     if (validateChecker(fields.toArray(new ButtonFactory.TextFieldWrapper[0]))) {
                         System.out.println("ОШИБКА: Проверьте введенные данные.");
                     } else {
+                        AtomicBoolean updated = new AtomicBoolean(false);
                         HibernateUtil.update(createFields.clazz, id, update -> {
                             update = createFields.createSupplier.get(update, fields);
+                            if (update != null) updated.set(true);
                             return update;
                         });
-                        controller.getOptionToggleGroup().selectToggle(controller.getOptionToggleGroup().getToggles().get(form.getCreateReturnOption().get(finalIndex)));
-                        controller.modelUpdate();
+
+                        if (updated.get()) {
+                            controller.getOptionToggleGroup().selectToggle(controller.getOptionToggleGroup().getToggles().get(form.getCreateReturnOption().get(finalIndex)));
+                            controller.modelUpdate();
+                        }
                     }
                 });
                 controller.createRowContainer.getChildren().add(create);
