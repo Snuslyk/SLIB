@@ -62,7 +62,7 @@
                </children></AnchorPane>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="rightSideContainer" layoutX="400.0" prefHeight="648.0" prefWidth="752.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="440.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="35.0">
+      <AnchorPane layoutX="400.0" prefHeight="648.0" prefWidth="752.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="440.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="35.0">
          <children>
             <Label fx:id="objectRightSideText" text="Мероприятия" textFill="WHITE">
                <font>
@@ -71,6 +71,7 @@
             </Label>
             <HBox fx:id="optionsContainer" fillHeight="false" prefHeight="40.0" prefWidth="681.0" spacing="31.0" AnchorPane.leftAnchor="-9.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="54.0" />
             <HBox prefHeight="1.0" prefWidth="672.0" styleClass="HSeparator" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="92.0" />
+            <AnchorPane fx:id="rightSideContainer" layoutY="93.0" prefHeight="520.0" prefWidth="672.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="93.0" />
          </children>
       </AnchorPane>
    </children>
