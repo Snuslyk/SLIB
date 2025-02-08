@@ -127,7 +127,6 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
     private static AnchorPane rootContainer;
     private static AnchorPane rightSideContainer;
     private List<List<Button>> externalObjects;
-    private VBox tableWithFiltersContainer;
     private Form form;
 
     @Override
@@ -135,12 +134,10 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         controller = data.controller();
         form = data.form();
         int optionIndex = data.optionIndex();
-        int sectionIndex = data.sectionIndex();
-        int objectIndex = data.objectIndex();
         rootContainer = controller.getRootContainer();
         rightSideContainer = controller.getRightSideContainer();
         externalObjects = controller.getExternalObjects();
-        tableWithFiltersContainer = controller.getTableWithFiltersContainer();
+        VBox tableWithFiltersContainer = controller.getTableWithFiltersContainer();
 
         tableView.getStyleClass().add("tableD");
         tableView.setPrefSize(200, 297);

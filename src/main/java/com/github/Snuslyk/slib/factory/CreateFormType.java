@@ -87,11 +87,7 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
     }
 
     private static Controller controller;
-    private static ToggleButton lastSelectedButton = null;
-    private static AnchorPane rootContainer;
-    private static AnchorPane rightSideContainer;
     private ToggleGroup optionToggleGroup;
-    private Form form;
     private VBox createRowContainer;
     private final ScrollPane scrollPane = new ScrollPane();
     private final VBox addScrollPane = new VBox(scrollPane);
@@ -99,10 +95,7 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
     @Override
     public void setup(SetupData data) {
         controller = data.controller();
-        form = data.form();
-        int optionIndex = data.optionIndex();
-        rootContainer = controller.getRootContainer();
-        rightSideContainer = controller.getRightSideContainer();
+        AnchorPane rightSideContainer = controller.getRightSideContainer();
         createRowContainer = controller.getCreateRowContainer();
         optionToggleGroup = controller.getOptionToggleGroup();
 
