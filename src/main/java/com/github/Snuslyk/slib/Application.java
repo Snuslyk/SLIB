@@ -12,7 +12,7 @@ public class Application extends javafx.application.Application {
     public void start(Stage stage) throws IOException {
         HibernateUtil.addAnnotatedClass(User.class);
 
-        Controller controller = Controller.instance();
+        Controller controller = getController();
         options(controller);
 
         FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("hello-view.fxml"));
@@ -22,6 +22,10 @@ public class Application extends javafx.application.Application {
         stageSettings(stage, scene);
 
         HibernateUtil.getSessionFactory().openSession().close();
+    }
+
+    public Controller getController(){
+        return Controller.instance();
     }
 
     // Этот метод нужен для добавления кастомных опций контроллеру, чтобы изменять его - @override
@@ -40,10 +44,6 @@ public class Application extends javafx.application.Application {
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
-
-        User lox = new User();
-        lox.name = "lox";
-        HibernateUtil.fastSave(lox);
 
          */
     }

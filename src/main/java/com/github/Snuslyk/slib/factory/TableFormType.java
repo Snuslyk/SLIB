@@ -9,6 +9,7 @@ import com.sun.istack.Nullable;
 import javafx.animation.PauseTransition;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
@@ -171,7 +172,6 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         setupTableColumns(optionIndex, tableView, new ArrayList<>());
         adjustTableColumnsWidth(rightSideContainer.getWidth());
 
-
         rightSideContainer.getChildren().remove(tableWithFiltersContainer);
         rightSideContainer.getChildren().add(tableWithFiltersContainer);
     }
@@ -216,30 +216,43 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         tableView.getColumns().add(numberColumn);
     }
 
+    //
+
     private void setupRowFactory(TableView<Map<String, Object>> tableView) {
         PseudoClass filled = PseudoClass.getPseudoClass("filled");
 
         tableView.setRowFactory(tv -> {
             TableRow<Map<String, Object>> row = new TableRow<>();
 
-            row.itemProperty().addListener((obs, oldItem, newItem) -> {
-                if (newItem != null) {
-                    row.pseudoClassStateChanged(filled, true);
-
-                    if (tableColumnColorSupplier != null) {
-                        Color color = tableColumnColorSupplier.get(controller, newItem);
-                        if (color != null) {
-                            String colorStyle = "-fx-border-color: " + toWebColor(color) + ";";
-                            row.setStyle(colorStyle);
-                        }
-                    }
-                } else {
-                    row.pseudoClassStateChanged(filled, false);
-                    row.setStyle(""); // Очистка стиля для пустых строк
-                }
-            });
+            row.itemProperty().addListener((obs, oldItem, newItem) -> rowListener(row, filled, newItem));
             return row;
         });
+    }
+
+    private void rowListener(TableRow<Map<String, Object>> row, PseudoClass filled, Map<String, Object> newItem){
+        if (newItem != null) {
+            row.pseudoClassStateChanged(filled, true);
+
+            setupColor(row, newItem);
+            return;
+        }
+
+        row.pseudoClassStateChanged(filled, false);
+        row.setStyle(""); // Очистка стиля для пустых строк
+    }
+
+    //
+
+    private void setupColor(TableRow<Map<String, Object>> row, Map<String, Object> newItem){
+        if (tableColumnColorSupplier != null) {
+            Color color = tableColumnColorSupplier.get(controller, newItem);
+
+            if (color == null) return;
+
+            String colorStyle = "-fx-border-color: " + toWebColor(color) + ";";
+            row.setStyle(colorStyle);
+
+        }
     }
 
     private String toWebColor(Color color) {
@@ -258,33 +271,37 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
 
         List<?> list = HibernateUtil.getObjectWithFilter(tableFormType.clazz, filters.toArray(new FilterIO[0]));
 
-        try {
-            for (Object object : list) {
-                Map<String, Object> row = new LinkedHashMap<>();
 
-                // Извлекаем ID из строки объекта
-                if (object instanceof RowData d){
-                    row.put("id", d.getID());
-                    row.put("colorData", d.getColorData());
-                }
+        for (Object object : list) {
+            Map<String, Object> row = new LinkedHashMap<>();
 
-                // Добавляем остальные колонки
-                for (Column column : columns) {
-                    String key = column.key(); // внутренний ключ
-                    String displayName = column.displayName(); // отображаемое имя для UI (если нужно)
+            // Извлекаем ID из строки объекта
+            if (object instanceof RowData d) {
+                row.put("id", d.getID());
+                row.put("colorData", d.getColorData());
+            }
+
+            // Добавляем остальные колонки
+            for (Column column : columns) {
+                String key = column.key(); // внутренний ключ
+                String displayName = column.displayName(); // отображаемое имя для UI (если нужно)
+
+                try {
                     Object value = object.getClass().getField(key).get(object);
 
                     ColumnInterface columnInterface = column.columnInterface();
 
                     if (columnInterface == null) columnInterface = o -> o;
                     row.put(key, columnInterface.get(value));  // храним данные с оригинальным ключом
-                    // Используйте displayName для отображения в таблице, если необходимо
-                }
 
-                rows.add(row);
+                } catch (Exception e) {
+                    row.put(key, "ERROR OF LOADING! KEY: " + key + " IS MISSING IN: " + object.getClass().getSimpleName());
+                    e.printStackTrace();
+                }
+                // Используйте displayName для отображения в таблице, если необходимо
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            rows.add(row);
         }
 
         data.addAll(rows);
@@ -300,6 +317,8 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         }
     }
 
+    //
+
     private void setupColumns(TableView<Map<String, Object>> tableView, List<Column> columns) {
         for (Column column : columns) {
             TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>(column.displayName());
@@ -310,47 +329,60 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
                 // Кал какой-то idColumnsDisplay = column.displayName();
             }
 
-            tableColumn.setCellValueFactory(cellData -> {
-                Map<String, Object> rowData = cellData.getValue();
-                Object cellValue = rowData.get(column.key());
-                return new SimpleStringProperty(cellValue != null ? cellValue.toString() : "");
-            });
+            tableColumnSetCellValueFactory(tableColumn, column);
 
-            tableColumn.setCellFactory(col -> new TableCell<>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (empty || item == null) {
-                        setGraphic(null);
-                    } else {
-                        Label label = new Label(item);
-                        label.setTextFill(Color.WHITE);
-
-                        Tooltip tooltip = new Tooltip(item);
-                        label.setTooltip(tooltip);
-
-                        // Обработка события нажатия мыши
-                        label.setOnMouseClicked(event -> {
-                            if (event.getButton() == MouseButton.PRIMARY) { // ЛКМ
-                                // Показать Tooltip при нажатии
-                                tooltip.show(label, event.getScreenX(), event.getScreenY());
-
-                                // Скрыть Tooltip через 1 секунду (1000 мс)
-                                PauseTransition pause = new PauseTransition(Duration.seconds(1));
-                                pause.setOnFinished(e -> tooltip.hide());
-                                pause.play();
-                            }
-                        });
-
-                        setGraphic(label);
-                    }
-                }
-            });
+            tableColumnSetCellFactory(tableColumn);
 
             tableView.getColumns().add(tableColumn);
         }
     }
+
+    private void tableColumnSetCellValueFactory(TableColumn<Map<String, Object>, String> tableColumn, Column column){
+        tableColumn.setCellValueFactory(cellData -> {
+            Map<String, Object> rowData = cellData.getValue();
+            Object cellValue = rowData.get(column.key());
+            return new SimpleStringProperty(cellValue != null ? cellValue.toString() : "");
+        });
+    }
+
+
+    private void tableColumnSetCellFactory(TableColumn<Map<String, Object>, String> tableColumn){
+        tableColumn.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setGraphic(null);
+                    return;
+                }
+
+                Label label = new Label(item);
+                label.setTextFill(Color.WHITE);
+
+                Tooltip tooltip = new Tooltip(item);
+                label.setTooltip(tooltip);
+
+                // Обработка события нажатия мыши
+                label.setOnMouseClicked(event -> {
+                    if (event.getButton() != MouseButton.PRIMARY) return; // ЛКМ
+                    // Показать Tooltip при нажатии
+                    tooltip.show(label, event.getScreenX(), event.getScreenY());
+
+                    // Скрыть Tooltip через 1 секунду (1000 мс)
+                    PauseTransition pause = new PauseTransition(Duration.seconds(1));
+                    pause.setOnFinished(e -> tooltip.hide());
+                    pause.play();
+                });
+
+                setGraphic(label);
+            }
+        });
+    }
+
+    //
+
+
     public class ButtonCell extends TableCell<Map<String, Object>, Void> {
         private final VBox editPopUp = new VBox();
         private final ToggleButton button = new ToggleButton();

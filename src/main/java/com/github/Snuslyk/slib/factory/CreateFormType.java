@@ -6,6 +6,7 @@ import com.sun.istack.Nullable;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -81,6 +82,12 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
         return createFields;
     }
 
+    public CreateFormType<T> buildCreateFields(){
+        // TODO
+        createFields = new CreateFields<T>(clazz, fields, instanceSupplier, createSupplier);
+        return this;
+    }
+
     public record CreateFields<T>(Class<T> clazz, List<ButtonFactory.TextFieldWrapper> fields, Supplier<T> supplier, CreateSupplier<T> createSupplier) {}
     public interface CreateSupplier<T> {
         T get(Object object, List<ButtonFactory.TextFieldWrapper> fields);
@@ -94,6 +101,9 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
 
     @Override
     public void setup(SetupData data) {
+        if (createFields == null) {
+            System.out.println("CreateFields не забилжены, добавь в форму \".buildCreateFields\"");
+        }
         controller = data.controller();
         AnchorPane rightSideContainer = controller.getRightSideContainer();
         createRowContainer = controller.getCreateRowContainer();
@@ -122,7 +132,6 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
 
         Controller.setAnchors(addScrollPane, 181.0, 149.0, 0.0, 0.0);
 
-        createFields = new CreateFields<T>(clazz, fields, instanceSupplier, createSupplier);
         List<ButtonFactory.TextFieldWrapper> fields = createFields.fields();
         fields.forEach(field -> field.setTextFieldText(""));
 
