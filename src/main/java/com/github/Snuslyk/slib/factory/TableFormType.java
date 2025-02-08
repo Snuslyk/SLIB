@@ -5,6 +5,7 @@ import com.github.Snuslyk.slib.FilterIO;
 import com.github.Snuslyk.slib.HibernateUtil;
 import com.github.Snuslyk.slib.RowData;
 import com.github.Snuslyk.slib.electives.Button;
+import com.github.Snuslyk.slib.util.StylesUtil;
 import com.sun.istack.Nullable;
 import javafx.animation.PauseTransition;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -137,7 +138,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         externalObjects = controller.getExternalObjects();
         VBox tableWithFiltersContainer = controller.getTableWithFiltersContainer();
 
-        tableView.getStyleClass().add("tableD");
+        StylesUtil.add(tableView, "tableD");
         tableView.setPrefSize(200, 297);
 
         HBox filters = new HBox();
@@ -164,7 +165,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         VBox.setVgrow(tableView, Priority.ALWAYS);
         tableWithFiltersContainer.getChildren().setAll(filters, tableView);
         tableWithFiltersContainer.setSpacing(50);
-        tableWithFiltersContainer.getStyleClass().add("tableWithFiltersContainer");
+        StylesUtil.add(tableWithFiltersContainer, "tableWithFiltersContainer");
         Controller.setAnchors(tableWithFiltersContainer, 0.0, 40.0, -1.0, -1.0);
 
         setupTableColumns(optionIndex, tableView, new ArrayList<>());
@@ -390,7 +391,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
             svgIcon.setContent("M0,2 A2,2 0 1,0 4,2 A2,2 0 1,0 0,2 M6,2 A2,2 0 1,0 10,2 A2,2 0 1,0 6,2 M12,2 A2,2 0 1,0 16,2 A2,2 0 1,0 12,2");
             svgIcon.setFill(Color.WHITE);
             button.setGraphic(svgIcon);
-            getStyleClass().add("button-cell");
+            StylesUtil.add(this, "button-cell");
 
             button.setOnAction(event -> toggleButton());
         }
@@ -412,7 +413,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         private void setupEditPopUp(ToggleButton button, Map<String, Object> rowData) {
             editPopUp.setPrefWidth(140);
             editPopUp.setPrefHeight(28);
-            editPopUp.getStyleClass().add("editPopUp");
+            StylesUtil.add(editPopUp, "editPopUp");
             rightSideContainer.getChildren().removeIf(node -> node.getStyleClass().contains("editPopUp"));
             rightSideContainer.getChildren().add(editPopUp);
 
@@ -438,10 +439,10 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
                 if (tableActionButtons.size() > 1) {
                     String buttonClass = (i == 0) ? "firstChild" : (i == tableActionButtons.size() - 1) ? "secondChild" : "";
                     if (!buttonClass.isEmpty()) {
-                        editButton.getStyleClass().add(buttonClass);
+                        StylesUtil.add(editButton, buttonClass);
                     }
                 } else {
-                    editButton.getStyleClass().add("singleChild");
+                    StylesUtil.add(editButton, "singleChild");
                 }
 
                 editPopUp.getChildren().add(editButton);
@@ -492,7 +493,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         // Создаем кнопку и добавляем HBox внутрь
         javafx.scene.control.Button button = new javafx.scene.control.Button();
         button.setGraphic(contentBox);
-        button.getStyleClass().add("editButton");
+        StylesUtil.add(button, "editButton");
         button.setMinHeight(28);
 
         // Настраиваем обработчик событий кнопки
@@ -582,7 +583,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
 
                 controller.scrollPane.setContent(controller.createRowContainer);
 
-                controller.scrollPane.getStyleClass().add("add-scroll-pane");
+                StylesUtil.add(controller.scrollPane,"add-scroll-pane");
                 controller.scrollPane.setFitToWidth(true);
                 controller.scrollPane.setFitToHeight(true);
 
@@ -600,7 +601,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
                 controller.registerFields(fields);
 
                 javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
-                create.getStyleClass().add("save-button");
+                StylesUtil.add(create,"save-button");
                 create.setPrefSize(720, 39);
                 create.setTranslateY(23);
 

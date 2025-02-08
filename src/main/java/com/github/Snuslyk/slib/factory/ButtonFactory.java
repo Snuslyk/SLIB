@@ -2,6 +2,7 @@ package com.github.Snuslyk.slib.factory;
 
 import com.dlsc.gemsfx.SearchField;
 import com.dlsc.gemsfx.TagsField;
+import com.github.Snuslyk.slib.util.StylesUtil;
 import com.sun.istack.Nullable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,8 +30,7 @@ public class ButtonFactory {
     public static RadioButton createLeftSideButtons(ToggleGroup group, boolean isObject, String text, boolean isSelected) {
         RadioButton button = new RadioButton(text);
         button.setCursor(Cursor.HAND);
-        button.getStyleClass().add(isObject ? "object-button" : "sections-button");
-        button.getStyleClass().add("radio-button-things");
+        StylesUtil.add(button, isObject ? "object-button" : "sections-button", "radio-button-things");
         button.setToggleGroup(group);
         button.setPrefSize(320, 40);
 
@@ -46,8 +46,7 @@ public class ButtonFactory {
         optionCopy.setSpacing(8);
 
         RadioButton radioButton = new RadioButton(text);
-        radioButton.getStyleClass().add("radio-button-things");
-        radioButton.getStyleClass().add("option-button");
+        StylesUtil.add(radioButton, "radio-button-things", "option-button");
         radioButton.setStyle("-fx-font-size: " + fontSize + ";");
         radioButton.setCursor(Cursor.HAND);
         radioButton.setToggleGroup(optionToggleGroup);
@@ -59,7 +58,7 @@ public class ButtonFactory {
         HBox substractBox = new HBox();
         substractBox.setPrefHeight(substractHeight);
         VBox.setMargin(substractBox, new Insets(0, 0, 0, margin));
-        substractBox.getStyleClass().add("substract");
+        StylesUtil.add(substractBox, "substract");
 
         optionCopy.getChildren().addAll(radioButton, substractBox);
 
@@ -315,7 +314,7 @@ public class ButtonFactory {
                 });
 
                 setShowSearchIcon(false);
-                getStyleClass().add("search-field-d");
+                StylesUtil.add(this, "search-field-d");
 
                 outOfBounds.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
                     if (getPlaceholder() != null) {
@@ -507,7 +506,8 @@ public class ButtonFactory {
             comboBox.setStyle("-fx-font-size: " + mainFontSize + ";");
             comboBox.setStyle("-fx-padding: 0 0 0 " + (Hmargin - 6) + ";");
             comboBox.prefWidthProperty().bind(container.widthProperty());
-            comboBox.getStyleClass().add("combo-box-field");
+
+            StylesUtil.add(comboBox,"combo-box-field");
 
             comboBox.setCellFactory(lv -> new ListCell<String>() {
                 @Override
@@ -769,7 +769,7 @@ public class ButtonFactory {
                 });
 
                 setShowSearchIcon(false);
-                getStyleClass().add("search-field-d");
+                StylesUtil.add(this, "search-field-d");
 
                 outOfBounds.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
                     if (getPlaceholder() != null) {
@@ -911,7 +911,7 @@ public class ButtonFactory {
     }
 
     private static void textFieldOptions(String text, int mainFontSize, int Hmargin, int height, @Nullable String textFieldText, TextField textField) {
-        textField.getStyleClass().add("textfield-form");
+        StylesUtil.add(textField, "textfield-form");
         textField.setPromptText(text);
         textField.setStyle("-fx-font-size: " + mainFontSize + ";");
         if (textFieldText != null) {
@@ -922,7 +922,7 @@ public class ButtonFactory {
     }
 
     private static void descriptionTextFieldOptions(Label descriptionText, int descFontSize, int Hmargin) {
-        descriptionText.getStyleClass().add("textfield-desc");
+        StylesUtil.add(descriptionText, "textfield-desc");
         descriptionText.setStyle("-fx-font-size: " + descFontSize + ";");
         descriptionText.setStyle("-fx-padding: 0 0 0 " + Hmargin + ";");
     }

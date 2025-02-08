@@ -2,6 +2,7 @@ package com.github.Snuslyk.slib.factory;
 
 import com.github.Snuslyk.slib.Controller;
 import com.github.Snuslyk.slib.HibernateUtil;
+import com.github.Snuslyk.slib.util.StylesUtil;
 import com.sun.istack.Nullable;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -115,7 +116,7 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
 
         scrollPane.setContent(wrapper);
 
-        scrollPane.getStyleClass().add("add-scroll-pane");
+        StylesUtil.add(scrollPane,"add-scroll-pane");
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
 
@@ -145,7 +146,7 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
 
     private void addSaveButton(List<ButtonFactory.TextFieldWrapper> fields, CreateSupplier<?> supplier) {
         javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
-        create.getStyleClass().add("save-button");
+        StylesUtil.add(create, "save-button");
         create.setPrefSize(720, 39);
         create.setTranslateY(23);
 
