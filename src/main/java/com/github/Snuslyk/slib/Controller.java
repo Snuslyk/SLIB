@@ -25,6 +25,12 @@ import static com.github.Snuslyk.slib.factory.ButtonFactory.*;
 
 public class Controller implements Initializable {
 
+    private static final Controller instance = new Controller();
+
+    public static Controller instance(){
+        return instance;
+    }
+
     @FXML
     private VBox optionExample;
 
@@ -66,7 +72,6 @@ public class Controller implements Initializable {
     @FXML
     private Label objectRightSideText;
 
-    private final TableView<Map<String, Object>> tableView = new TableView<>();
     public final VBox createRowContainer = new VBox();
 
     public VBox getCreateRowContainer() {
@@ -89,7 +94,7 @@ public class Controller implements Initializable {
 
     private String idColumnsDisplay;
 
-    private VBox tableWithFiltersContainer = new VBox();
+    private final VBox tableWithFiltersContainer = new VBox();
     public VBox getTableWithFiltersContainer(){
         return tableWithFiltersContainer;
     }
@@ -247,10 +252,8 @@ public class Controller implements Initializable {
         createRowContainer.getChildren().clear();
     }
 
-
     public final ScrollPane scrollPane = new ScrollPane();
     public final VBox addScrollPane = new VBox(scrollPane);
-
 
     public void registerFields(List<ButtonFactory.TextFieldWrapper> fields) {
         for (ButtonFactory.TextFieldWrapper field : fields) {
@@ -272,7 +275,7 @@ public class Controller implements Initializable {
         AnchorPane.setRightAnchor(node, right);
     }
 
-    private void alignHorizontally(Node node, double containerWidth, double nodeWidth) {
+    public static void alignHorizontally(Node node, double containerWidth, double nodeWidth) {
         if (containerWidth > nodeWidth) {
             double horizontalCenter = (containerWidth - nodeWidth) / 2;
             AnchorPane.setLeftAnchor(node, horizontalCenter);
@@ -282,7 +285,6 @@ public class Controller implements Initializable {
             AnchorPane.setRightAnchor(node, 0.0);
         }
     }
-
 
     public int getSectionIndex() {
         return sectionsContainer.getChildren().indexOf((RadioButton) sectionToggleGroup.getSelectedToggle());

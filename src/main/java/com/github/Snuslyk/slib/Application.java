@@ -12,7 +12,7 @@ public class Application extends javafx.application.Application {
     public void start(Stage stage) throws IOException {
         HibernateUtil.addAnnotatedClass(User.class);
 
-        Controller controller = new Controller();
+        Controller controller = Controller.instance();
         options(controller);
 
         FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("hello-view.fxml"));
