@@ -22,8 +22,6 @@ public class Application extends javafx.application.Application {
         stageSettings(stage, scene);
 
         HibernateUtil.getSessionFactory().openSession().close();
-
-
     }
 
     // Этот метод нужен для добавления кастомных опций контроллеру, чтобы изменять его - @override
@@ -37,10 +35,6 @@ public class Application extends javafx.application.Application {
     }
 
     public void stageSettings(Stage stage, Scene scene){
-        //System.out.println(HibernateUtil.getObjectWithFilter(User.class, new Filter("name", "lox22", Filter.Type.ONLY), new Filter("name", "lox42", Filter.Type.ADD)).toString());
-//
-        //System.out.println(HibernateUtil.getObjectWithFilter(User.class).toString());
-
         /* Для примера:
         stage.setTitle("Hello!");
         stage.setScene(scene);

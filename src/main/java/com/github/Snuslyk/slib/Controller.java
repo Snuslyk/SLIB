@@ -239,8 +239,6 @@ public class Controller implements Initializable {
         Form form = externalObjects.get(sectionIndex).get(objectIndex).getForm();
         FormType formType = form.getFormTypes().get(optionIndex);
 
-        System.out.println(formType);
-
         formType.setup(new SetupData(this, sectionIndex, objectIndex, optionIndex, form));
     }
 

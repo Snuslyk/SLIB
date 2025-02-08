@@ -27,7 +27,6 @@ public class Form {
 
     public List<String> getOptions(){
         setupOptions();
-        System.out.println(options);
         return options;
     }
 
