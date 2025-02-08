@@ -1,23 +1,19 @@
 package com.github.Snuslyk.slib;
 
-import com.github.Snuslyk.slib.factory.ButtonFactory;
-import com.github.Snuslyk.slib.util.FieldWork;
-import com.github.Snuslyk.slib.util.FieldsUtil;
-import javafx.scene.input.ScrollEvent;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.boot.jaxb.spi.Binding;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 public class HibernateUtil {
 

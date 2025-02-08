@@ -22,11 +22,12 @@ public class Application extends javafx.application.Application {
         stageSettings(stage, scene);
 
         HibernateUtil.getSessionFactory().openSession().close();
+
+
     }
 
     // Этот метод нужен для добавления кастомных опций контроллеру, чтобы изменять его - @override
     public void options(Controller controller) {
-
         /* Для примера:
          controller.setSectionList(List.of(new Elective("Развлечения"), new Elective("Просвещение")));
          controller.setObjectsList(List.of(
