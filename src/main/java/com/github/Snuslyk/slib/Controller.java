@@ -245,11 +245,13 @@ public class Controller implements Initializable {
         FormType formType = form.getFormTypes().get(optionIndex);
 
         formType.setup(new SetupData(this, sectionIndex, objectIndex, optionIndex, form));
+
+        System.out.println(rightSideContainer.getChildren());
     }
 
     private void clearRightSideContainer() {
-        rightSideContainer.getChildren().removeAll(tableWithFiltersContainer, createRowContainer, addScrollPane);
         createRowContainer.getChildren().clear();
+        rightSideContainer.getChildren().clear();
     }
 
     public final ScrollPane scrollPane = new ScrollPane();

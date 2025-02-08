@@ -18,10 +18,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
@@ -167,7 +164,8 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         VBox.setVgrow(tableView, Priority.ALWAYS);
         tableWithFiltersContainer.getChildren().setAll(filters, tableView);
         tableWithFiltersContainer.setSpacing(50);
-        Controller.setAnchors(tableWithFiltersContainer, 110.0, 40.0, -1.0, -1.0);
+        tableWithFiltersContainer.getStyleClass().add("tableWithFiltersContainer");
+        Controller.setAnchors(tableWithFiltersContainer, 0.0, 40.0, -1.0, -1.0);
 
         setupTableColumns(optionIndex, tableView, new ArrayList<>());
         adjustTableColumnsWidth(rightSideContainer.getWidth());
@@ -582,7 +580,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
                 VBox wrapper = new VBox(controller.createRowContainer);
                 wrapper.setPadding(new Insets(0, 4, 24, 4));
 
-                controller.scrollPane.setContent(wrapper);
+                controller.scrollPane.setContent(controller.createRowContainer);
 
                 controller.scrollPane.getStyleClass().add("add-scroll-pane");
                 controller.scrollPane.setFitToWidth(true);
@@ -591,8 +589,6 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
                 controller.createRowContainer.setPrefSize(720, 297);
                 controller.createRowContainer.setAlignment(Pos.TOP_CENTER);
                 controller.createRowContainer.setSpacing(17);
-
-                controller.scrollPane.setContent(wrapper);
 
                 controller.scrollPane.setMaxWidth(730);
 
