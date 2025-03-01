@@ -3,13 +3,12 @@ package com.github.Snuslyk.slib.factory;
 import com.github.Snuslyk.slib.Controller;
 import com.github.Snuslyk.slib.HibernateUtil;
 import com.github.Snuslyk.slib.util.StylesUtil;
+import com.github.Snuslyk.slib.сontrols.fields.*;
 import com.sun.istack.Nullable;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -58,24 +57,24 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
     }
 
     public CreateFormType<T> textField(String key, String name, String description, String errorSample, @Nullable String textFieldText){
-        fields.add(new ButtonFactory.BasicTextField(key, name, description, errorSample, textFieldText));
+        fields.add(new BasicTextField(key, name, description, errorSample, textFieldText));
         return this;
     }
 
     public CreateFormType<T> chooseField(String key, String name, String description, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
-        fields.add(new ButtonFactory.ChoosingTextField(key, name, description, errorSample, items, textFieldText));
+        fields.add(new ChoosingTextField(key, name, description, errorSample, items, textFieldText));
         return this;
     }
     public CreateFormType<T> datePickerField(String key, String description, String errorSample, @Nullable String textFieldText){
-        fields.add(new ButtonFactory.DatePickerField(key, description, errorSample, textFieldText));
+        fields.add(new DatePickerField(key, description, errorSample, textFieldText));
         return this;
     }
     public CreateFormType<T> choiceBox(String key, String description, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
-        fields.add(new ButtonFactory.ChoiceBoxField(key, description, errorSample, items, textFieldText));
+        fields.add(new ChoiceBoxField(key, description, errorSample, items, textFieldText));
         return this;
     }
     public CreateFormType<T> multiChooseField(String key, String name, String description, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
-        fields.add(new ButtonFactory.MultiChooseField(key, name, description, errorSample, items, textFieldText));
+        fields.add(new MultiChooseField(key, name, description, errorSample, items, textFieldText));
         return this;
     }
 

@@ -7,6 +7,9 @@ import com.github.Snuslyk.slib.factory.ButtonFactory;
 import com.github.Snuslyk.slib.factory.Form;
 import com.github.Snuslyk.slib.factory.FormType;
 import com.github.Snuslyk.slib.factory.SetupData;
+import com.github.Snuslyk.slib.сontrols.buttons.UnderlinedButton;
+import com.github.Snuslyk.slib.сontrols.fields.ChoosingTextField;
+import com.github.Snuslyk.slib.сontrols.fields.MultiChooseField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,6 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
@@ -174,9 +178,10 @@ public class Controller implements Initializable {
 
     // МЕТОД СОЗДАНИЯ КНОПКИ ОПЦИЙ
     private void addOptionButton(String text, boolean isSelected) {
-        VBox Box = createUnderlinedButtons(optionsContainer, text, isSelected, optionToggleGroup, 20, 4, 9);
+        UnderlinedButton Box = new UnderlinedButton(optionsContainer, optionToggleGroup, 20, 4, 9);
+        Box.createUnderlinedButton(text, isSelected);
 
-        RadioButton radioButton = (RadioButton) Box.getChildren().get(0);
+        RadioButton radioButton = (RadioButton) Box.getButton().getChildren().get(0);
 
         radioButton.setOnAction(event -> {
             modelUpdate();
@@ -247,6 +252,7 @@ public class Controller implements Initializable {
         formType.setup(new SetupData(this, sectionIndex, objectIndex, optionIndex, form));
 
         System.out.println(rightSideContainer.getChildren());
+        System.out.println(((Pane)rightSideContainer.getChildren().get(0)).getChildren());
     }
 
     private void clearRightSideContainer() {
