@@ -1,6 +1,6 @@
-package com.github.Snuslyk.slib.сontrols.fields;
+package com.github.Snuslyk.slib.controls.fields;
 
-import com.github.Snuslyk.slib.factory.ButtonFactory;
+import com.github.Snuslyk.slib.factory.TextFieldWrapper;
 import com.github.Snuslyk.slib.util.StylesUtil;
 import com.sun.istack.Nullable;
 import javafx.collections.ObservableList;
@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 import static com.github.Snuslyk.slib.factory.ButtonFactory.descriptionTextFieldOptions;
 import static com.github.Snuslyk.slib.factory.ButtonFactory.errorSetter;
 
-public class ChoiceBoxField implements ButtonFactory.TextFieldWrapper {
+public class ChoiceBoxField implements TextFieldWrapper {
     private static final int descFontSize = 20;
     private static final int Hmargin = 20;
     private static final int mainFontSize = 20;

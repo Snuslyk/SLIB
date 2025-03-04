@@ -1,7 +1,7 @@
 package com.github.Snuslyk.slib.util;
 
-import com.github.Snuslyk.slib.factory.ButtonFactory;
+import com.github.Snuslyk.slib.factory.TextFieldWrapper;
 
 public interface FieldWork {
-    void run(ButtonFactory.TextFieldWrapper field);
+    void run(TextFieldWrapper field);
 }

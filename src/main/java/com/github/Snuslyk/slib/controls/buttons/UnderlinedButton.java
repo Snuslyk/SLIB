@@ -1,4 +1,4 @@
-package com.github.Snuslyk.slib.сontrols.buttons;
+package com.github.Snuslyk.slib.controls.buttons;
 
 import com.github.Snuslyk.slib.util.StylesUtil;
 import javafx.geometry.Insets;

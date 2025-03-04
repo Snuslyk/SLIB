@@ -1,6 +1,6 @@
-package com.github.Snuslyk.slib.сontrols.fields;
+package com.github.Snuslyk.slib.controls.fields;
 
-import com.github.Snuslyk.slib.factory.ButtonFactory;
+import com.github.Snuslyk.slib.factory.TextFieldWrapper;
 import com.sun.istack.Nullable;
 import javafx.geometry.Pos;
 import javafx.scene.control.DatePicker;
@@ -16,7 +16,7 @@ import java.time.LocalDate;
 import static com.github.Snuslyk.slib.factory.ButtonFactory.descriptionTextFieldOptions;
 import static com.github.Snuslyk.slib.factory.ButtonFactory.errorSetter;
 
-public class DatePickerField implements ButtonFactory.TextFieldWrapper {
+public class DatePickerField implements TextFieldWrapper {
 
     private static final int descFontSize = 20;
     private static final int Hmargin = 20;

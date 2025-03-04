@@ -1,31 +1,21 @@
 package com.github.Snuslyk.slib.factory;
 
-import com.dlsc.gemsfx.SearchField;
-import com.dlsc.gemsfx.TagsField;
+import com.github.Snuslyk.slib.controls.fields.BasicTextField;
+import com.github.Snuslyk.slib.controls.fields.ChoosingTextField;
+import com.github.Snuslyk.slib.controls.fields.DatePickerField;
 import com.github.Snuslyk.slib.util.StylesUtil;
-import com.github.Snuslyk.slib.сontrols.fields.BasicTextField;
-import com.github.Snuslyk.slib.сontrols.fields.ChoosingTextField;
-import com.github.Snuslyk.slib.сontrols.fields.DatePickerField;
 import com.sun.istack.Nullable;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.SVGPath;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class ButtonFactory {
 
@@ -156,22 +146,6 @@ public class ButtonFactory {
         }
     }
 
-
-    // Интерфейс-обёртка для текстовых полей
-    public interface TextFieldWrapper {
-        String getTextFieldText();
-        void setTextFieldText(String text);
-        void setError(String message);
-        void clearError();
-        boolean getError();
-        void register(Pane container);
-        String getKey();
-    }
-
-    public interface AllowPopup {
-        boolean isAllowPopup();
-        void setAllowPopup(boolean allowPopup);
-    }
 
     public static void textFieldOptions(String text, int mainFontSize, int Hmargin, int height, @Nullable String textFieldText, TextField textField) {
         StylesUtil.add(textField, "textfield-form");

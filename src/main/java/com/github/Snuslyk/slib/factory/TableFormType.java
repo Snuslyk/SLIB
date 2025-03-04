@@ -10,7 +10,6 @@ import com.sun.istack.Nullable;
 import javafx.animation.PauseTransition;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
@@ -19,7 +18,10 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
@@ -566,10 +568,10 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
             CreateFormType createFormType = (CreateFormType) form.getFormTypes().get(index);
 
             CreateFormType.CreateFields createFields = createFormType.getCreateFields();
-            List<ButtonFactory.TextFieldWrapper> fields = createFields.fields();
+            List<TextFieldWrapper> fields = createFields.fields();
             fields.forEach(field -> {
                 field.setTextFieldText(data.get(field.getKey()).toString());
-                if (field instanceof ButtonFactory.AllowPopup allowPopup && allowPopup.isAllowPopup()) {
+                if (field instanceof AllowPopup allowPopup && allowPopup.isAllowPopup()) {
                     allowPopup.setAllowPopup(false);
                 }
             });
@@ -608,7 +610,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
                 final int finalIndex = index == -1 ? 0 : index;
 
                 create.setOnAction(event -> {
-                    if (validateChecker(fields.toArray(new ButtonFactory.TextFieldWrapper[0]))) {
+                    if (validateChecker(fields.toArray(new TextFieldWrapper[0]))) {
                         System.out.println("ОШИБКА: Проверьте введенные данные.");
                     } else {
                         AtomicBoolean updated = new AtomicBoolean(false);

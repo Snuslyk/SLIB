@@ -1,7 +1,7 @@
 package com.github.Snuslyk.slib.util;
 
-import com.github.Snuslyk.slib.factory.ButtonFactory;
-import com.github.Snuslyk.slib.сontrols.fields.DatePickerField;
+import com.github.Snuslyk.slib.controls.fields.DatePickerField;
+import com.github.Snuslyk.slib.factory.TextFieldWrapper;
 import javafx.scene.control.DatePicker;
 
 import java.time.Instant;
@@ -18,7 +18,7 @@ public class TimeUtil {
         return Instant.now().getEpochSecond();
     }
 
-    public static long parseDataPicker(ButtonFactory.TextFieldWrapper field){
+    public static long parseDataPicker(TextFieldWrapper field){
 
         DatePicker datePicker = ((DatePickerField) field).getDatePicker();
         if (datePicker.getValue() == null){

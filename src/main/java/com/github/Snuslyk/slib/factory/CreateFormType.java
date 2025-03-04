@@ -2,8 +2,8 @@ package com.github.Snuslyk.slib.factory;
 
 import com.github.Snuslyk.slib.Controller;
 import com.github.Snuslyk.slib.HibernateUtil;
+import com.github.Snuslyk.slib.controls.fields.*;
 import com.github.Snuslyk.slib.util.StylesUtil;
-import com.github.Snuslyk.slib.сontrols.fields.*;
 import com.sun.istack.Nullable;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -22,7 +22,7 @@ import static com.github.Snuslyk.slib.factory.ButtonFactory.validateChecker;
 
 public class CreateFormType<T> extends FormType implements FormWithType<CreateFormType<?>> {
 
-    private final List<ButtonFactory.TextFieldWrapper> fields = new ArrayList<>();
+    private final List<TextFieldWrapper> fields = new ArrayList<>();
     private Supplier<T> instanceSupplier;
     CreateSupplier<T> createSupplier;
     private Class<T> clazz;
@@ -88,9 +88,9 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
         return this;
     }
 
-    public record CreateFields<T>(Class<T> clazz, List<ButtonFactory.TextFieldWrapper> fields, Supplier<T> supplier, CreateSupplier<T> createSupplier) {}
+    public record CreateFields<T>(Class<T> clazz, List<TextFieldWrapper> fields, Supplier<T> supplier, CreateSupplier<T> createSupplier) {}
     public interface CreateSupplier<T> {
-        T get(Object object, List<ButtonFactory.TextFieldWrapper> fields);
+        T get(Object object, List<TextFieldWrapper> fields);
     }
 
     private static Controller controller;
@@ -132,7 +132,7 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
 
         Controller.setAnchors(addScrollPane, 181.0, 149.0, 0.0, 0.0);
 
-        List<ButtonFactory.TextFieldWrapper> fields = createFields.fields();
+        List<TextFieldWrapper> fields = createFields.fields();
         fields.forEach(field -> field.setTextFieldText(""));
 
         controller.registerFields(fields);
@@ -143,7 +143,7 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
         }
     }
 
-    private void addSaveButton(List<ButtonFactory.TextFieldWrapper> fields, CreateSupplier<?> supplier) {
+    private void addSaveButton(List<TextFieldWrapper> fields, CreateSupplier<?> supplier) {
         javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
         StylesUtil.add(create, "save-button");
         create.setPrefSize(720, 39);
@@ -154,8 +154,8 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
     }
 
     @Transactional
-    private void handleSaveAction(List<ButtonFactory.TextFieldWrapper> fields, CreateSupplier<?> supplier) {
-        if (validateChecker(fields.toArray(new ButtonFactory.TextFieldWrapper[0]))) {
+    private void handleSaveAction(List<TextFieldWrapper> fields, CreateSupplier<?> supplier) {
+        if (validateChecker(fields.toArray(new TextFieldWrapper[0]))) {
             System.out.println("ОШИБКА: Проверьте введенные данные.");
         } else {
             Object object = supplier.get(createFields.supplier().get(), fields);

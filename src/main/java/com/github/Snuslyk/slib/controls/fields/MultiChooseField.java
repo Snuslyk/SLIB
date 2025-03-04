@@ -1,7 +1,9 @@
-package com.github.Snuslyk.slib.сontrols.fields;
+package com.github.Snuslyk.slib.controls.fields;
 
 import com.dlsc.gemsfx.SearchField;
-import com.github.Snuslyk.slib.factory.ButtonFactory;
+import com.dlsc.gemsfx.TagsField;
+import com.github.Snuslyk.slib.factory.AllowPopup;
+import com.github.Snuslyk.slib.factory.TextFieldWrapper;
 import com.github.Snuslyk.slib.util.StylesUtil;
 import com.sun.istack.Nullable;
 import javafx.collections.FXCollections;
@@ -11,9 +13,9 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -23,9 +25,11 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.github.Snuslyk.slib.factory.ButtonFactory.*;
+import static com.github.Snuslyk.slib.factory.ButtonFactory.descriptionTextFieldOptions;
+import static com.github.Snuslyk.slib.factory.ButtonFactory.errorSetter;
 
-public class ChoosingTextField implements ButtonFactory.TextFieldWrapper, ButtonFactory.AllowPopup {
+public class MultiChooseField implements TextFieldWrapper, AllowPopup {
+
     private static final int descFontSize = 20;
     private static final int mainFontSize = 20;
     private static final int Hmargin = 20;
@@ -33,21 +37,21 @@ public class ChoosingTextField implements ButtonFactory.TextFieldWrapper, Button
     private static final int height = 40;
     private static final int popUpHeight = 99;
 
-    private final Supplier<ObservableList<String>> items;
+    private Supplier<ObservableList<String>> items;
     private final String key;
     private Pane outOfBounds;
 
     private VBox field;
-    public final String errorSample;
+    private final String errorSample;
     private final Label errorLabel = new Label();
     private final String text;
     private final String descText;
     private String textFieldText;
     private boolean isError;
 
-    public ChoosingSearchField searchField;
+    public ChoosingTagsField searchField;
 
-    public ChoosingTextField(String key, String text, String descText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
+    public MultiChooseField(String key, String text, String descText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
         this.key = key;
         this.items = items;
         this.errorSample = errorSample;
@@ -65,17 +69,7 @@ public class ChoosingTextField implements ButtonFactory.TextFieldWrapper, Button
     public void register(Pane container) {
         field = new VBox();
         field.setSpacing(Vmargin);
-
-        VBox vBox = null;
-        if (container instanceof VBox){
-            vBox = (VBox) container;
-        }
-
-        System.out.println(items.get());
-
-        searchField = new ChoosingTextField.ChoosingSearchField(outOfBounds);
-        searchField.setMinHeight(height);
-        searchField.setMaxHeight(height);
+        searchField = new ChoosingTagsField();
 
         searchField.addEventHandler(SearchField.SearchEvent.SEARCH_FINISHED, (evt) -> {
             if (!isAllowPopup()) {
@@ -85,43 +79,56 @@ public class ChoosingTextField implements ButtonFactory.TextFieldWrapper, Button
             }
         });
 
-        Label descriptionText = new Label(descText);
-        descriptionTextFieldOptions(descriptionText, descFontSize, Hmargin);
-
-        textFieldOptions(text, mainFontSize, Hmargin, height, textFieldText, searchField.getEditor());
-        if (vBox == null)
-            searchField.prefWidthProperty().bind(container.widthProperty());
-        else
-            searchField.prefWidthProperty().bind(vBox.widthProperty());
-
-        SVGPath svgIcon = new SVGPath();
-        svgIcon.setContent("M1, 0L7, 6L13, 0");
-        svgIcon.setFill(Color.TRANSPARENT);
-        svgIcon.setStroke(Color.web("#3D3D3D"));
-        svgIcon.setStrokeWidth(1.0);
-        HBox buttonContainer = new HBox(-33);
-        buttonContainer.getChildren().addAll(searchField, svgIcon);
-        buttonContainer.setAlignment(Pos.CENTER_LEFT);
-
-        searchField.getPopup().showingProperty().addListener(((obs, wasSelected, isNowSelected) -> {
-            if (!isNowSelected) {
-                svgIcon.setContent("M1, 0L7, 6L13, 0");
-            } else {
-                svgIcon.setContent("M1, 7L7, 0.999999L13, 7");
+        if (textFieldText != null && !textFieldText.isEmpty()) {
+            String[] itemsList = textFieldText.split(",\\s*");
+            for (String item : itemsList) {
+                searchField.select(item);
             }
-        }));
+        }
 
-        field.getChildren().addAll(descriptionText, buttonContainer);
-        if (vBox == null)
-            container.getChildren().add(field);
-        else
-            vBox.getChildren().add(field);
+        System.out.println(textFieldText);
 
+        // Создание SVGPath для стрелки
+        SVGPath arrow = new SVGPath();
+        arrow.setContent("M1, 0L7, 6L13, 0"); // Стрелка вниз
+        arrow.setFill(Color.TRANSPARENT);
+        arrow.setStroke(Color.web("#3D3D3D"));
+        arrow.setStrokeWidth(1.0);
+
+        // Label с описанием
+        Label descriptionLabel = new Label(descText);
+        descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
+
+        // Обновление стрелки в зависимости от состояния ChoiceBox (раскрыт/не раскрыт)
+        searchField.getPopup().showingProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                // Когда список раскрыт, стрелка вверх
+                arrow.setContent("M1, 7L7, 0.999999L13, 7");
+            } else {
+                // Когда список закрыт, стрелка вниз
+                arrow.setContent("M1, 0L7, 6L13, 0");
+            }
+        });
+
+        StackPane stackPane = new StackPane();
+        stackPane.getChildren().addAll(searchField, arrow);
+        StackPane.setAlignment(arrow, Pos.CENTER_RIGHT);
+        arrow.setTranslateX(-19);
+
+        field.getChildren().addAll(descriptionLabel, stackPane);
+        container.getChildren().add(field);
     }
 
     @Override
     public String getTextFieldText() {
-        return searchField.getText();
+        StringBuilder builder = new StringBuilder();
+        searchField.getTags().forEach(tag -> builder.append(tag).append(", "));
+        builder.deleteCharAt(builder.length()-1);
+        builder.deleteCharAt(builder.length()-1);
+        return builder.toString();
+    }
+    public ObservableList<String> getTags(){
+        return searchField.getTags();
     }
 
     @Override
@@ -153,12 +160,10 @@ public class ChoosingTextField implements ButtonFactory.TextFieldWrapper, Button
         return items.get();
     }
 
-    public class ChoosingSearchField extends SearchField<String> {
+    public class ChoosingTagsField extends TagsField<String> {
 
-        public ChoosingSearchField(Pane outOfBounds) {
-            setSuggestionProvider(request -> items.get().stream()
-                    .filter(item -> item.toLowerCase().contains(request.getUserText().toLowerCase()))
-                    .collect(Collectors.toList()));
+        public ChoosingTagsField() {
+            setSuggestionProvider(request -> items.get().stream().filter(item -> item.toLowerCase().contains(request.getUserText().toLowerCase())).collect(Collectors.toList()));
 
             getEditor().addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
                 ObservableList<String> mutableItems = FXCollections.observableArrayList(items.get());
@@ -202,6 +207,12 @@ public class ChoosingTextField implements ButtonFactory.TextFieldWrapper, Button
                 }
             });
 
+            setOnMouseClicked(mouseEvent -> {
+                if (getTagSelectionModel().getSelectedItem() != null) {
+                    removeTags(getTagSelectionModel().getSelectedItem());
+                }
+            });
+
             setMatcher((item, searchText) -> item.toLowerCase().startsWith(searchText.toLowerCase()));
             setComparator(String::compareToIgnoreCase);
 
@@ -213,6 +224,8 @@ public class ChoosingTextField implements ButtonFactory.TextFieldWrapper, Button
             clip.heightProperty().bind(content.heightProperty());
             clip.setLayoutY(8);
             content.setClip(clip);
+
+            getEditor().setStyle("-fx-text-fill: white; -fx-prompt-text-fill: #3D3D3D;");
         }
     }
 
