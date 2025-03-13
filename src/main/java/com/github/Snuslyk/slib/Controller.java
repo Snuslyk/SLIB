@@ -5,6 +5,7 @@ import com.github.Snuslyk.slib.controls.fields.ChoosingTextField;
 import com.github.Snuslyk.slib.controls.fields.MultiChooseField;
 import com.github.Snuslyk.slib.electives.Button;
 import com.github.Snuslyk.slib.electives.ButtonElective;
+import com.github.Snuslyk.slib.electives.Elective;
 import com.github.Snuslyk.slib.electives.ManageableElectives;
 import com.github.Snuslyk.slib.factory.Form;
 import com.github.Snuslyk.slib.factory.FormType;
@@ -21,6 +22,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -90,7 +92,7 @@ public class Controller implements Initializable {
 
     private final ToggleGroup optionToggleGroup = new ToggleGroup();
 
-    private List<List<Button>> externalObjects;
+    private List<List<Button>> externalObjects = new ArrayList<>();
     private List<ManageableElectives> externalSections;
 
     private int pickedSectionIndex = 0;
@@ -116,8 +118,23 @@ public class Controller implements Initializable {
         this.externalSections = sections;
     }
 
+    public void setSectionList(String... s) {
+        List<ManageableElectives> sections = new ArrayList<>();
+
+        for (String ss : s){
+            sections.add(new Elective(ss));
+        }
+        setSectionList(sections);
+    }
+
     public void setObjectsList(List<List<Button>> objects) {
         this.externalObjects = objects;
+    }
+
+    public void addObjectList(Button... buttons){
+        List<Button> buttonList = new ArrayList<>(List.of(buttons));
+
+        externalObjects.add(buttonList);
     }
 
 
