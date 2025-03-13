@@ -1,5 +1,9 @@
 package com.github.Snuslyk.slib;
 
+import org.dhatim.fastexcel.reader.Cell;
+import org.dhatim.fastexcel.reader.ReadableWorkbook;
+import org.dhatim.fastexcel.reader.Row;
+import org.dhatim.fastexcel.reader.Sheet;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -12,8 +16,15 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 public class HibernateUtil {
 
@@ -31,6 +42,7 @@ public class HibernateUtil {
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory != null) return sessionFactory;
+        defaultExcelParsers();
         try {
             Configuration configuration = new Configuration();
             configuration.configure("hibernate.cfg.xml");
@@ -162,4 +174,104 @@ public class HibernateUtil {
         return list;
     }
 
+    public static void loadExcelToDatabase(String path, Class<?> clazz){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        Map<Integer, List<String>> data = readExcel(path);
+
+        if (data == null) {
+            session.close();
+            return;
+        }
+
+        List<String> fields = data.get(1);
+
+        int size = data.keySet().size();
+
+        try {
+            Constructor<?> constructor = clazz.getDeclaredConstructor();
+
+            HashMap<String, Field> cachedFields = new HashMap<>();
+
+            for (int i = 1; i < size; i++) {
+                Object object = constructor.newInstance();
+
+                for (String field : fields) {
+                    System.out.println(field);
+                    if (!cachedFields.containsKey(field))
+                        cachedFields.put(field, clazz.getDeclaredField(field));
+
+                    Class<?> type = cachedFields.get(field).getType();
+
+                    cachedFields.get(field).set(object, excelParser.get(type).parse(data.get(i).get(fields.indexOf(field))));
+                }
+
+                session.persist(object);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    public static Map<Integer, List<String>> readExcel(String fileLocation) {
+        try {
+            Map<Integer, List<String>> data = new HashMap<>();
+
+            try (FileInputStream file = new FileInputStream(fileLocation); ReadableWorkbook wb = new ReadableWorkbook(file)) {
+                Sheet sheet = wb.getFirstSheet();
+                try (Stream<Row> rows = sheet.openStream()) {
+                    rows.forEach(r -> {
+                        data.put(r.getRowNum(), new ArrayList<>());
+
+                        for (Cell cell : r) {
+                            data.get(r.getRowNum()).add(cell.getRawValue());
+                        }
+                    });
+                }
+            }
+            return data;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static final HashMap<Class<?>, ExcelParser> excelParser = new HashMap<>();
+
+    public interface ExcelParser {
+        Object parse(String value);
+    }
+
+    public static void defaultExcelParsers(){
+        excelParser.put(String.class, s -> s);
+        excelParser.put(Integer.class, Integer::parseInt);
+        excelParser.put(int.class, Integer::parseInt);
+        excelParser.put(Double.class, Double::parseDouble);
+        excelParser.put(double.class, Double::parseDouble);
+        excelParser.put(Float.class, Float::parseFloat);
+        excelParser.put(float.class, Float::parseFloat);
+        excelParser.put(Boolean.class, Boolean::parseBoolean);
+        excelParser.put(boolean.class, Boolean::parseBoolean);
+        excelParser.put(Long.class, Long::parseLong);
+        excelParser.put(long.class, Long::parseLong);
+        excelParser.put(Short.class, Short::parseShort);
+        excelParser.put(short.class, Short::parseShort);
+        excelParser.put(Byte.class, Byte::parseByte);
+        excelParser.put(byte.class, Byte::parseByte);
+        excelParser.put(Character.class, s -> s.charAt(0));
+        excelParser.put(char.class, s -> s.charAt(0));
+        excelParser.put(Object.class, s -> s);
+        excelParser.put(Class.class, s -> {
+            try {
+                return Class.forName(s);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            return null;
+        });
+    }
 }

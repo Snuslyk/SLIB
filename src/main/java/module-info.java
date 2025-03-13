@@ -8,6 +8,7 @@ module com.github.Snuslyk.slib {
     requires com.dlsc.gemsfx;
     requires java.transaction;
     requires org.apache.commons.lang3;
+    requires org.dhatim.fastexcel.reader;
 
 
     opens com.github.Snuslyk.slib to javafx.fxml;

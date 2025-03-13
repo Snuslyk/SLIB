@@ -137,20 +137,44 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
     private static AnchorPane rightSideContainer;
     private List<List<Button>> externalObjects;
     private Form form;
+    private int optionIndex;
+    private VBox tableWithFiltersContainer;
 
     @Override
     public void setup(SetupData data) {
-        controller = data.controller();
-        form = data.form();
-        int optionIndex = data.optionIndex();
-        rootContainer = controller.getRootContainer();
-        rightSideContainer = controller.getRightSideContainer();
-        externalObjects = controller.getExternalObjects();
-        VBox tableWithFiltersContainer = controller.getTableWithFiltersContainer();
+        valuesSetup(data);
 
         StylesUtil.add(tableView, "tableD");
         tableView.setPrefSize(200, 297);
 
+        HBox filters = addFilterButtons();
+
+        VBox.setVgrow(tableView, Priority.ALWAYS);
+        tableWithFiltersContainer.getChildren().setAll(filters, tableView);
+        tableWithFiltersContainer.setSpacing(50);
+        StylesUtil.add(tableWithFiltersContainer, "tableWithFiltersContainer");
+        Controller.setAnchors(tableWithFiltersContainer, 0.0, 40.0, -1.0, -1.0);
+
+        setupTableColumns(optionIndex, tableView, new ArrayList<>());
+        adjustTableColumnsWidth(rightSideContainer.getWidth());
+
+        rightSideContainer.getChildren().remove(tableWithFiltersContainer);
+        rightSideContainer.getChildren().add(tableWithFiltersContainer);
+    }
+
+    private void valuesSetup(SetupData data){
+        controller = data.controller();
+        form = data.form();
+
+        optionIndex = data.optionIndex();
+        tableWithFiltersContainer = controller.getTableWithFiltersContainer();
+
+        rootContainer = controller.getRootContainer();
+        rightSideContainer = controller.getRightSideContainer();
+        externalObjects = controller.getExternalObjects();
+    }
+
+    private HBox addFilterButtons(){
         HBox filters = new HBox();
 
         for (FilterButton filterButton : filterButtons) {
@@ -171,17 +195,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
             filters.setMaxHeight(40);
         }
 
-        VBox.setVgrow(tableView, Priority.ALWAYS);
-        tableWithFiltersContainer.getChildren().setAll(filters, tableView);
-        tableWithFiltersContainer.setSpacing(50);
-        StylesUtil.add(tableWithFiltersContainer, "tableWithFiltersContainer");
-        Controller.setAnchors(tableWithFiltersContainer, 0.0, 40.0, -1.0, -1.0);
-
-        setupTableColumns(optionIndex, tableView, new ArrayList<>());
-        adjustTableColumnsWidth(rightSideContainer.getWidth());
-
-        rightSideContainer.getChildren().remove(tableWithFiltersContainer);
-        rightSideContainer.getChildren().add(tableWithFiltersContainer);
+        return filters;
     }
 
     private void setupTableColumns(int optionIndex, TableView<Map<String, Object>> tableView, List<FilterIO> filters) {
@@ -614,8 +628,6 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
                 StylesUtil.add(create, "save-button");
                 create.setPrefSize(720, 39);
                 create.setTranslateY(23);
-
-                final int finalIndex = index == -1 ? 0 : index;
 
                 create.setOnAction(event -> {
                     if (validateChecker(fields.toArray(new TextFieldWrapper[0]))) {
