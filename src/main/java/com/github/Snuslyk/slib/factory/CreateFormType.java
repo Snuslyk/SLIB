@@ -77,6 +77,10 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
         fields.add(new MultiChooseField(key, name, description, errorSample, items, textFieldText));
         return this;
     }
+    public CreateFormType<T> multiDatePicker(String key, String name, String description, String errorSample, boolean withRange, @Nullable String textFieldText){
+        fields.add(new MultiDatePicker(key, name, description, errorSample, withRange, textFieldText));
+        return this;
+    }
 
     public CreateFields<T> getCreateFields() {
         return createFields;

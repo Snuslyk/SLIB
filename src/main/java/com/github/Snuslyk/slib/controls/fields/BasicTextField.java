@@ -21,6 +21,7 @@ public class BasicTextField implements TextFieldWrapper {
     private VBox field;
     private TextField textField;
     private final Label errorLabel = new Label();
+
     private final Boolean isError = false;
     private final String text;
     private final String descText;
