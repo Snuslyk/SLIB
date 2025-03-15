@@ -1,6 +1,7 @@
 package com.github.Snuslyk.slib.controls.fields;
 
 import com.github.Snuslyk.slib.factory.TextFieldWrapper;
+import com.github.Snuslyk.slib.util.TimeUtil;
 import com.sun.istack.Nullable;
 import javafx.geometry.Pos;
 import javafx.scene.control.DatePicker;
@@ -12,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.descriptionTextFieldOptions;
 import static com.github.Snuslyk.slib.factory.ButtonFactory.errorSetter;
@@ -74,19 +76,10 @@ public class DatePickerField implements TextFieldWrapper {
         });
 
         if (textFieldText != null && !textFieldText.isEmpty()) {
-            String[] parts = textFieldText.split("\\.");
-
-            if (parts.length == 3) {
-                try {
-                    int day = Integer.parseInt(parts[0]);
-                    int month = Integer.parseInt(parts[1]);
-                    int year = Integer.parseInt(parts[2]);
-
-                    setTextFieldText(LocalDate.of(year, month, day));
-                } catch (NumberFormatException e) {
-                    setError("Invalid date format");
-                }
-            } else {
+            try {
+                LocalDate date = TimeUtil.parseDate(textFieldText);
+                setTextFieldText(date);
+            } catch (DateTimeParseException e) {
                 setError("Invalid date format");
             }
         }

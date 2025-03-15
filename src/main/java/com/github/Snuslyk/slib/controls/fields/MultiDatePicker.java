@@ -1,6 +1,7 @@
 package com.github.Snuslyk.slib.controls.fields;
 
 import com.github.Snuslyk.slib.factory.TextFieldWrapper;
+import com.github.Snuslyk.slib.util.TimeUtil;
 import com.sun.istack.Nullable;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
@@ -8,7 +9,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.*;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -22,7 +22,6 @@ import javafx.scene.input.MouseEvent;
 
 public class MultiDatePicker implements TextFieldWrapper {
 
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd");
     private final ObservableSet<LocalDate> selectedDates;
     private final DatePicker datePicker;
 
@@ -77,6 +76,12 @@ public class MultiDatePicker implements TextFieldWrapper {
         if (withRange) field.getChildren().addAll(descriptionLabel, withRangeSelectionMode().getDatePicker());
         else field.getChildren().addAll(descriptionLabel, getDatePicker());
 
+        datePicker.getEditor().setOnMouseClicked(event -> {
+            if (!datePicker.isShowing()) {
+                datePicker.show();
+            }
+        });
+
         container.getChildren().add(field);
 
     }
@@ -104,11 +109,7 @@ public class MultiDatePicker implements TextFieldWrapper {
             @Override
             public String toString(LocalDate date) {
                 if (!selectedDates.isEmpty()) {
-                    TreeSet<LocalDate> sortedDates = new TreeSet<>(selectedDates);
-                    LocalDate minDate = sortedDates.first();
-                    LocalDate maxDate = sortedDates.last();
-                    return minDate.equals(maxDate) ? DATE_FORMAT.format(minDate)
-                            : DATE_FORMAT.format(minDate) + " - " + DATE_FORMAT.format(maxDate);
+                    return TimeUtil.formatDateRange(selectedDates);
                 }
                 return "";
             }
@@ -153,11 +154,7 @@ public class MultiDatePicker implements TextFieldWrapper {
 
     private void updateTextField() {
         if (!selectedDates.isEmpty()) {
-            TreeSet<LocalDate> sortedDates = new TreeSet<>(selectedDates);
-            LocalDate minDate = sortedDates.first();
-            LocalDate maxDate = sortedDates.last();
-            datePicker.getEditor().setText(minDate.equals(maxDate) ? DATE_FORMAT.format(minDate)
-                    : DATE_FORMAT.format(minDate) + " - " + DATE_FORMAT.format(maxDate));
+            datePicker.getEditor().setText(TimeUtil.formatDateRange(selectedDates));
         } else {
             datePicker.getEditor().clear();
         }
@@ -171,48 +168,22 @@ public class MultiDatePicker implements TextFieldWrapper {
         return this.datePicker;
     }
 
-    private Set<LocalDate> parseDateRange(String dateRange) {
-        Set<LocalDate> parsedDates = new LinkedHashSet<>();
-
-        if (dateRange == null || dateRange.trim().isEmpty()) {
-            return parsedDates;
-        }
-
-        String[] parts = dateRange.split(" - ");
-        if (parts.length == 1) {
-            // Если введена только одна дата
-            parsedDates.add(LocalDate.parse(parts[0], DATE_FORMAT));
-        } else if (parts.length == 2) {
-            // Если введен диапазон
-            LocalDate startDate = LocalDate.parse(parts[0], DATE_FORMAT);
-            LocalDate endDate = LocalDate.parse(parts[1], DATE_FORMAT);
-
-            LocalDate currentDate = startDate;
-            while (!currentDate.isAfter(endDate)) {
-                parsedDates.add(currentDate);
-                currentDate = currentDate.plusDays(1);
-            }
-        }
-
-        return parsedDates;
-    }
-
     public void setDateRange(String dateRange) {
         selectedDates.clear();
-        selectedDates.addAll(parseDateRange(dateRange));
-        updateTextField(); // Обновляет текстовое поле DatePicker
+        selectedDates.addAll(TimeUtil.parseDateRange(dateRange));
+        updateTextField();
     }
 
     private void setUpDatePicker() {
         this.datePicker.setConverter(new StringConverter<LocalDate>() {
             @Override
             public String toString(LocalDate date) {
-                return (date == null) ? "" : DATE_FORMAT.format(date);
+                return TimeUtil.formatDate(date);
             }
 
             @Override
             public LocalDate fromString(String string) {
-                return ((string == null) || string.isEmpty()) ? null : LocalDate.parse(string, DATE_FORMAT);
+                return TimeUtil.parseDate(string);
             }
         });
 
