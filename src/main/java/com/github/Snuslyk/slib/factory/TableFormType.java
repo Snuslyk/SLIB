@@ -4,6 +4,7 @@ import com.github.Snuslyk.slib.Controller;
 import com.github.Snuslyk.slib.FilterIO;
 import com.github.Snuslyk.slib.HibernateUtil;
 import com.github.Snuslyk.slib.RowData;
+import com.github.Snuslyk.slib.controls.fields.ChoosingTextField;
 import com.github.Snuslyk.slib.electives.Button;
 import com.github.Snuslyk.slib.util.StylesUtil;
 import com.sun.istack.Nullable;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.validateChecker;
 
@@ -42,6 +44,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
     private final List<TableActionButton> tableActionButtons = new ArrayList<>();
     private ColorSupplier tableColumnColorSupplier;
     private String filterId;
+    private final List<FilterButton> filterButtons = new ArrayList<>();
 
     @Override
     public TableFormType name(String name) {
@@ -70,8 +73,13 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         return this;
     }
 
-    public TableFormType filter(String id){
+    public TableFormType filter(String id) {
         filterId = id;
+        return this;
+    }
+
+    public TableFormType filterButton(String displayName, Supplier<ObservableList<String>> items, String defaultItem, FilterGet filterGet) {
+        filterButtons.add(new FilterButton(new ChoosingTextField("", displayName, displayName, "", items, defaultItem), filterGet, defaultItem));
         return this;
     }
 
@@ -112,7 +120,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         Object get(Object object);
     }
 
-    public TableFormType tableColumnColorSupplier(ColorSupplier colorSupplier){
+    public TableFormType tableColumnColorSupplier(ColorSupplier colorSupplier) {
         tableColumnColorSupplier = colorSupplier;
         return this;
     }
@@ -129,40 +137,17 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
     private static AnchorPane rightSideContainer;
     private List<List<Button>> externalObjects;
     private Form form;
+    private int optionIndex;
+    private VBox tableWithFiltersContainer;
 
     @Override
     public void setup(SetupData data) {
-        controller = data.controller();
-        form = data.form();
-        int optionIndex = data.optionIndex();
-        rootContainer = controller.getRootContainer();
-        rightSideContainer = controller.getRightSideContainer();
-        externalObjects = controller.getExternalObjects();
-        VBox tableWithFiltersContainer = controller.getTableWithFiltersContainer();
+        valuesSetup(data);
 
         StylesUtil.add(tableView, "tableD");
         tableView.setPrefSize(200, 297);
 
-        HBox filters = new HBox();
-
-
-        // TODO
-        //for (OldForm.FilterButton filterButton : form.getFilterButtons().get(optionIndex)) {
-        //    //filters.getChildren().add(filterButton.button().searchField);
-        //    filterButton.button().register(filters, rootContainer);
-        //    filterButton.button().searchField.setSelectedItem(filterButton.defaultItem());
-        //    filterButton.button().searchField.setOnCommit(string -> {
-        //        setupTableColumns(sectionIndex, objectIndex, optionIndex, tableView, filterButton.filterGet().get(string));
-        //        adjustTableColumnsWidth(rightSideContainer.getWidth());
-        //    });
-        //}
-        if (filters.getChildren().isEmpty()) {
-            filters.setMinHeight(0);
-            filters.setMaxHeight(0);
-        } else {
-            filters.setMinHeight(40);
-            filters.setMaxHeight(40);
-        }
+        HBox filters = addFilterButtons();
 
         VBox.setVgrow(tableView, Priority.ALWAYS);
         tableWithFiltersContainer.getChildren().setAll(filters, tableView);
@@ -175,6 +160,42 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
 
         rightSideContainer.getChildren().remove(tableWithFiltersContainer);
         rightSideContainer.getChildren().add(tableWithFiltersContainer);
+    }
+
+    private void valuesSetup(SetupData data){
+        controller = data.controller();
+        form = data.form();
+
+        optionIndex = data.optionIndex();
+        tableWithFiltersContainer = controller.getTableWithFiltersContainer();
+
+        rootContainer = controller.getRootContainer();
+        rightSideContainer = controller.getRightSideContainer();
+        externalObjects = controller.getExternalObjects();
+    }
+
+    private HBox addFilterButtons(){
+        HBox filters = new HBox();
+
+        for (FilterButton filterButton : filterButtons) {
+            filterButton.button().register(filters, rootContainer);
+            filters.getChildren().add(filterButton.button().searchField);
+            filterButton.button().searchField.setSelectedItem(filterButton.defaultItem());
+            filterButton.button().searchField.setOnCommit(string -> {
+                setupTableColumns(optionIndex, tableView, filterButton.filterGet().get(string));
+                adjustTableColumnsWidth(rightSideContainer.getWidth());
+            });
+        }
+
+        if (filters.getChildren().isEmpty()) {
+            filters.setMinHeight(0);
+            filters.setMaxHeight(0);
+        } else {
+            filters.setMinHeight(40);
+            filters.setMaxHeight(40);
+        }
+
+        return filters;
     }
 
     private void setupTableColumns(int optionIndex, TableView<Map<String, Object>> tableView, List<FilterIO> filters) {
@@ -230,7 +251,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         });
     }
 
-    private void rowListener(TableRow<Map<String, Object>> row, PseudoClass filled, Map<String, Object> newItem){
+    private void rowListener(TableRow<Map<String, Object>> row, PseudoClass filled, Map<String, Object> newItem) {
         if (newItem != null) {
             row.pseudoClassStateChanged(filled, true);
 
@@ -244,7 +265,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
 
     //
 
-    private void setupColor(TableRow<Map<String, Object>> row, Map<String, Object> newItem){
+    private void setupColor(TableRow<Map<String, Object>> row, Map<String, Object> newItem) {
         if (tableColumnColorSupplier != null) {
             Color color = tableColumnColorSupplier.get(controller, newItem);
 
@@ -326,7 +347,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
             tableColumn.setResizable(false);
             tableColumn.setReorderable(false);
 
-            if (column.key().equals("id")){
+            if (column.key().equals("id")) {
                 // Кал какой-то idColumnsDisplay = column.displayName();
             }
 
@@ -338,7 +359,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         }
     }
 
-    private void tableColumnSetCellValueFactory(TableColumn<Map<String, Object>, String> tableColumn, Column column){
+    private void tableColumnSetCellValueFactory(TableColumn<Map<String, Object>, String> tableColumn, Column column) {
         tableColumn.setCellValueFactory(cellData -> {
             Map<String, Object> rowData = cellData.getValue();
             Object cellValue = rowData.get(column.key());
@@ -347,7 +368,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
     }
 
 
-    private void tableColumnSetCellFactory(TableColumn<Map<String, Object>, String> tableColumn){
+    private void tableColumnSetCellFactory(TableColumn<Map<String, Object>, String> tableColumn) {
         tableColumn.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -463,6 +484,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
             setGraphic(empty ? null : button);
         }
     }
+
     private javafx.scene.control.Button addEditButton(TableActionButton tableActionButton, Map<String, Object> rowData) {
         HBox contentBox = new HBox();
         contentBox.setSpacing(7);
@@ -585,7 +607,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
 
                 controller.scrollPane.setContent(controller.createRowContainer);
 
-                StylesUtil.add(controller.scrollPane,"add-scroll-pane");
+                StylesUtil.add(controller.scrollPane, "add-scroll-pane");
                 controller.scrollPane.setFitToWidth(true);
                 controller.scrollPane.setFitToHeight(true);
 
@@ -603,11 +625,9 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
                 controller.registerFields(fields);
 
                 javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
-                StylesUtil.add(create,"save-button");
+                StylesUtil.add(create, "save-button");
                 create.setPrefSize(720, 39);
                 create.setTranslateY(23);
-
-                final int finalIndex = index == -1 ? 0 : index;
 
                 create.setOnAction(event -> {
                     if (validateChecker(fields.toArray(new TextFieldWrapper[0]))) {
@@ -623,6 +643,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
                         if (updated.get()) {
                             // TODO
                             //controller.getOptionToggleGroup().selectToggle(controller.getOptionToggleGroup().getToggles().get(form.getCreateReturnOption().get(finalIndex)));
+                            controller.getOptionToggleGroup().selectToggle(controller.getOptionToggleGroup().getToggles().get(0));
                             controller.modelUpdate();
                         }
                     }
