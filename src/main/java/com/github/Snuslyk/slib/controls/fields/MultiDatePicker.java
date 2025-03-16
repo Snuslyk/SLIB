@@ -6,7 +6,6 @@ import com.sun.istack.Nullable;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.skin.DatePickerSkin;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -108,6 +107,8 @@ public class MultiDatePicker implements TextFieldWrapper {
             try {
                 Set<LocalDate> dates = TimeUtil.parseDateRange(textFieldText);
                 selectedDates.addAll(dates);
+
+                datePicker.getEditor().setText(textFieldText);
             } catch (DateTimeParseException e) {
                 setError("Invalid date format");
             }
