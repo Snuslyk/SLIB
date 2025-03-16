@@ -78,8 +78,8 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         return this;
     }
 
-    public TableFormType filterButton(String displayName, Supplier<ObservableList<String>> items, String defaultItem, FilterGet filterGet) {
-        filterButtons.add(new FilterButton(new ChoosingTextField("", displayName, displayName, "", items, defaultItem), filterGet, defaultItem));
+    public TableFormType filterButton(String promptText, String descriptionText, Supplier<ObservableList<String>> items, String defaultItem, FilterGet filterGet) {
+        filterButtons.add(new FilterButton(new ChoosingTextField("", promptText, descriptionText, "", items, defaultItem), filterGet, defaultItem));
         return this;
     }
 
@@ -179,7 +179,6 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
 
         for (FilterButton filterButton : filterButtons) {
             filterButton.button().register(filters, rootContainer);
-            filters.getChildren().add(filterButton.button().searchField);
             filterButton.button().searchField.setSelectedItem(filterButton.defaultItem());
             filterButton.button().searchField.setOnCommit(string -> {
                 setupTableColumns(optionIndex, tableView, filterButton.filterGet().get(string));
@@ -191,6 +190,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
             filters.setMinHeight(0);
             filters.setMaxHeight(0);
         } else {
+            tableWithFiltersContainer.setPadding(new Insets(20, 0, 0, 0));
             filters.setMinHeight(40);
             filters.setMaxHeight(40);
         }
@@ -240,7 +240,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
 
     //
 
-    private void setupRowFactory(TableView<Map<String, Object>> tableView) {
+    protected void setupRowFactory(TableView<Map<String, Object>> tableView) {
         PseudoClass filled = PseudoClass.getPseudoClass("filled");
 
         tableView.setRowFactory(tv -> {
@@ -251,7 +251,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         });
     }
 
-    private void rowListener(TableRow<Map<String, Object>> row, PseudoClass filled, Map<String, Object> newItem) {
+    protected void rowListener(TableRow<Map<String, Object>> row, PseudoClass filled, Map<String, Object> newItem) {
         if (newItem != null) {
             row.pseudoClassStateChanged(filled, true);
 

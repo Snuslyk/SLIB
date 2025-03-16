@@ -61,6 +61,11 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
         return this;
     }
 
+    public CreateFormType<T> textArea(String key, String name, String description, String errorSample, @Nullable String textFieldText){
+        fields.add(new TextAreaField(key, name, description, errorSample, textFieldText));
+        return this;
+    }
+
     public CreateFormType<T> chooseField(String key, String name, String description, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
         fields.add(new ChoosingTextField(key, name, description, errorSample, items, textFieldText));
         return this;

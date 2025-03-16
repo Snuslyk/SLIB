@@ -7,10 +7,7 @@ import com.github.Snuslyk.slib.util.StylesUtil;
 import com.sun.istack.Nullable;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -147,7 +144,7 @@ public class ButtonFactory {
     }
 
 
-    public static void textFieldOptions(@Nullable String text, int mainFontSize, int Hmargin, int height, @Nullable String textFieldText, TextField textField) {
+    public static void textFieldOptions(@Nullable String text, int mainFontSize, int Hmargin, int height, @Nullable String textFieldText, TextInputControl textField) {
         StylesUtil.add(textField, "textfield-form");
         if (text != null) {
             textField.setPromptText(text);

@@ -38,7 +38,7 @@ public class ChoosingTextField implements TextFieldWrapper, AllowPopup {
     private final String key;
     private Pane outOfBounds;
 
-    private VBox field;
+    public VBox field;
     public final String errorSample;
     private final Label errorLabel = new Label();
     private final String text;

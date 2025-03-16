@@ -626,8 +626,6 @@
 }
 
 .tags-field {
-    -fx-min-height: 40;
-    -fx-max-height: 40;
     -fx-background-color: transparent;
     -fx-border-radius: 12;
     -fx-background-radius: 12;
@@ -651,5 +649,6 @@
     -fx-border-radius: 4;
 }
 .tags-field > .flow-pane {
+    -fx-padding: 3 3;
     -fx-hgap: 8;
 }
