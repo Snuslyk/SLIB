@@ -1,5 +1,6 @@
 package com.github.Snuslyk.slib.controls.fields;
 
+import com.github.Snuslyk.slib.factory.ButtonFactory;
 import com.github.Snuslyk.slib.factory.TextFieldWrapper;
 import com.github.Snuslyk.slib.util.TimeUtil;
 import com.sun.istack.Nullable;
@@ -49,11 +50,12 @@ public class DatePickerField implements TextFieldWrapper {
         field.setSpacing(Vmargin);
         datePicker = new DatePicker();
 
+        ButtonFactory.textFieldOptions(null, mainFontSize, Hmargin - 3, height, textFieldText, datePicker.getEditor());
+
+        datePicker.prefWidthProperty().bind(container.widthProperty());
+
         datePicker.setMinHeight(height);
         datePicker.setMaxHeight(height);
-        datePicker.setStyle("-fx-font-size: " + mainFontSize + ";");
-        datePicker.getEditor().setStyle("-fx-padding: 0 0 0 " + Hmargin + ";");
-        datePicker.prefWidthProperty().bind(container.widthProperty());
 
         Label descriptionLabel = new Label(descText);
         descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
@@ -78,7 +80,7 @@ public class DatePickerField implements TextFieldWrapper {
         if (textFieldText != null && !textFieldText.isEmpty()) {
             try {
                 LocalDate date = TimeUtil.parseDate(textFieldText);
-                setTextFieldText(date);
+                setDatePickerValue(date);
             } catch (DateTimeParseException e) {
                 setError("Invalid date format");
             }
@@ -104,7 +106,7 @@ public class DatePickerField implements TextFieldWrapper {
         textFieldText = text;
     }
 
-    public void setTextFieldText(LocalDate localDate) {
+    public void setDatePickerValue(LocalDate localDate) {
         datePicker.setValue(localDate);
     }
 

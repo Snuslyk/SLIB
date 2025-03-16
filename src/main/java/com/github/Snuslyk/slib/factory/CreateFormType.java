@@ -77,8 +77,8 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
         fields.add(new MultiChooseField(key, name, description, errorSample, items, textFieldText));
         return this;
     }
-    public CreateFormType<T> multiDatePicker(String key, String name, String description, String errorSample, boolean withRange, @Nullable String textFieldText){
-        fields.add(new MultiDatePicker(key, name, description, errorSample, withRange, textFieldText));
+    public CreateFormType<T> multiDatePicker(String key, String description, String errorSample, boolean withRange, @Nullable String textFieldText){
+        fields.add(new MultiDatePicker(key, description, errorSample, withRange, textFieldText));
         return this;
     }
 
@@ -137,7 +137,7 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
         Controller.setAnchors(addScrollPane, 181.0, 149.0, 0.0, 0.0);
 
         List<TextFieldWrapper> fields = createFields.fields();
-        fields.forEach(field -> field.setTextFieldText(""));
+        //fields.forEach(field -> field.setTextFieldText("")); чо? зачем?
 
         controller.registerFields(fields);
         addSaveButton(fields, createFields.createSupplier());

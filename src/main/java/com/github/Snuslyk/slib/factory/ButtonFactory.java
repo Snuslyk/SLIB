@@ -147,14 +147,16 @@ public class ButtonFactory {
     }
 
 
-    public static void textFieldOptions(String text, int mainFontSize, int Hmargin, int height, @Nullable String textFieldText, TextField textField) {
+    public static void textFieldOptions(@Nullable String text, int mainFontSize, int Hmargin, int height, @Nullable String textFieldText, TextField textField) {
         StylesUtil.add(textField, "textfield-form");
-        textField.setPromptText(text);
+        if (text != null) {
+            textField.setPromptText(text);
+        }
         textField.setStyle("-fx-font-size: " + mainFontSize + ";");
         if (textFieldText != null) {
             textField.setText(textFieldText);
         }
-        textField.setStyle("-fx-padding: 0 0 0 " + Hmargin + ";");
+        textField.setStyle("-fx-padding: 0 " + Hmargin + ";");
         textField.setPrefHeight(height);
     }
 

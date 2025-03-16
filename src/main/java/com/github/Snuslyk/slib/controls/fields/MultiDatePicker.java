@@ -4,15 +4,21 @@ import com.github.Snuslyk.slib.factory.TextFieldWrapper;
 import com.github.Snuslyk.slib.util.TimeUtil;
 import com.sun.istack.Nullable;
 import javafx.collections.FXCollections;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.skin.DatePickerSkin;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.SVGPath;
 import javafx.util.StringConverter;
 import java.time.LocalDate;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.*;
 import static java.time.temporal.ChronoUnit.DAYS;
 
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 import javafx.collections.ObservableSet;
@@ -31,22 +37,20 @@ public class MultiDatePicker implements TextFieldWrapper {
     private static final int mainFontSize = 20;
     private static final int Hmargin = 20;
     private static final int Vmargin = 5;
-    private static final int height = 40;
+    private static final int height = 38;
 
     private VBox field;
 
     private final Label errorLabel = new Label();
 
     private final Boolean isError = false;
-    private final String text;
     private final String descText;
-    private final String textFieldText;
+    private String textFieldText;
     private final String key;
 
     public final String errorSample;
 
-    public MultiDatePicker(String key, String text, String descText, String errorSample, boolean withRange, @Nullable String textFieldText) {
-        this.text = text;
+    public MultiDatePicker(String key, String descText, String errorSample, boolean withRange, @Nullable String textFieldText) {
         this.descText = descText;
         this.key = key;
         this.errorSample = errorSample;
@@ -66,21 +70,48 @@ public class MultiDatePicker implements TextFieldWrapper {
         Label descriptionLabel = new Label(descText);
         descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
 
-        textFieldOptions(text, mainFontSize, Hmargin - 2, height, textFieldText, datePicker.getEditor());
+        textFieldOptions(null, mainFontSize, Hmargin - 3, height, textFieldText, datePicker.getEditor());
         datePicker.getEditor().setMinHeight(height);
         datePicker.getEditor().setMaxHeight(height);
 
         setUpDatePicker();
 
+        SVGPath svgIcon = new SVGPath();
+        svgIcon.setContent("M11.8333 1V4.2M5.16667 1V4.2M1 7.4H16M2.66667 2.6H14.3333C15.2538 2.6 16 3.31634 16 4.2V15.4C16 16.2837 15.2538 17 14.3333 17H2.66667C1.74619 17 1 16.2837 1 15.4V4.2C1 3.31634 1.74619 2.6 2.66667 2.6Z");
+        svgIcon.setFill(Color.TRANSPARENT);
+        svgIcon.setStroke(Color.web("#3D3D3D"));
+        svgIcon.setStrokeWidth(1.0);
+
+        // Button container
+        HBox buttonContainer = new HBox(-36);
+        buttonContainer.setAlignment(Pos.CENTER_LEFT);
+
         // Добавление элементов в контейнер
-        if (withRange) field.getChildren().addAll(descriptionLabel, withRangeSelectionMode().getDatePicker());
-        else field.getChildren().addAll(descriptionLabel, getDatePicker());
+        if (withRange) {
+            buttonContainer.getChildren().addAll(withRangeSelectionMode().getDatePicker(), svgIcon);
+            field.getChildren().addAll(descriptionLabel, buttonContainer);
+        }
+        else {
+            buttonContainer.getChildren().addAll(getDatePicker(), svgIcon);
+            field.getChildren().addAll(descriptionLabel, buttonContainer);
+        }
+
+        datePicker.prefWidthProperty().bind(container.widthProperty());
 
         datePicker.getEditor().setOnMouseClicked(event -> {
             if (!datePicker.isShowing()) {
                 datePicker.show();
             }
         });
+
+        if (textFieldText != null && !textFieldText.isEmpty()) {
+            try {
+                Set<LocalDate> dates = TimeUtil.parseDateRange(textFieldText);
+                selectedDates.addAll(dates);
+            } catch (DateTimeParseException e) {
+                setError("Invalid date format");
+            }
+        }
 
         container.getChildren().add(field);
 
@@ -261,11 +292,7 @@ public class MultiDatePicker implements TextFieldWrapper {
 
     @Override
     public void setTextFieldText(String text) {
-        if (!withRange) return;
-        if (text == null) return;
-        if (Objects.equals(text, "")) return;
-        setDateRange(text);
-        datePicker.commitValue();
+        textFieldText = text;
     }
 
     @Override

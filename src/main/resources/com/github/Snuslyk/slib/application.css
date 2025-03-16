@@ -31,8 +31,8 @@
 }
 
 .sections-button {
-    -fx-min-height: 40px;
-    -fx-max-height: 40px;
+    -fx-min-height: 40;
+    -fx-max-height: 40;
     -fx-background-color: #242424;
     -fx-text-fill: white;
     -fx-border-radius: 8;
@@ -83,8 +83,8 @@
 }
 
 .object-button {
-    -fx-min-height: 40px;
-    -fx-max-height: 40px;
+    -fx-min-height: 40;
+    -fx-max-height: 40;
     -fx-background-color: #121212;
     -fx-text-fill: white;
     -fx-label-padding: 0 24;
@@ -448,11 +448,15 @@
 
 .date-picker .arrow-button {
     -fx-background-color: transparent;
-    -fx-padding: 5px;
+    -fx-padding: 0 27 0 0;
 }
 
 .date-picker .arrow-button .arrow {
     -fx-background-color: transparent; /* Цвет стрелки */
+}
+
+.date-picker-popup {
+    -fx-translate-y: 8;
 }
 
 .add-scroll-pane {
