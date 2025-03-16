@@ -652,3 +652,13 @@
     -fx-padding: 3 3;
     -fx-hgap: 8;
 }
+
+.text-area {
+    -fx-font-family: "Futura Cyrillic Book";
+    -fx-font-size: 20;
+    -fx-text-fill: white;
+}
+
+.text-area .content {
+    -fx-background-color: transparent;
+}

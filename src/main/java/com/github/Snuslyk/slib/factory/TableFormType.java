@@ -341,8 +341,6 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         }
     }
 
-    //
-
     private void setupColumns(TableView<Map<String, Object>> tableView, List<Column> columns) {
         for (Column column : columns) {
             TableColumn<Map<String, Object>, String> tableColumn = new TableColumn<>(column.displayName());
