@@ -32,7 +32,7 @@
                   </AnchorPane>
                   <VBox prefHeight="200.0" prefWidth="399.0" spacing="12.0">
                      <children>
-                        <Label text="Объекты" textFill="WHITE">
+                        <Label styleClass="object-label" stylesheets="@application.css" text="Объекты" textFill="WHITE">
                            <font>
                               <Font name="Futura Cyrillic Demi" size="24.0" />
                            </font>
@@ -53,7 +53,7 @@
             </VBox>
             <AnchorPane fx:id="popUp" layoutX="40.0" prefHeight="88.0" prefWidth="320.0" styleClass="pop-up-box" AnchorPane.topAnchor="100.0">
                <children>
-                  <Label layoutX="63.0" layoutY="14.0" text="Выбрать раздел" textFill="DIMGRAY" AnchorPane.leftAnchor="23.0" AnchorPane.topAnchor="8.0">
+                  <Label layoutX="63.0" layoutY="14.0" styleClass="section-label" stylesheets="@application.css" text="Выбрать раздел" textFill="DIMGRAY" AnchorPane.leftAnchor="23.0" AnchorPane.topAnchor="8.0">
                      <font>
                         <Font name="Futura Cyrillic Book" size="16.0" />
                      </font>
@@ -64,7 +64,7 @@
       </AnchorPane>
       <AnchorPane layoutX="400.0" prefHeight="648.0" prefWidth="752.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="440.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="35.0">
          <children>
-            <Label fx:id="objectRightSideText" text="Мероприятия" textFill="WHITE">
+            <Label fx:id="objectRightSideText" styleClass="object-name" stylesheets="@application.css" text="Мероприятия" textFill="WHITE">
                <font>
                   <Font name="Futura Cyrillic Demi" size="32.0" />
                </font>
