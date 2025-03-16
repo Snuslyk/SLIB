@@ -179,6 +179,12 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
 
         for (FilterButton filterButton : filterButtons) {
             filterButton.button().register(filters, rootContainer);
+            filterButton.button().searchField.getEditor().setOnKeyReleased(event -> {
+                if (filterButton.button().searchField.getText().isBlank()) {
+                    setupTableColumns(optionIndex, tableView, List.of());
+                    adjustTableColumnsWidth(rightSideContainer.getWidth());
+                }
+            });
             filterButton.button().searchField.setSelectedItem(filterButton.defaultItem());
             filterButton.button().searchField.setOnCommit(string -> {
                 setupTableColumns(optionIndex, tableView, filterButton.filterGet().get(string));
@@ -194,6 +200,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
             filters.setMinHeight(40);
             filters.setMaxHeight(40);
         }
+        
 
         return filters;
     }
