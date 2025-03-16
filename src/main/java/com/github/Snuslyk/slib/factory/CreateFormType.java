@@ -110,9 +110,7 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
 
     @Override
     public void setup(SetupData data) {
-        if (createFields == null) {
-            System.out.println("CreateFields не забилжены, добавь в форму \".buildCreateFields\"");
-        }
+        createFields = new CreateFields<T>(clazz, fields, instanceSupplier, createSupplier);
         controller = data.controller();
         AnchorPane rightSideContainer = controller.getRightSideContainer();
         createRowContainer = controller.getCreateRowContainer();
