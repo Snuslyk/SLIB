@@ -33,7 +33,7 @@ public abstract class AbstractField {
         container.getChildren().add(field);
     }
 
-    protected void initializeField() {
+    protected void initializeField(int Vmargin) {
         field = new VBox();
         field.setSpacing(Vmargin);
     }

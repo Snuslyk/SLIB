@@ -26,17 +26,12 @@ public class BasicAbstractField extends AbstractTextField {
 
     @Override
     public void register(Pane container) {
-        initializeField();
-        Label descriptionLabel = createDescriptionLabel();
+        initializeField(Vmargin);
+        Label descriptionLabel = createDescriptionLabel(descFontSize, Hmargin);
         createTextField();
         applyTextFieldStyling();
         assembleComponents(descriptionLabel);
         addToContainer(container);
-    }
-
-    protected void initializeField() {
-        field = new VBox();
-        field.setSpacing(Vmargin);
     }
 
     protected void createTextField() {

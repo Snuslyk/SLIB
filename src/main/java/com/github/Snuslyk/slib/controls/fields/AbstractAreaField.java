@@ -27,8 +27,8 @@ public class AbstractAreaField extends AbstractTextField {
 
     @Override
     public void register(Pane container) {
-        initializeField();
-        Label descriptionLabel = createDescriptionLabel();
+        initializeField(Vmargin);
+        Label descriptionLabel = createDescriptionLabel(descFontSize, Hmargin);
         createTextArea();
         applyTextAreaStyling();
         assembleAreaComponents(descriptionLabel);

@@ -37,9 +37,9 @@ public class DatePickerField extends AbstractTextField {
 
     @Override
     public void register(Pane container) {
-        initializeField();
+        initializeField(Vmargin);
         createDatePicker(container);
-        Label descriptionLabel = createDescriptionLabel();
+        Label descriptionLabel = createDescriptionLabel(descFontSize, Hmargin);
         SVGPath svgIcon = createCalendarIcon();
         HBox buttonContainer = createButtonContainer(svgIcon);
         setupDatePickerClickHandler();

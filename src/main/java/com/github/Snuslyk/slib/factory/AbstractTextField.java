@@ -21,7 +21,7 @@ public abstract class AbstractTextField extends AbstractField {
         this.textFieldText = textFieldText;
     }
 
-    protected Label createDescriptionLabel() {
+    protected Label createDescriptionLabel(int descFontSize, int Hmargin) {
         Label descriptionLabel = new Label(descriptionText);
         descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
         return descriptionLabel;
