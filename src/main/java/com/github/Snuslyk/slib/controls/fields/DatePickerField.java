@@ -1,7 +1,7 @@
 package com.github.Snuslyk.slib.controls.fields;
 
 import com.github.Snuslyk.slib.factory.ButtonFactory;
-import com.github.Snuslyk.slib.factory.TextFieldWrapper;
+import com.github.Snuslyk.slib.factory.AbstractField;
 import com.github.Snuslyk.slib.util.TimeUtil;
 import com.sun.istack.Nullable;
 import javafx.geometry.Pos;
@@ -19,7 +19,7 @@ import java.time.format.DateTimeParseException;
 import static com.github.Snuslyk.slib.factory.ButtonFactory.descriptionTextFieldOptions;
 import static com.github.Snuslyk.slib.factory.ButtonFactory.errorSetter;
 
-public class DatePickerField implements TextFieldWrapper {
+public class DatePickerField extends AbstractField {
 
     private static final int descFontSize = 20;
     private static final int Hmargin = 20;

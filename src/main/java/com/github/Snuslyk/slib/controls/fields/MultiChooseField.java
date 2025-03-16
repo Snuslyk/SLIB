@@ -3,7 +3,7 @@ package com.github.Snuslyk.slib.controls.fields;
 import com.dlsc.gemsfx.SearchField;
 import com.dlsc.gemsfx.TagsField;
 import com.github.Snuslyk.slib.factory.AllowPopup;
-import com.github.Snuslyk.slib.factory.TextFieldWrapper;
+import com.github.Snuslyk.slib.factory.AbstractField;
 import com.github.Snuslyk.slib.util.StylesUtil;
 import com.sun.istack.Nullable;
 import javafx.collections.FXCollections;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import static com.github.Snuslyk.slib.factory.ButtonFactory.descriptionTextFieldOptions;
 import static com.github.Snuslyk.slib.factory.ButtonFactory.errorSetter;
 
-public class MultiChooseField implements TextFieldWrapper, AllowPopup {
+public class MultiChooseField extends AbstractField implements AllowPopup {
 
     private static final int descFontSize = 20;
     private static final int mainFontSize = 20;

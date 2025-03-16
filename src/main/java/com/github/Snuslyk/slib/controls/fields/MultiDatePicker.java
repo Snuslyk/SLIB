@@ -1,6 +1,6 @@
 package com.github.Snuslyk.slib.controls.fields;
 
-import com.github.Snuslyk.slib.factory.TextFieldWrapper;
+import com.github.Snuslyk.slib.factory.AbstractField;
 import com.github.Snuslyk.slib.util.TimeUtil;
 import com.sun.istack.Nullable;
 import javafx.collections.FXCollections;
@@ -25,7 +25,7 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-public class MultiDatePicker implements TextFieldWrapper {
+public class MultiDatePicker extends AbstractField {
 
     private final ObservableSet<LocalDate> selectedDates;
     private final DatePicker datePicker;

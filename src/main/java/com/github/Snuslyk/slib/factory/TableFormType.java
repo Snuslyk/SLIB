@@ -4,7 +4,7 @@ import com.github.Snuslyk.slib.Controller;
 import com.github.Snuslyk.slib.FilterIO;
 import com.github.Snuslyk.slib.HibernateUtil;
 import com.github.Snuslyk.slib.RowData;
-import com.github.Snuslyk.slib.controls.fields.ChoosingTextField;
+import com.github.Snuslyk.slib.controls.fields.ChoosingAbstractField;
 import com.github.Snuslyk.slib.electives.Button;
 import com.github.Snuslyk.slib.util.StylesUtil;
 import com.sun.istack.Nullable;
@@ -79,7 +79,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
     }
 
     public TableFormType filterButton(String promptText, String descriptionText, Supplier<ObservableList<String>> items, String defaultItem, FilterGet filterGet) {
-        filterButtons.add(new FilterButton(new ChoosingTextField("", promptText, descriptionText, "", items, defaultItem), filterGet, defaultItem));
+        filterButtons.add(new FilterButton(new ChoosingAbstractField("", promptText, descriptionText, "", items, defaultItem), filterGet, defaultItem));
         return this;
     }
 
@@ -590,7 +590,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
             CreateFormType createFormType = (CreateFormType) form.getFormTypes().get(index);
 
             CreateFormType.CreateFields createFields = createFormType.getCreateFields();
-            List<TextFieldWrapper> fields = createFields.fields();
+            List<AbstractField> fields = createFields.fields();
             fields.forEach(field -> {
                 field.setTextFieldText(data.get(field.getKey()).toString());
                 if (field instanceof AllowPopup allowPopup && allowPopup.isAllowPopup()) {
@@ -630,7 +630,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
                 create.setTranslateY(23);
 
                 create.setOnAction(event -> {
-                    if (validateChecker(fields.toArray(new TextFieldWrapper[0]))) {
+                    if (validateChecker(fields.toArray(new AbstractField[0]))) {
                         System.out.println("ОШИБКА: Проверьте введенные данные.");
                     } else {
                         AtomicBoolean updated = new AtomicBoolean(false);
