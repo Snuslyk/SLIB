@@ -30,8 +30,8 @@ public class ChoiceBoxField extends AbstractTextField {
     private ComboBox<String> comboBox;
     private final Supplier<ObservableList<String>> items;
 
-    public ChoiceBoxField(String key, String descriptionText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
-        super("", descriptionText, key, errorSample, textFieldText);
+    public ChoiceBoxField(String key, String descriptionText,  Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
+        super("", descriptionText, key, textFieldText);
         this.items = items;
         isError = false;
     }

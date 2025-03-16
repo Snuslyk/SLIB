@@ -76,30 +76,6 @@ public class ButtonFactory {
         }
     }
 
-    public static boolean validateChecker(AbstractField... abstractFields) {
-        boolean hasErrors = false;
-
-        for (AbstractField abstractField : abstractFields) {
-            if (abstractField instanceof BasicAbstractField) {
-                validateTextField(abstractField, ((BasicAbstractField) abstractField).errorSample, null, null);
-            } else if (abstractField instanceof ChoosingAbstractField) {
-                validateTextField(abstractField, ((ChoosingAbstractField) abstractField).errorSample, null, ((ChoosingAbstractField) abstractField).getItems());
-            } else if (abstractField instanceof DatePickerField) {
-                if (((DatePickerField) abstractField).getDatePicker().getValue() == null) {
-                    abstractField.setError(((DatePickerField) abstractField).errorSample);
-                } else {
-                    abstractField.clearError();
-                }
-            }
-
-            if (abstractField.getError()) {
-                hasErrors = true;
-            }
-        }
-
-        return hasErrors;
-    }
-
     // Собираюсь использовать в будущем для динамической проверки "ошибочности"
     public static void validateChoosingTextField(AbstractField abstractField, @Nullable String errorMessage, List<String> validItems) {
         boolean isValid = false;

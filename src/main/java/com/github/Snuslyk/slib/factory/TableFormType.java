@@ -35,8 +35,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
-import static com.github.Snuslyk.slib.factory.ButtonFactory.validateChecker;
-
 public class TableFormType extends FormType implements FormWithType<TableFormType> {
 
     private Class<?> clazz;
@@ -79,7 +77,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
     }
 
     public TableFormType filterButton(String promptText, String descriptionText, Supplier<ObservableList<String>> items, String defaultItem, FilterGet filterGet) {
-        filterButtons.add(new FilterButton(new ChoosingAbstractField("", promptText, descriptionText, "", items, defaultItem), filterGet, defaultItem));
+        filterButtons.add(new FilterButton(new ChoosingAbstractField("", promptText, descriptionText, items, defaultItem), filterGet, defaultItem));
         return this;
     }
 
@@ -294,7 +292,6 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
         if (!(formType instanceof TableFormType tableFormType)) return data;
 
         List<?> list = HibernateUtil.getObjectWithFilter(tableFormType.clazz, filters.toArray(new FilterIO[0]));
-
 
         for (Object object : list) {
             Map<String, Object> row = new LinkedHashMap<>();
@@ -574,13 +571,131 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
                     }
                 }
         );
+        //public static final TableActionButton EDIT = new TableActionButton("Редактировать", Color.WHITE, "M6.36744 2.26512H2.19276C1.87642 2.26512 1.57304 2.39078 1.34935 2.61447C1.12567 2.83816 1 3.14154 1 3.45788V11.8072C1 12.1236 1.12567 12.427 1.34935 12.6506C1.57304 12.8743 1.87642 13 2.19276 13H10.5421C10.8585 13 11.1618 12.8743 11.3855 12.6506C11.6092 12.427 11.7349 12.1236 11.7349 11.8072V7.63256M10.8403 1.37054C11.0776 1.13329 11.3994 1 11.7349 1C12.0704 1 12.3922 1.13329 12.6295 1.37054C12.8667 1.6078 13 1.92959 13 2.26512C13 2.60065 12.8667 2.92244 12.6295 3.15969L6.96382 8.82532L4.57829 9.42171L5.17468 7.03618L10.8403 1.37054Z", (controller, data, index) -> {
+        //    if (controller.getOptionToggleGroup().getSelectedToggle() == null) return;
+//
+        //    controller.getOptionToggleGroup().getSelectedToggle().setSelected(false);
+        //    controller.modelUpdate();
+//
+        //    // Получаем форму и текущую опцию
+        //    Form form = controller.getExternalObjects().get(controller.getSectionIndex())
+        //            .get(controller.getObjectIndex()).getForm();
+//
+        //    if (index == -1) {
+        //        for (int i = 0; i <= form.getOptions().size(); i++) {
+        //            if (form.getFormTypes().get(i) instanceof CreateFormType) {
+        //                index = i;
+        //                break;
+        //            }
+        //        }
+        //    }
+//
+        //    CreateFormType createFormType = (CreateFormType) form.getFormTypes().get(index);
+        //    createFormType.buildCreateFields();
+        //    System.out.println(createFormType.getCreateFields());
+        //
+//
+        //    CreateFormType.CreateFields createFields = createFormType.getCreateFields();
+        //    List<AbstractField> fields = createFields.fields();
+        //    fields.forEach(field -> {
+        //        field.setTextFieldText(data.get(field.getKey()).toString());
+        //        if (field instanceof AllowPopup allowPopup && allowPopup.isAllowPopup()) {
+        //            allowPopup.setAllowPopup(false);
+        //        }
+        //    });
+//
+        //    int id = (int) data.get("id");
+//
+        //    if (!fields.isEmpty()) {
+        //        // Добавляем отступы через VBox
+        //        VBox wrapper = new VBox(controller.createRowContainer);
+        //        wrapper.setPadding(new Insets(0, 4, 24, 4));
+//
+        //        controller.scrollPane.setContent(controller.createRowContainer);
+//
+        //        StylesUtil.add(controller.scrollPane, "add-scroll-pane");
+        //        controller.scrollPane.setFitToWidth(true);
+        //        controller.scrollPane.setFitToHeight(true);
+//
+        //        controller.createRowContainer.setPrefSize(720, 297);
+        //        controller.createRowContainer.setAlignment(Pos.TOP_CENTER);
+        //        controller.createRowContainer.setSpacing(17);
+//
+        //        controller.scrollPane.setMaxWidth(730);
+//
+        //        controller.addScrollPane.setAlignment(Pos.TOP_CENTER);
+        //        controller.scrollPane.prefHeightProperty().bind(controller.addScrollPane.heightProperty());
+//
+        //        Controller.setAnchors(controller.addScrollPane, 181.0, 149.0, 0.0, 0.0);
+//
+        //        controller.registerFields(fields);
+//
+        //        javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
+        //        StylesUtil.add(create, "save-button");
+        //        create.setPrefSize(720, 39);
+        //        create.setTranslateY(23);
+//
+        //        create.setOnAction(event -> {
+        //            if (validateChecker(fields.toArray(new AbstractField[0]))) {
+        //                System.out.println("ОШИБКА: Проверьте введенные данные.");
+        //                // Consider showing an alert dialog here instead of console message
+        //            } else {
+        //                AtomicBoolean updated = new AtomicBoolean(false);
+//
+        //                try {
+        //                    HibernateUtil.update(createFields.clazz(), id, update -> {
+        //                        try {
+        //                            update = createFields.createSupplier().get(update, fields);
+        //                            if (update != null) updated.set(true);
+        //                            return update;
+        //                        } catch (Exception ex) {
+        //                            System.err.println("Error updating object: " + ex.getMessage());
+        //                            return null;
+        //                        }
+        //                    });
+//
+        //                    if (updated.get()) {
+        //                        // Get the index to return to after update
+        //                        int returnToIndex = 0; // Default to first option
+        //                        // Uncomment and adapt this if specific return option is needed
+        //                        // if (form.getCreateReturnOption().containsKey(index)) {
+        //                        //     returnToIndex = form.getCreateReturnOption().get(index);
+        //                        // }
+//
+        //                        controller.getOptionToggleGroup().selectToggle(
+        //                            controller.getOptionToggleGroup().getToggles().get(returnToIndex));
+        //                        controller.modelUpdate();
+        //                    } else {
+        //                        System.out.println("Ошибка обновления записи");
+        //                        // Consider showing an alert dialog here
+        //                    }
+        //                } catch (Exception e) {
+        //                    System.err.println("Error during database operation: " + e.getMessage());
+        //                    // Consider showing an alert dialog here
+        //                }
+        //            }
+        //        });
+        //        controller.createRowContainer.getChildren().add(create);
+//
+        //        controller.rightSideContainer.getChildren().add(controller.addScrollPane);
+//
+        //    } else {
+        //        System.out.println("Нет полей для редактирования.");
+        //    }
+//
+        //});
+
         public static final TableActionButton EDIT = new TableActionButton("Редактировать", Color.WHITE, "M6.36744 2.26512H2.19276C1.87642 2.26512 1.57304 2.39078 1.34935 2.61447C1.12567 2.83816 1 3.14154 1 3.45788V11.8072C1 12.1236 1.12567 12.427 1.34935 12.6506C1.57304 12.8743 1.87642 13 2.19276 13H10.5421C10.8585 13 11.1618 12.8743 11.3855 12.6506C11.6092 12.427 11.7349 12.1236 11.7349 11.8072V7.63256M10.8403 1.37054C11.0776 1.13329 11.3994 1 11.7349 1C12.0704 1 12.3922 1.13329 12.6295 1.37054C12.8667 1.6078 13 1.92959 13 2.26512C13 2.60065 12.8667 2.92244 12.6295 3.15969L6.96382 8.82532L4.57829 9.42171L5.17468 7.03618L10.8403 1.37054Z", (controller, data, index) -> {
             if (controller.getOptionToggleGroup().getSelectedToggle() == null) return;
 
             controller.getOptionToggleGroup().getSelectedToggle().setSelected(false);
             controller.modelUpdate();
 
-            // Получаем форму и текущую опцию
+            // Clean up previous UI state
+            controller.rightSideContainer.getChildren().remove(controller.addScrollPane);
+            controller.createRowContainer.getChildren().clear();
+
+            // Get form and current option
             Form form = controller.getExternalObjects().get(controller.getSectionIndex())
                     .get(controller.getObjectIndex()).getForm();
 
@@ -594,11 +709,15 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
             }
 
             CreateFormType createFormType = (CreateFormType) form.getFormTypes().get(index);
+            createFormType.buildCreateFields();
 
             CreateFormType.CreateFields createFields = createFormType.getCreateFields();
             List<AbstractField> fields = createFields.fields();
             fields.forEach(field -> {
-                field.setTextFieldText(data.get(field.getKey()).toString());
+                Object value = data.get(field.getKey());
+                if (value != null) {
+                    field.setTextFieldText(value.toString());
+                }
                 if (field instanceof AllowPopup allowPopup && allowPopup.isAllowPopup()) {
                     allowPopup.setAllowPopup(false);
                 }
@@ -607,61 +726,78 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
             int id = (int) data.get("id");
 
             if (!fields.isEmpty()) {
-                // Добавляем отступы через VBox
-                VBox wrapper = new VBox(controller.createRowContainer);
-                wrapper.setPadding(new Insets(0, 4, 24, 4));
-
-                controller.scrollPane.setContent(controller.createRowContainer);
-
+                // Configure the scrollPane
                 StylesUtil.add(controller.scrollPane, "add-scroll-pane");
                 controller.scrollPane.setFitToWidth(true);
                 controller.scrollPane.setFitToHeight(true);
+                controller.scrollPane.setMaxWidth(730);
+                controller.scrollPane.setContent(null); // Clear previous content
 
+                // Configure the createRowContainer
                 controller.createRowContainer.setPrefSize(720, 297);
                 controller.createRowContainer.setAlignment(Pos.TOP_CENTER);
                 controller.createRowContainer.setSpacing(17);
 
-                controller.scrollPane.setMaxWidth(730);
+                // Set the createRowContainer as content of the scrollPane
+                controller.scrollPane.setContent(controller.createRowContainer);
 
+                // Configure the addScrollPane
                 controller.addScrollPane.setAlignment(Pos.TOP_CENTER);
                 controller.scrollPane.prefHeightProperty().bind(controller.addScrollPane.heightProperty());
-
                 Controller.setAnchors(controller.addScrollPane, 181.0, 149.0, 0.0, 0.0);
 
+                // Register fields
                 controller.registerFields(fields);
 
-                javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
-                StylesUtil.add(create, "save-button");
-                create.setPrefSize(720, 39);
-                create.setTranslateY(23);
+                // Create the "Save" button
+                javafx.scene.control.Button saveButton = new javafx.scene.control.Button("Сохранить");
+                StylesUtil.add(saveButton, "save-button");
+                saveButton.setPrefSize(720, 39);
+                saveButton.setTranslateY(23);
 
-                create.setOnAction(event -> {
-                    if (validateChecker(fields.toArray(new AbstractField[0]))) {
-                        System.out.println("ОШИБКА: Проверьте введенные данные.");
-                    } else {
-                        AtomicBoolean updated = new AtomicBoolean(false);
+                saveButton.setOnAction(event -> {
+                    AtomicBoolean updated = new AtomicBoolean(false);
+
+                    try {
                         HibernateUtil.update(createFields.clazz(), id, update -> {
-                            update = createFields.createSupplier().get(update, fields);
-                            if (update != null) updated.set(true);
-                            return update;
+                            try {
+                                update = createFields.createSupplier().get(update, fields);
+                                if (update != null) updated.set(true);
+                                return update;
+                            } catch (Exception ex) {
+                                System.err.println("Error updating object: " + ex.getMessage());
+                                return null;
+                            }
                         });
 
                         if (updated.get()) {
-                            // TODO
-                            //controller.getOptionToggleGroup().selectToggle(controller.getOptionToggleGroup().getToggles().get(form.getCreateReturnOption().get(finalIndex)));
-                            controller.getOptionToggleGroup().selectToggle(controller.getOptionToggleGroup().getToggles().get(0));
+                            int returnToIndex = 0;
+
+                            // Clean up UI elements after successful update
+                            controller.rightSideContainer.getChildren().remove(controller.addScrollPane);
+                            controller.createRowContainer.getChildren().clear();
+
+                            controller.getOptionToggleGroup().selectToggle(
+                                    controller.getOptionToggleGroup().getToggles().get(returnToIndex));
                             controller.modelUpdate();
+                        } else {
+                            System.out.println("Ошибка обновления записи");
                         }
+                    } catch (Exception e) {
+                        System.err.println("Error during database operation: " + e.getMessage());
                     }
                 });
-                controller.createRowContainer.getChildren().add(create);
 
-                controller.rightSideContainer.getChildren().add(controller.addScrollPane);
+                // Add the save button to the container
+                controller.createRowContainer.getChildren().add(saveButton);
 
+                // Add the scrollPane to the right side container if not already added
+                if (!controller.rightSideContainer.getChildren().contains(controller.addScrollPane)) {
+                    controller.rightSideContainer.getChildren().add(controller.addScrollPane);
+                }
             } else {
                 System.out.println("Нет полей для редактирования.");
             }
-
         });
     }
 }

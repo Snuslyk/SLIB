@@ -6,16 +6,9 @@ import javafx.scene.layout.VBox;
 
 public abstract class AbstractField {
 
-    protected static final int descFontSize = 0;
-    protected static final int mainFontSize = 0;
-    protected static final int Hmargin = 0;
-    protected static final int Vmargin = 0;
-    protected static final int height = 0;
-
     protected boolean isError;
     protected final Label errorLabel = new Label();
     protected VBox field;
-
 
     abstract public String getTextFieldText();
     abstract public void setTextFieldText(String text);

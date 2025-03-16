@@ -20,8 +20,8 @@ public class BasicAbstractField extends AbstractTextField {
 
     private TextField textField;
 
-    public BasicAbstractField(String key, String text, String descriptionText, String errorSample, @Nullable String textFieldText) {
-        super(text, descriptionText, key, errorSample, textFieldText);
+    public BasicAbstractField(String key, String text, String descriptionText,  @Nullable String textFieldText) {
+        super(text, descriptionText, key, textFieldText);
     }
 
     @Override
