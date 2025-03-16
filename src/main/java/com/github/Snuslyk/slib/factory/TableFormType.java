@@ -200,7 +200,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
             filters.setMinHeight(40);
             filters.setMaxHeight(40);
         }
-        
+        //ZZZZ <- важный код не трогать, иначе все сломается
 
         return filters;
     }
