@@ -1,7 +1,7 @@
 package com.github.Snuslyk.slib.factory;
 
-import com.github.Snuslyk.slib.controls.fields.BasicTextField;
-import com.github.Snuslyk.slib.controls.fields.ChoosingTextField;
+import com.github.Snuslyk.slib.controls.fields.BasicAbstractField;
+import com.github.Snuslyk.slib.controls.fields.ChoosingAbstractField;
 import com.github.Snuslyk.slib.controls.fields.DatePickerField;
 import com.github.Snuslyk.slib.util.StylesUtil;
 import com.sun.istack.Nullable;
@@ -76,23 +76,23 @@ public class ButtonFactory {
         }
     }
 
-    public static boolean validateChecker(TextFieldWrapper... textFieldWrappers) {
+    public static boolean validateChecker(AbstractField... abstractFields) {
         boolean hasErrors = false;
 
-        for (TextFieldWrapper textFieldWrapper : textFieldWrappers) {
-            if (textFieldWrapper instanceof BasicTextField) {
-                validateTextField(textFieldWrapper, ((BasicTextField) textFieldWrapper).errorSample, null, null);
-            } else if (textFieldWrapper instanceof ChoosingTextField) {
-                validateTextField(textFieldWrapper, ((ChoosingTextField) textFieldWrapper).errorSample, null, ((ChoosingTextField) textFieldWrapper).getItems());
-            } else if (textFieldWrapper instanceof DatePickerField) {
-                if (((DatePickerField) textFieldWrapper).getDatePicker().getValue() == null) {
-                    textFieldWrapper.setError(((DatePickerField) textFieldWrapper).errorSample);
+        for (AbstractField abstractField : abstractFields) {
+            if (abstractField instanceof BasicAbstractField) {
+                validateTextField(abstractField, ((BasicAbstractField) abstractField).errorSample, null, null);
+            } else if (abstractField instanceof ChoosingAbstractField) {
+                validateTextField(abstractField, ((ChoosingAbstractField) abstractField).errorSample, null, ((ChoosingAbstractField) abstractField).getItems());
+            } else if (abstractField instanceof DatePickerField) {
+                if (((DatePickerField) abstractField).getDatePicker().getValue() == null) {
+                    abstractField.setError(((DatePickerField) abstractField).errorSample);
                 } else {
-                    textFieldWrapper.clearError();
+                    abstractField.clearError();
                 }
             }
 
-            if (textFieldWrapper.getError()) {
+            if (abstractField.getError()) {
                 hasErrors = true;
             }
         }
@@ -101,45 +101,45 @@ public class ButtonFactory {
     }
 
     // Собираюсь использовать в будущем для динамической проверки "ошибочности"
-    public static void validateChoosingTextField(TextFieldWrapper textFieldWrapper, @Nullable String errorMessage, List<String> validItems) {
+    public static void validateChoosingTextField(AbstractField abstractField, @Nullable String errorMessage, List<String> validItems) {
         boolean isValid = false;
 
         for (String item : validItems) {
-            if (Objects.equals(textFieldWrapper.getTextFieldText(), item)) {
+            if (Objects.equals(abstractField.getTextFieldText(), item)) {
                 isValid = true;
                 break;
             }
         }
 
         if (isValid) {
-            textFieldWrapper.clearError();
+            abstractField.clearError();
         } else {
-            textFieldWrapper.setError(errorMessage);
+            abstractField.setError(errorMessage);
         }
     }
 
     // Универсальный метод для проверки текста
-    public static void validateTextField(TextFieldWrapper textFieldWrapper, @Nullable String errorMessage, @Nullable String secondErrorMessage, @Nullable List<String> validItems) {
-        String input = textFieldWrapper.getTextFieldText();
+    public static void validateTextField(AbstractField abstractField, @Nullable String errorMessage, @Nullable String secondErrorMessage, @Nullable List<String> validItems) {
+        String input = abstractField.getTextFieldText();
 
         // Если текст пустой, устанавливаем ошибку
         if (input != null)
             if (input.isEmpty()) {
-                textFieldWrapper.setError(errorMessage);
+                abstractField.setError(errorMessage);
                 return;
             }
 
         // Если список валидных элементов не задан, очищаем ошибку
         if (validItems == null) {
-            textFieldWrapper.clearError();
+            abstractField.clearError();
             return;
         }
 
         // Проверяем, соответствует ли введенный текст допустимым значениям
         if (!validItems.contains(input)) {
-            textFieldWrapper.setError(secondErrorMessage);
+            abstractField.setError(secondErrorMessage);
         } else {
-            textFieldWrapper.clearError();
+            abstractField.clearError();
         }
     }
 

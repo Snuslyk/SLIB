@@ -1,7 +1,7 @@
 package com.github.Snuslyk.slib;
 
 import com.github.Snuslyk.slib.controls.buttons.UnderlinedButton;
-import com.github.Snuslyk.slib.controls.fields.ChoosingTextField;
+import com.github.Snuslyk.slib.controls.fields.ChoosingAbstractField;
 import com.github.Snuslyk.slib.controls.fields.MultiChooseField;
 import com.github.Snuslyk.slib.electives.Button;
 import com.github.Snuslyk.slib.electives.ButtonElective;
@@ -10,7 +10,7 @@ import com.github.Snuslyk.slib.electives.ManageableElectives;
 import com.github.Snuslyk.slib.factory.Form;
 import com.github.Snuslyk.slib.factory.FormType;
 import com.github.Snuslyk.slib.factory.SetupData;
-import com.github.Snuslyk.slib.factory.TextFieldWrapper;
+import com.github.Snuslyk.slib.factory.AbstractField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -279,9 +279,9 @@ public class Controller implements Initializable {
     public final ScrollPane scrollPane = new ScrollPane();
     public final VBox addScrollPane = new VBox(scrollPane);
 
-    public void registerFields(List<TextFieldWrapper> fields) {
-        for (TextFieldWrapper field : fields) {
-            if (field instanceof ChoosingTextField choosingTextField) {
+    public void registerFields(List<AbstractField> fields) {
+        for (AbstractField field : fields) {
+            if (field instanceof ChoosingAbstractField choosingTextField) {
                 choosingTextField.register(createRowContainer, rootContainer);
             } else if (field instanceof MultiChooseField multiChooseField) {
                 multiChooseField.register(createRowContainer, rootContainer);

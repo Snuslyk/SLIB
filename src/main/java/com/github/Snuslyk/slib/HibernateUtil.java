@@ -20,10 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class HibernateUtil {
@@ -174,70 +171,183 @@ public class HibernateUtil {
         return list;
     }
 
-    public static void loadExcelToDatabase(String path, Class<?> clazz){
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
+    /**
+     * Reads an Excel file and returns its content with advanced options
+     * @param fileLocation Path to the Excel file
+     * @param sheetName Optional sheet name (null to use first sheet)
+     * @param hasHeaderRow Whether the first row contains headers
+     * @return Map with row data and column headers
+     */
+    public static ExcelData readExcel(String fileLocation, String sheetName, boolean hasHeaderRow) {
+        try (FileInputStream file = new FileInputStream(fileLocation);
+             ReadableWorkbook wb = new ReadableWorkbook(file)) {
 
-        Map<Integer, List<String>> data = readExcel(path);
-
-        if (data == null) {
-            session.close();
-            return;
-        }
-
-        List<String> fields = data.get(1);
-
-        int size = data.keySet().size();
-
-        try {
-            Constructor<?> constructor = clazz.getDeclaredConstructor();
-
-            HashMap<String, Field> cachedFields = new HashMap<>();
-
-            for (int i = 1; i < size; i++) {
-                Object object = constructor.newInstance();
-
-                for (String field : fields) {
-                    System.out.println(field);
-                    if (!cachedFields.containsKey(field))
-                        cachedFields.put(field, clazz.getDeclaredField(field));
-
-                    Class<?> type = cachedFields.get(field).getType();
-
-                    cachedFields.get(field).set(object, excelParser.get(type).parse(data.get(i).get(fields.indexOf(field))));
-                }
-
-                session.persist(object);
+            Sheet sheet;
+            if (sheetName != null) {
+                Optional<Sheet> matchingSheet = wb.getSheets()
+                        .filter(s -> sheetName.equals(s.getName()))
+                        .findFirst();
+                sheet = matchingSheet.orElseGet(wb::getFirstSheet);
+            } else {
+                sheet = wb.getFirstSheet();
             }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
 
-        session.getTransaction().commit();
-        session.close();
-    }
-
-    public static Map<Integer, List<String>> readExcel(String fileLocation) {
-        try {
             Map<Integer, List<String>> data = new HashMap<>();
+            List<String> headers = new ArrayList<>();
 
-            try (FileInputStream file = new FileInputStream(fileLocation); ReadableWorkbook wb = new ReadableWorkbook(file)) {
-                Sheet sheet = wb.getFirstSheet();
-                try (Stream<Row> rows = sheet.openStream()) {
-                    rows.forEach(r -> {
-                        data.put(r.getRowNum(), new ArrayList<>());
+            try (Stream<Row> rows = sheet.openStream()) {
+                rows.forEach(r -> {
+                    List<String> rowData = new ArrayList<>();
+                    for (Cell cell : r) {
+                        rowData.add(cell.getRawValue());
+                    }
 
-                        for (Cell cell : r) {
-                            data.get(r.getRowNum()).add(cell.getRawValue());
-                        }
-                    });
-                }
+                    if (r.getRowNum() == 0 && hasHeaderRow) {
+                        headers.addAll(rowData);
+                    } else {
+                        data.put(hasHeaderRow ? r.getRowNum() - 1 : r.getRowNum(), rowData);
+                    }
+                });
             }
-            return data;
+
+            return new ExcelData(headers, data);
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
+    }
+
+    /**
+     * Loads Excel data into database with automatic field mapping
+     * @param path Excel file path
+     * @param clazz Entity class
+     * @param sheetName Optional sheet name
+     */
+    public static <T> void loadExcelToDatabase(String path, Class<T> clazz, String sheetName) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+
+        try {
+            ExcelData excelData = readExcel(path, sheetName, true);
+
+            if (excelData == null || excelData.headers.isEmpty()) {
+                throw new IllegalArgumentException("No data or headers found in Excel file");
+            }
+
+            Constructor<T> constructor = clazz.getDeclaredConstructor();
+            constructor.setAccessible(true);
+
+            HashMap<String, Field> cachedFields = new HashMap<>();
+            Map<String, String> fieldMappings = buildFieldMappings(clazz, excelData.headers);
+
+            // Process in batches of 50
+            int batchSize = 50;
+            int count = 0;
+
+            for (Map.Entry<Integer, List<String>> entry : excelData.data.entrySet()) {
+                T entity = constructor.newInstance();
+                List<String> rowData = entry.getValue();
+
+                for (int i = 0; i < excelData.headers.size(); i++) {
+                    if (i >= rowData.size()) continue;
+
+                    String header = excelData.headers.get(i);
+                    String fieldName = fieldMappings.getOrDefault(header, null);
+
+                    if (fieldName == null) continue;
+
+                    try {
+                        if (!cachedFields.containsKey(fieldName)) {
+                            try {
+                                Field field = clazz.getDeclaredField(fieldName);
+                                field.setAccessible(true);
+                                cachedFields.put(fieldName, field);
+                            } catch (NoSuchFieldException e) {
+                                System.err.println("Field not found: " + fieldName);
+                                continue;
+                            }
+                        }
+
+                        Field field = cachedFields.get(fieldName);
+                        String cellValue = rowData.get(i);
+
+                        if (cellValue != null && !cellValue.isEmpty()) {
+                            Class<?> type = field.getType();
+                            ExcelParser parser = excelParser.getOrDefault(type, s -> s);
+                            field.set(entity, parser.parse(cellValue));
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Error setting field " + fieldName + ": " + e.getMessage());
+                    }
+                }
+
+                session.persist(entity);
+
+                // Flush and clear session periodically to manage memory
+                if (++count % batchSize == 0) {
+                    session.flush();
+                    session.clear();
+                }
+            }
+
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    private static <T> Map<String, String> buildFieldMappings(Class<T> clazz, List<String> headers) {
+        Map<String, String> mappings = new HashMap<>();
+        Field[] fields = clazz.getDeclaredFields();
+        Map<String, String> normalizedFieldMap = new HashMap<>();
+
+        // Build normalized field name map
+        for (Field field : fields) {
+            String fieldName = field.getName();
+            normalizedFieldMap.put(normalizeFieldName(fieldName), fieldName);
+        }
+
+        // Map headers to fields
+        for (String header : headers) {
+            String normalizedHeader = normalizeFieldName(header);
+            if (normalizedFieldMap.containsKey(normalizedHeader)) {
+                mappings.put(header, normalizedFieldMap.get(normalizedHeader));
+            }
+        }
+
+        return mappings;
+    }
+
+    /**
+     * Normalizes field/header names for comparison
+     * @param name Original name
+     * @return Normalized name (lowercase, no spaces or special chars)
+     */
+    private static String normalizeFieldName(String name) {
+        return name.toLowerCase()
+                .replaceAll("[^a-z0-9]", "");
+    }
+
+    // Class to hold Excel data structure
+    public static class ExcelData {
+        final List<String> headers;
+        final Map<Integer, List<String>> data;
+
+        public ExcelData(List<String> headers, Map<Integer, List<String>> data) {
+            this.headers = headers;
+            this.data = data;
+        }
+
+        public List<String> getHeaders() {
+            return headers;
+        }
+
+        public Map<Integer, List<String>> getData() {
+            return data;
+        }
     }
 
     private static final HashMap<Class<?>, ExcelParser> excelParser = new HashMap<>();

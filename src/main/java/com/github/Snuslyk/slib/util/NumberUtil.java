@@ -1,10 +1,10 @@
 package com.github.Snuslyk.slib.util;
 
-import com.github.Snuslyk.slib.factory.TextFieldWrapper;
+import com.github.Snuslyk.slib.factory.AbstractField;
 
 public class NumberUtil {
 
-    public static boolean fieldCheck(TextFieldWrapper field, FieldSetValue value, Flags... flags){
+    public static boolean fieldCheck(AbstractField field, FieldSetValue value, Flags... flags){
         Object error = isCorrectNumber(field.getTextFieldText(), flags);
         if (error instanceof String string){
             field.setError(string);

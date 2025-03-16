@@ -22,7 +22,7 @@ import static com.github.Snuslyk.slib.factory.ButtonFactory.validateChecker;
 
 public class CreateFormType<T> extends FormType implements FormWithType<CreateFormType<?>> {
 
-    private final List<TextFieldWrapper> fields = new ArrayList<>();
+    private final List<AbstractField> fields = new ArrayList<>();
     private Supplier<T> instanceSupplier;
     CreateSupplier<T> createSupplier;
     private Class<T> clazz;
@@ -57,17 +57,17 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
     }
 
     public CreateFormType<T> textField(String key, String name, String description, String errorSample, @Nullable String textFieldText){
-        fields.add(new BasicTextField(key, name, description, errorSample, textFieldText));
+        fields.add(new BasicAbstractField(key, name, description, errorSample, textFieldText));
         return this;
     }
 
     public CreateFormType<T> textArea(String key, String name, String description, String errorSample, @Nullable String textFieldText){
-        fields.add(new TextAreaField(key, name, description, errorSample, textFieldText));
+        fields.add(new AbstractAreaField(key, name, description, errorSample, textFieldText));
         return this;
     }
 
     public CreateFormType<T> chooseField(String key, String name, String description, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
-        fields.add(new ChoosingTextField(key, name, description, errorSample, items, textFieldText));
+        fields.add(new ChoosingAbstractField(key, name, description, errorSample, items, textFieldText));
         return this;
     }
     public CreateFormType<T> datePickerField(String key, String description, String errorSample, @Nullable String textFieldText){
@@ -97,9 +97,9 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
         return this;
     }
 
-    public record CreateFields<T>(Class<T> clazz, List<TextFieldWrapper> fields, Supplier<T> supplier, CreateSupplier<T> createSupplier) {}
+    public record CreateFields<T>(Class<T> clazz, List<AbstractField> fields, Supplier<T> supplier, CreateSupplier<T> createSupplier) {}
     public interface CreateSupplier<T> {
-        T get(Object object, List<TextFieldWrapper> fields);
+        T get(Object object, List<AbstractField> fields);
     }
 
     private static Controller controller;
@@ -110,9 +110,7 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
 
     @Override
     public void setup(SetupData data) {
-        if (createFields == null) {
-            System.out.println("CreateFields не забилжены, добавь в форму \".buildCreateFields\"");
-        }
+        createFields = new CreateFields<T>(clazz, fields, instanceSupplier, createSupplier);
         controller = data.controller();
         AnchorPane rightSideContainer = controller.getRightSideContainer();
         createRowContainer = controller.getCreateRowContainer();
@@ -141,7 +139,7 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
 
         Controller.setAnchors(addScrollPane, 181.0, 149.0, 0.0, 0.0);
 
-        List<TextFieldWrapper> fields = createFields.fields();
+        List<AbstractField> fields = createFields.fields();
         //fields.forEach(field -> field.setTextFieldText("")); чо? зачем?
 
         controller.registerFields(fields);
@@ -152,7 +150,7 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
         }
     }
 
-    private void addSaveButton(List<TextFieldWrapper> fields, CreateSupplier<?> supplier) {
+    private void addSaveButton(List<AbstractField> fields, CreateSupplier<?> supplier) {
         javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
         StylesUtil.add(create, "save-button");
         create.setPrefSize(720, 39);
@@ -163,8 +161,8 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
     }
 
     @Transactional
-    private void handleSaveAction(List<TextFieldWrapper> fields, CreateSupplier<?> supplier) {
-        if (validateChecker(fields.toArray(new TextFieldWrapper[0]))) {
+    private void handleSaveAction(List<AbstractField> fields, CreateSupplier<?> supplier) {
+        if (validateChecker(fields.toArray(new AbstractField[0]))) {
             System.out.println("ОШИБКА: Проверьте введенные данные.");
         } else {
             Object object = supplier.get(createFields.supplier().get(), fields);

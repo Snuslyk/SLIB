@@ -1,6 +1,6 @@
 package com.github.Snuslyk.slib.controls.fields;
 
-import com.github.Snuslyk.slib.factory.TextFieldWrapper;
+import com.github.Snuslyk.slib.factory.AbstractField;
 import com.sun.istack.Nullable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -9,7 +9,7 @@ import javafx.scene.layout.VBox;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.*;
 
-public class BasicTextField implements TextFieldWrapper {
+public class BasicAbstractField extends AbstractField {
 
     // Параметры дизайна с значениями по умолчанию
     private static final int descFontSize = 20;
@@ -30,7 +30,7 @@ public class BasicTextField implements TextFieldWrapper {
 
     public final String errorSample;
 
-    public BasicTextField(String key, String text, String descText, String errorSample, @Nullable String textFieldText) {
+    public BasicAbstractField(String key, String text, String descText, String errorSample, @Nullable String textFieldText) {
         this.key = key;
         this.errorSample = errorSample;
         this.text = text;

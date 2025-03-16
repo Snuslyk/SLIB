@@ -2,7 +2,7 @@ package com.github.Snuslyk.slib.controls.fields;
 
 import com.dlsc.gemsfx.SearchField;
 import com.github.Snuslyk.slib.factory.AllowPopup;
-import com.github.Snuslyk.slib.factory.TextFieldWrapper;
+import com.github.Snuslyk.slib.factory.AbstractField;
 import com.github.Snuslyk.slib.util.StylesUtil;
 import com.sun.istack.Nullable;
 import javafx.collections.FXCollections;
@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.*;
 
-public class ChoosingTextField implements TextFieldWrapper, AllowPopup {
-    private static final int descFontSize = 20;
+public class ChoosingAbstractField extends AbstractField implements AllowPopup {
+    protected static final int descFontSize = 20;
     private static final int mainFontSize = 20;
     private static final int Hmargin = 20;
     private static final int Vmargin = 5;
@@ -48,7 +48,7 @@ public class ChoosingTextField implements TextFieldWrapper, AllowPopup {
 
     public ChoosingSearchField searchField;
 
-    public ChoosingTextField(String key, String text, String descText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
+    public ChoosingAbstractField(String key, String text, String descText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
         this.key = key;
         this.items = items;
         this.errorSample = errorSample;
@@ -74,7 +74,7 @@ public class ChoosingTextField implements TextFieldWrapper, AllowPopup {
 
         System.out.println(items.get());
 
-        searchField = new ChoosingTextField.ChoosingSearchField(outOfBounds);
+        searchField = new ChoosingAbstractField.ChoosingSearchField(outOfBounds);
         searchField.setMinHeight(height);
         searchField.setMaxHeight(height);
 
