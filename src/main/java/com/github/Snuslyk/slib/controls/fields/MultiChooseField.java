@@ -2,6 +2,7 @@ package com.github.Snuslyk.slib.controls.fields;
 
 import com.dlsc.gemsfx.SearchField;
 import com.dlsc.gemsfx.TagsField;
+import com.github.Snuslyk.slib.factory.AbstractTextField;
 import com.github.Snuslyk.slib.factory.AllowPopup;
 import com.github.Snuslyk.slib.factory.AbstractField;
 import com.github.Snuslyk.slib.util.StylesUtil;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 import static com.github.Snuslyk.slib.factory.ButtonFactory.descriptionTextFieldOptions;
 import static com.github.Snuslyk.slib.factory.ButtonFactory.errorSetter;
 
-public class MultiChooseField extends AbstractField implements AllowPopup {
+public class MultiChooseField extends AbstractTextField implements AllowPopup {
 
     private static final int descFontSize = 20;
     private static final int mainFontSize = 20;
@@ -37,27 +38,16 @@ public class MultiChooseField extends AbstractField implements AllowPopup {
     private static final int height = 40;
     private static final int popUpHeight = 99;
 
-    private Supplier<ObservableList<String>> items;
-    private final String key;
+    private final Supplier<ObservableList<String>> items;
     private Pane outOfBounds;
 
-    private VBox field;
-    private final String errorSample;
-    private final Label errorLabel = new Label();
-    private final String text;
-    private final String descText;
     private String textFieldText;
-    private boolean isError;
 
     public ChoosingTagsField searchField;
 
-    public MultiChooseField(String key, String text, String descText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
-        this.key = key;
+    public MultiChooseField(String key, String text, String descriptionText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
+        super(text, descriptionText, key, errorSample, textFieldText);
         this.items = items;
-        this.errorSample = errorSample;
-        this.text = text;
-        this.descText = descText;
-        this.textFieldText = textFieldText;
     }
 
     public void register(Pane container, Pane outOfBounds){
@@ -96,7 +86,7 @@ public class MultiChooseField extends AbstractField implements AllowPopup {
         arrow.setStrokeWidth(1.0);
 
         // Label с описанием
-        Label descriptionLabel = new Label(descText);
+        Label descriptionLabel = new Label(descriptionText);
         descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
 
         // Обновление стрелки в зависимости от состояния ChoiceBox (раскрыт/не раскрыт)
@@ -149,11 +139,6 @@ public class MultiChooseField extends AbstractField implements AllowPopup {
     @Override
     public boolean getError() {
         return isError;
-    }
-
-    @Override
-    public String getKey() {
-        return key;
     }
 
     public List<String> getItems() {

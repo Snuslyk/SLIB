@@ -1,6 +1,7 @@
 package com.github.Snuslyk.slib.controls.fields;
 
 import com.github.Snuslyk.slib.factory.AbstractField;
+import com.github.Snuslyk.slib.factory.AbstractTextField;
 import com.github.Snuslyk.slib.util.StylesUtil;
 import com.sun.istack.Nullable;
 import javafx.collections.ObservableList;
@@ -19,37 +20,27 @@ import java.util.function.Supplier;
 import static com.github.Snuslyk.slib.factory.ButtonFactory.descriptionTextFieldOptions;
 import static com.github.Snuslyk.slib.factory.ButtonFactory.errorSetter;
 
-public class ChoiceBoxField extends AbstractField {
+public class ChoiceBoxField extends AbstractTextField {
     private static final int descFontSize = 20;
     private static final int Hmargin = 20;
     private static final int mainFontSize = 20;
     private static final int Vmargin = 5;
     private static final int height = 40;
 
-    private VBox field;
     private ComboBox<String> comboBox;
-    private final boolean isError = false;
-    private final Label errorLabel = new Label();
     private final Supplier<ObservableList<String>> items;
 
-    private final String errorSample;
-    private final String descText;
-    private String textFieldText;
-    private final String key;
-
-    public ChoiceBoxField(String key, String descText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
+    public ChoiceBoxField(String key, String descriptionText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
+        super("", descriptionText, key, errorSample, textFieldText);
         this.items = items;
-        this.key = key;
-        this.errorSample = errorSample;
-        this.descText = descText;
-        this.textFieldText = textFieldText;
+        isError = false;
     }
 
     @Override
     public void register(Pane container) {
         field = new VBox();
         field.setSpacing(Vmargin);
-        comboBox = new ComboBox<String>();
+        comboBox = new ComboBox<>();
         comboBox.setValue(textFieldText);
 
         comboBox.setItems(items.get());
@@ -106,7 +97,7 @@ public class ChoiceBoxField extends AbstractField {
         });
 
         // Label с описанием
-        Label descriptionLabel = new Label(descText);
+        Label descriptionLabel = new Label(descriptionText);
         descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
 
         // Контейнер для размещения ChoiceBox и стрелки
@@ -133,10 +124,6 @@ public class ChoiceBoxField extends AbstractField {
         return comboBox.getValue();
     }
 
-    public void setTextFieldText(String text) {
-        textFieldText = text;
-    }
-
     @Override
     public void setError(String error) {
         errorSetter(error, isError, errorLabel, field, descFontSize, Hmargin);
@@ -150,10 +137,5 @@ public class ChoiceBoxField extends AbstractField {
     @Override
     public boolean getError() {
         return isError;
-    }
-
-    @Override
-    public String getKey() {
-        return key;
     }
 }

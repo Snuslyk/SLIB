@@ -1,6 +1,7 @@
 package com.github.Snuslyk.slib.controls.fields;
 
 import com.dlsc.gemsfx.SearchField;
+import com.github.Snuslyk.slib.factory.AbstractTextField;
 import com.github.Snuslyk.slib.factory.AllowPopup;
 import com.github.Snuslyk.slib.factory.AbstractField;
 import com.github.Snuslyk.slib.util.StylesUtil;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 
 import static com.github.Snuslyk.slib.factory.ButtonFactory.*;
 
-public class ChoosingAbstractField extends AbstractField implements AllowPopup {
+public class ChoosingAbstractField extends AbstractTextField implements AllowPopup {
     protected static final int descFontSize = 20;
     private static final int mainFontSize = 20;
     private static final int Hmargin = 20;
@@ -35,26 +36,13 @@ public class ChoosingAbstractField extends AbstractField implements AllowPopup {
     private static final int popUpHeight = 99;
 
     private final Supplier<ObservableList<String>> items;
-    private final String key;
     private Pane outOfBounds;
-
-    public VBox field;
-    public final String errorSample;
-    private final Label errorLabel = new Label();
-    private final String text;
-    private final String descText;
-    private String textFieldText;
-    private boolean isError;
 
     public ChoosingSearchField searchField;
 
-    public ChoosingAbstractField(String key, String text, String descText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
-        this.key = key;
+    public ChoosingAbstractField(String key, String text, String descriptionText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
+        super(text, descriptionText, key, errorSample, textFieldText);
         this.items = items;
-        this.errorSample = errorSample;
-        this.text = text;
-        this.descText = descText;
-        this.textFieldText = textFieldText;
     }
 
     public void register(Pane container, Pane outOfBounds){
@@ -86,10 +74,10 @@ public class ChoosingAbstractField extends AbstractField implements AllowPopup {
             }
         });
 
-        Label descriptionText = new Label(descText);
-        descriptionTextFieldOptions(descriptionText, descFontSize, Hmargin);
+        Label descriptionLabel = new Label(descriptionText);
+        descriptionTextFieldOptions(descriptionLabel, descFontSize, Hmargin);
 
-        textFieldOptions(text, mainFontSize, Hmargin, height, textFieldText, searchField.getEditor());
+        textFieldOptions(promptText, mainFontSize, Hmargin, height, textFieldText, searchField.getEditor());
         if (vBox == null)
             searchField.prefWidthProperty().bind(container.widthProperty());
         else
@@ -112,7 +100,7 @@ public class ChoosingAbstractField extends AbstractField implements AllowPopup {
             }
         }));
 
-        field.getChildren().addAll(descriptionText, buttonContainer);
+        field.getChildren().addAll(descriptionLabel, buttonContainer);
         if (vBox == null)
             container.getChildren().add(field);
         else
@@ -123,11 +111,6 @@ public class ChoosingAbstractField extends AbstractField implements AllowPopup {
     @Override
     public String getTextFieldText() {
         return searchField.getText();
-    }
-
-    @Override
-    public void setTextFieldText(String text) {
-        textFieldText = text;
     }
 
     @Override
@@ -143,11 +126,6 @@ public class ChoosingAbstractField extends AbstractField implements AllowPopup {
     @Override
     public boolean getError() {
         return isError;
-    }
-
-    @Override
-    public String getKey() {
-        return key;
     }
 
     public List<String> getItems() {

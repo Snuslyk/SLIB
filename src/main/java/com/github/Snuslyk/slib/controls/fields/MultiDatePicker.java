@@ -38,11 +38,6 @@ public class MultiDatePicker extends AbstractField {
     private static final int Vmargin = 5;
     private static final int height = 38;
 
-    private VBox field;
-
-    private final Label errorLabel = new Label();
-
-    private final Boolean isError = false;
     private final String descText;
     private String textFieldText;
     private final String key;
@@ -58,6 +53,7 @@ public class MultiDatePicker extends AbstractField {
 
         this.selectedDates = FXCollections.observableSet(new TreeSet<>());
         this.datePicker = new DatePicker();
+        isError = false;
     }
 
     @Override
