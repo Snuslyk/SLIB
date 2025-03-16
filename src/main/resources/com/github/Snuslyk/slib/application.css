@@ -1,13 +1,3 @@
-@font-face {
-    font-family: "Futura Cyrillic Book";
-    src: url('fonts/FuturaPT-Book.ttf');
-}
-
-@font-face {
-    font-family: "Futura Cyrillic Demi";
-    src: url('fonts/FuturaPT-Demi.ttf');
-}
-
 .root {
     -fx-background-color: #121212;
 }

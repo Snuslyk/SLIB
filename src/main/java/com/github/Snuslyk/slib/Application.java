@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class Application extends javafx.application.Application {
 
@@ -18,6 +19,8 @@ public class Application extends javafx.application.Application {
         FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("hello-view.fxml"));
         fxmlLoader.setController(controller);
         Scene scene = new Scene(fxmlLoader.load());
+
+        scene.getStylesheets().add(Objects.requireNonNull(Application.class.getResource("fonts.css")).toExternalForm());
 
         stageSettings(stage, scene);
 

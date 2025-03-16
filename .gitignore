@@ -38,3 +38,4 @@ build/
 .DS_Store
 out/artifacts/SLIB_jar/SLIB.jar
 out/artifacts/SLIB_jar/SLIB.jar
+.idea/artifacts/SLIB_jar.xml
