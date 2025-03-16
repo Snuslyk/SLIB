@@ -2,13 +2,12 @@ package com.github.Snuslyk.slib.factory;
 
 import javafx.css.PseudoClass;
 import javafx.event.Event;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleButton;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class TableSelectFormType extends TableFormType {
 
@@ -43,7 +42,29 @@ public class TableSelectFormType extends TableFormType {
             row.setStyle("");
         } else {
             selectedRows.add(row);
-            row.setStyle("-fx-background-color: #FF9858");
+            row.setStyle("-fx-background-color: #1C1C1C");
         }
+    }
+
+    @Override
+    protected void setupButtonColumn(TableView<Map<String, Object>> tableView) {
+        TableColumn<Map<String, Object>, Void> buttonColumn = new TableColumn<>();
+        buttonColumn.setResizable(false);
+        buttonColumn.setReorderable(false);
+        buttonColumn.setSortable(false);
+        buttonColumn.setCellFactory(col -> {
+            ButtonCell buttonCell = new ButtonCell();
+            ToggleButton button = buttonCell.getButton();
+            button.hoverProperty().addListener((observableValue, aBoolean, t1) -> {
+                if (t1) {
+                    button.setStyle("-fx-background-color: #121212");
+                } else {
+                    button.setStyle("-fx-background-color: transparent");
+                }
+            });
+            return buttonCell;
+        });
+
+        tableView.getColumns().add(buttonColumn);
     }
 }
