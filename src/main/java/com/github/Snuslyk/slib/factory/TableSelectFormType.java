@@ -1,6 +1,7 @@
 package com.github.Snuslyk.slib.factory;
 
 import javafx.css.PseudoClass;
+import javafx.event.Event;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 
@@ -20,45 +21,29 @@ public class TableSelectFormType extends TableFormType {
         tableView.setRowFactory(tv -> {
             TableRow<Map<String, Object>> row = new TableRow<>();
 
-            row.hoverProperty().addListener(((observableValue, aBoolean, t1) -> {
-                if (!row.getPseudoClassStates().contains(filled) || selectedRows.contains(row)) return;
-                if (t1) {
-                    row.setStyle("-fx-background-color: #1C1C1C");
-                } else {
-                    row.setStyle("");
+            row.hoverProperty().addListener((obs, wasHover, isHover) -> {
+                if (row.getPseudoClassStates().contains(filled) && !selectedRows.contains(row)) {
+                    row.setStyle(isHover ? "-fx-background-color: #1C1C1C" : "");
                 }
-            }));
-            row.selectedProperty().addListener(((observableValue, aBoolean, t1) -> {
-                if (!row.getPseudoClassStates().contains(filled)) return;
-                if (aBoolean) {
-                    if (!selectedRows.contains(row)) {
-                        System.out.println("Sdadsa");
-                        selectedRows.remove(row);
-                        row.setStyle("");
-                        return;
-                    }
-                    else {
-                        selectedRows.add(row);
-                        row.setStyle("-fx-text-fill: black");
-                        row.setStyle("-fx-background-color: #FF9858");
-                    }
-                    return;
-                }
-                if (selectedRows.contains(row)) {
-                    System.out.println("Sdadsa");
-                    selectedRows.remove(row);
-                    row.setStyle("");
-                    return;
-                }
-                else {
-                    selectedRows.add(row);
-                    row.setStyle("-fx-text-fill: black");
-                    row.setStyle("-fx-background-color: #FF9858");
-                }
-            }));
+            });
+
+            row.setOnMouseClicked(event -> rowClick(row, filled));
 
             row.itemProperty().addListener((obs, oldItem, newItem) -> rowListener(row, filled, newItem));
             return row;
         });
+    }
+
+    private void rowClick(TableRow<Map<String, Object>> row, PseudoClass filled) {
+        if (!row.getPseudoClassStates().contains(filled)) return;
+
+        boolean isSelected = selectedRows.contains(row);
+        if (isSelected) {
+            selectedRows.remove(row);
+            row.setStyle("");
+        } else {
+            selectedRows.add(row);
+            row.setStyle("-fx-background-color: #FF9858");
+        }
     }
 }
