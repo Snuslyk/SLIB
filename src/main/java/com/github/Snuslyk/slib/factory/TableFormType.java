@@ -190,7 +190,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
             filters.setMinHeight(0);
             filters.setMaxHeight(0);
         } else {
-            tableWithFiltersContainer.setPadding(new Insets(20, 0, 0, 0));
+            tableWithFiltersContainer.setPadding(new Insets(17, 0, 0, 0));
             filters.setMinHeight(40);
             filters.setMaxHeight(40);
         }
