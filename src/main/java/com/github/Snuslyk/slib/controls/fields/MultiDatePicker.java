@@ -42,12 +42,9 @@ public class MultiDatePicker extends AbstractField {
     private String textFieldText;
     private final String key;
 
-    public final String errorSample;
-
-    public MultiDatePicker(String key, String descText, String errorSample, boolean withRange, @Nullable String textFieldText) {
+    public MultiDatePicker(String key, String descText, boolean withRange, @Nullable String textFieldText) {
         this.descText = descText;
         this.key = key;
-        this.errorSample = errorSample;
         this.withRange = withRange;
         this.textFieldText = textFieldText;
 

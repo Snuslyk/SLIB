@@ -22,8 +22,8 @@ public class AbstractAreaField extends AbstractTextField {
 
     private TextArea textArea;
 
-    public AbstractAreaField(String text, String descText, String key, String errorSample, @Nullable String textFieldText) {
-        super(text, descText, key, errorSample, textFieldText);
+    public AbstractAreaField(String text, String descText, String key,  @Nullable String textFieldText) {
+        super(text, descText, key, textFieldText);
         isError = false;
     }
 

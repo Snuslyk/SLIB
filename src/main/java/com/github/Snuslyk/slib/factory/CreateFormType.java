@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.github.Snuslyk.slib.factory.ButtonFactory.validateChecker;
-
 public class CreateFormType<T> extends FormType implements FormWithType<CreateFormType<?>> {
 
     private final List<AbstractField> fields = new ArrayList<>();
@@ -56,34 +54,34 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
         return this;
     }
 
-    public CreateFormType<T> textField(String key, String name, String description, String errorSample, @Nullable String textFieldText){
-        fields.add(new BasicAbstractField(key, name, description, errorSample, textFieldText));
+    public CreateFormType<T> textField(String key, String name, String description, @Nullable String textFieldText){
+        fields.add(new BasicAbstractField(key, name, description, textFieldText));
         return this;
     }
 
-    public CreateFormType<T> textArea(String key, String name, String description, String errorSample, @Nullable String textFieldText){
-        fields.add(new AbstractAreaField(key, name, description, errorSample, textFieldText));
+    public CreateFormType<T> textArea(String key, String name, String description, @Nullable String textFieldText){
+        fields.add(new AbstractAreaField(key, name, description, textFieldText));
         return this;
     }
 
-    public CreateFormType<T> chooseField(String key, String name, String description, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
-        fields.add(new ChoosingAbstractField(key, name, description, errorSample, items, textFieldText));
+    public CreateFormType<T> chooseField(String key, String name, String description, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
+        fields.add(new ChoosingAbstractField(key, name, description, items, textFieldText));
         return this;
     }
-    public CreateFormType<T> datePickerField(String key, String description, String errorSample, @Nullable String textFieldText){
-        fields.add(new DatePickerField(key, description, errorSample, textFieldText));
+    public CreateFormType<T> datePickerField(String key, String description,  @Nullable String textFieldText){
+        fields.add(new DatePickerField(key, description, textFieldText));
         return this;
     }
-    public CreateFormType<T> choiceBox(String key, String description, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
-        fields.add(new ChoiceBoxField(key, description, errorSample, items, textFieldText));
+    public CreateFormType<T> choiceBox(String key, String description, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
+        fields.add(new ChoiceBoxField(key, description, items, textFieldText));
         return this;
     }
-    public CreateFormType<T> multiChooseField(String key, String name, String description, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
-        fields.add(new MultiChooseField(key, name, description, errorSample, items, textFieldText));
+    public CreateFormType<T> multiChooseField(String key, String name, String description, Supplier<ObservableList<String>> items, @Nullable String textFieldText){
+        fields.add(new MultiChooseField(key, name, description, items, textFieldText));
         return this;
     }
-    public CreateFormType<T> multiDatePicker(String key, String description, String errorSample, boolean withRange, @Nullable String textFieldText){
-        fields.add(new MultiDatePicker(key, description, errorSample, withRange, textFieldText));
+    public CreateFormType<T> multiDatePicker(String key, String description, boolean withRange, @Nullable String textFieldText){
+        fields.add(new MultiDatePicker(key, description, withRange, textFieldText));
         return this;
     }
 
@@ -162,15 +160,12 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
 
     @Transactional
     private void handleSaveAction(List<AbstractField> fields, CreateSupplier<?> supplier) {
-        if (validateChecker(fields.toArray(new AbstractField[0]))) {
-            System.out.println("ОШИБКА: Проверьте введенные данные.");
-        } else {
-            Object object = supplier.get(createFields.supplier().get(), fields);
-            if (object != null) {
-                HibernateUtil.merge(object);
-                optionToggleGroup.selectToggle(optionToggleGroup.getToggles().get(createReturnOption));
-                controller.modelUpdate();
-            }
-        }
+        Object object = supplier.get(createFields.supplier().get(), fields);
+
+        if (object == null) return;
+
+        HibernateUtil.merge(object);
+        optionToggleGroup.selectToggle(optionToggleGroup.getToggles().get(createReturnOption));
+        controller.modelUpdate();
     }
 }

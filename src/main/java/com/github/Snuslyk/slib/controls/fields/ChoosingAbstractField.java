@@ -40,8 +40,8 @@ public class ChoosingAbstractField extends AbstractTextField implements AllowPop
 
     public ChoosingSearchField searchField;
 
-    public ChoosingAbstractField(String key, String text, String descriptionText, String errorSample, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
-        super(text, descriptionText, key, errorSample, textFieldText);
+    public ChoosingAbstractField(String key, String text, String descriptionText, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
+        super(text, descriptionText, key, textFieldText);
         this.items = items;
     }
 
