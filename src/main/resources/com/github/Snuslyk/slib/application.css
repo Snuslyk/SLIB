@@ -126,6 +126,11 @@
     -fx-font-family: "Futura Cyrillic Book";
 }
 
+.table-view .column-header-background .filler {
+    -fx-background-radius: 8 8 0 0;
+    -fx-background-color: #242424;
+}
+
 .tableD .column-header-background {
     -fx-background-radius: 8 8 0 0;
     -fx-background-color: #242424;

@@ -137,7 +137,7 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
         addScrollPane.setAlignment(Pos.TOP_CENTER);
         scrollPane.prefHeightProperty().bind(addScrollPane.heightProperty());
 
-        Controller.setAnchors(addScrollPane, 181.0, 149.0, 0.0, 0.0);
+        Controller.setAnchors(addScrollPane, 88.0, 92.0, 0.0, 0.0);
 
         List<AbstractField> fields = createFields.fields();
         //fields.forEach(field -> field.setTextFieldText("")); чо? зачем?

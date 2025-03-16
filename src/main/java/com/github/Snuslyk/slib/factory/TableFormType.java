@@ -334,7 +334,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
 
     private void adjustTableColumnsWidth(double totalWidth) {
         if (tableView.getColumns().isEmpty()) return;
-        double columnWidth = totalWidth / tableView.getColumns().size();
+        double columnWidth = (totalWidth - 12) / tableView.getColumns().size();
         for (TableColumn<?, ?> column : tableView.getColumns()) {
             column.setPrefWidth(columnWidth);
             column.setMinWidth(100);
