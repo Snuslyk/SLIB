@@ -164,7 +164,7 @@
 .tableD .button-cell .toggle-button {
     -fx-border-radius: 4;
     -fx-background-radius: 4;
-    -fx-background-color: #121212;
+    -fx-background-color: transparent;
     -fx-cursor: hand;
 }
 

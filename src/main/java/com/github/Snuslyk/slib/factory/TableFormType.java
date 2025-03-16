@@ -176,6 +176,8 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
 
     private HBox addFilterButtons(){
         HBox filters = new HBox();
+        filters.setSpacing(38);
+        filters.setPadding(new Insets(0, 20, 0, 0));
 
         for (FilterButton filterButton : filterButtons) {
             filterButton.button().register(filters, rootContainer);
@@ -216,7 +218,7 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
     }
 
 
-    private void setupButtonColumn(TableView<Map<String, Object>> tableView) {
+    protected void setupButtonColumn(TableView<Map<String, Object>> tableView) {
         TableColumn<Map<String, Object>, Void> buttonColumn = new TableColumn<>();
         buttonColumn.setResizable(false);
         buttonColumn.setReorderable(false);
@@ -476,6 +478,10 @@ public class TableFormType extends FormType implements FormWithType<TableFormTyp
             button.setSelected(false);
             rightSideContainer.getChildren().remove(editPopUp);
             lastSelectedButton = null;
+        }
+
+        public ToggleButton getButton() {
+            return button;
         }
 
         @Override
