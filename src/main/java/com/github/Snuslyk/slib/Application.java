@@ -20,8 +20,6 @@ public class Application extends javafx.application.Application {
         fxmlLoader.setController(controller);
         Scene scene = new Scene(fxmlLoader.load());
 
-        scene.getStylesheets().add(Objects.requireNonNull(Application.class.getResource("fonts.css")).toExternalForm());
-
         stageSettings(stage, scene);
 
         HibernateUtil.getSessionFactory().openSession().close();
