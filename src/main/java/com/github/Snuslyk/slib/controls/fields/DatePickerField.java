@@ -43,8 +43,8 @@ public class DatePickerField extends AbstractTextField {
         SVGPath svgIcon = createCalendarIcon();
         HBox buttonContainer = createButtonContainer(svgIcon);
         setupDatePickerClickHandler();
-        handleInitialDateValue();
         assembleComponents(descriptionLabel, buttonContainer);
+        handleInitialDateValue();
         addToContainer(container);
     }
 
