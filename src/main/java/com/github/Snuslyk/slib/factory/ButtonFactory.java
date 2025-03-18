@@ -68,7 +68,7 @@ public class ButtonFactory {
             errorLabel.setPadding(new Insets(0, 0, 0, Hmargin));
             errorLabel.setStyle("-fx-text-fill: rgb(239, 48, 48);");
             if (!field.getChildren().contains(errorLabel)) {
-                field.getChildren().add(-1, errorLabel);
+                field.getChildren().add(errorLabel);
             }
         } else {
             isError = false;
