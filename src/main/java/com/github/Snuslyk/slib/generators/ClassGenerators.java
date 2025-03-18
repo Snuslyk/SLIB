@@ -41,14 +41,14 @@ public class ClassGenerators {
 
         StringBuilder fields = new StringBuilder();
         for (HF hf : hfs) {
-            fields.append(hf.clazz().getSimpleName()).append(" ").append(hf.name()).append("\n");
+            fields.append("public ").append(hf.clazz().getSimpleName()).append(" ").append(hf.name()).append(";\n");
         }
         code = code.replace("{FIELDS}", fields.toString());
         String tableName = name.substring(0, 1).toLowerCase() + name.substring(1);
         code = code.replace("{TABLE}", tableName);
 
         try {
-            Files.writeString(new File(name+".class").toPath(), code);
+            Files.writeString(new File(name+".java").toPath(), code);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
