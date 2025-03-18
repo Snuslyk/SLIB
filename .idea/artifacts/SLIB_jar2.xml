@@ -1,6 +1,5 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="SLIB:jar2">
-    <output-path>$PROJECT_DIR$</output-path>
     <root id="archive" name="SLIB.jar">
       <element id="module-output" name="SLIB" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar" path-in-jar="/" />
