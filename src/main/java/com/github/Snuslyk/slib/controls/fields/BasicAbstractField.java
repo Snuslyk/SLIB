@@ -21,7 +21,7 @@ public class BasicAbstractField extends AbstractTextField {
     private TextField textField;
 
     public BasicAbstractField(String key, String text, String descriptionText,  @Nullable String textFieldText) {
-        super(text, descriptionText, key, textFieldText);
+        super(key, text, descriptionText, textFieldText);
     }
 
     @Override

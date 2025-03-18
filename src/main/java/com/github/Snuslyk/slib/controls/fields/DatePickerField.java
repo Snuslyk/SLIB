@@ -31,7 +31,7 @@ public class DatePickerField extends AbstractTextField {
     private DatePicker datePicker;
 
     public DatePickerField(String key, String descriptionText, @Nullable String textFieldText) {
-        super("", descriptionText, key, textFieldText);
+        super(key, "", descriptionText, textFieldText);
         isError = false;
     }
 

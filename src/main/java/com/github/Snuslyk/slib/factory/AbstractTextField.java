@@ -12,7 +12,7 @@ public abstract class AbstractTextField extends AbstractField {
     protected String key;
     protected String textFieldText;
 
-    public AbstractTextField(String promptText, String descriptionText, String key, String textFieldText) {
+    public AbstractTextField(String key, String promptText, String descriptionText, String textFieldText) {
         this.promptText = promptText;
         this.descriptionText = descriptionText;
         this.key = key;

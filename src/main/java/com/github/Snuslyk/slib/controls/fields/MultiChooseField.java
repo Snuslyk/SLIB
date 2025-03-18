@@ -46,7 +46,7 @@ public class MultiChooseField extends AbstractTextField implements AllowPopup {
     public ChoosingTagsField searchField;
 
     public MultiChooseField(String key, String text, String descriptionText, Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
-        super(text, descriptionText, key, textFieldText);
+        super(key, text, descriptionText, textFieldText);
         this.items = items;
     }
 

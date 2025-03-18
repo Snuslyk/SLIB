@@ -31,7 +31,7 @@ public class ChoiceBoxField extends AbstractTextField {
     private final Supplier<ObservableList<String>> items;
 
     public ChoiceBoxField(String key, String descriptionText,  Supplier<ObservableList<String>> items, @Nullable String textFieldText) {
-        super("", descriptionText, key, textFieldText);
+        super(key, "", descriptionText, textFieldText);
         this.items = items;
         isError = false;
     }
