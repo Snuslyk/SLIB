@@ -25,7 +25,7 @@ public class FormGenerators {
                 "                        .instanceSupplier({CLASS}::new)\n" +
                 "\n" +
                 "                        .createSupplier((object, fields) -> {\n" +
-                "                            {CLASS} {LOWER} = (CLASS) object;\n" +
+                "                            {CLASS} {LOWER} = ({CLASS}) object;\n" +
                 "                            for (AbstractField field : fields) {\n" +
                 "                                switch (field.getKey()) {\n" +
                 "                                    case \"\" -> {\n" +
