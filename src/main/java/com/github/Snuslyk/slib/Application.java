@@ -32,16 +32,25 @@ public class Application extends javafx.application.Application {
     // Этот метод нужен для добавления кастомных опций контроллеру, чтобы изменять его - @override
     public void options(Controller controller) {
         /* Для примера:
-         controller.setSectionList(List.of(new Elective("Развлечения"), new Elective("Просвещение")));
-         controller.setObjectsList(List.of(
-                List.of(new Elective("Мероприятия"), new Elective("Виды мероприятий"), new Elective("Виды заявок"), new Elective("Заявки")),
-                List.of(new Elective("Памятники"), new Elective("Музеи"))
+         HibernateUtil.addAnnotatedClass(ForestProducts.class);
+         HibernateUtil.getSessionFactory();
+
+         Button forestButton = new Button("Виды лесопродукции", forestProducts());
+
+        controller.setSectionList("Коммерческая служба","Служба производства","Служба технолога","Персонал");
+        controller.addObjectList(forestButton);
+        controller.addObjectList(forestButton);
+        controller.addObjectList(forestButton);
+        controller.addObjectList();
         )); */
     }
 
     public void stageSettings(Stage stage, Scene scene){
         /* Для примера:
-        stage.setTitle("Hello!");
+        stage.setTitle("lesopilka");
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon.png"))));
+        stage.setMinWidth(400);
+        stage.setMinHeight(400);
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
