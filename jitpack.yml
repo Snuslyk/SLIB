@@ -1,2 +1,2 @@
 install:
-  - cp SLIB.jar ./build/libs
+  - cp SLIB.jar /target
