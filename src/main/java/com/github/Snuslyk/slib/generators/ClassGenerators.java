@@ -6,7 +6,7 @@ import java.nio.file.Files;
 
 public class ClassGenerators {
 
-    public static void generateHibernateObject(Class<?> mainClass, String name, HF... hfs) {
+    public static void generateHibernateObject(Class<?> mainClass, String name, String... f) {
         String packageName = mainClass.getPackage().getName();
 
         String code = "package {PACKAGE};\n" +
@@ -40,8 +40,8 @@ public class ClassGenerators {
         code = code.replace("{NAME}", name);
 
         StringBuilder fields = new StringBuilder();
-        for (HF hf : hfs) {
-            fields.append("public ").append(hf.clazz().getSimpleName()).append(" ").append(hf.name()).append(";\n");
+        for (String field : f) {
+            fields.append("public ").append(field).append(";\n");
         }
         code = code.replace("{FIELDS}", fields.toString());
         String tableName = name.substring(0, 1).toLowerCase() + name.substring(1);
