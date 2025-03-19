@@ -20,12 +20,12 @@ import java.util.function.Supplier;
 
 public class CreateFormType<T> extends FormType implements FormWithType<CreateFormType<?>> {
 
-    private final List<AbstractField> fields = new ArrayList<>();
-    private Supplier<T> instanceSupplier;
-    CreateSupplier<T> createSupplier;
-    private Class<T> clazz;
-    private CreateFields<T> createFields;
-    private int createReturnOption = 0;
+    protected final List<AbstractField> fields = new ArrayList<>();
+    protected Supplier<T> instanceSupplier;
+    protected CreateSupplier<T> createSupplier;
+    protected Class<T> clazz;
+    protected CreateFields<T> createFields;
+    protected int createReturnOption = 0;
 
     @Override
     public CreateFormType<T> name(String name) {
@@ -100,11 +100,11 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
         T get(Object object, List<AbstractField> fields);
     }
 
-    private static Controller controller;
-    private ToggleGroup optionToggleGroup;
-    private VBox createRowContainer;
-    private final ScrollPane scrollPane = new ScrollPane();
-    private final VBox addScrollPane = new VBox(scrollPane);
+    protected static Controller controller;
+    protected ToggleGroup optionToggleGroup;
+    protected VBox createRowContainer;
+    protected final ScrollPane scrollPane = new ScrollPane();
+    protected final VBox addScrollPane = new VBox(scrollPane);
 
     @Override
     public void setup(SetupData data) {
@@ -148,7 +148,7 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
         }
     }
 
-    private void addSaveButton(List<AbstractField> fields, CreateSupplier<?> supplier) {
+    protected void addSaveButton(List<AbstractField> fields, CreateSupplier<?> supplier) {
         javafx.scene.control.Button create = new javafx.scene.control.Button("Сохранить");
         StylesUtil.add(create, "save-button");
         create.setPrefSize(720, 39);
@@ -159,7 +159,7 @@ public class CreateFormType<T> extends FormType implements FormWithType<CreateFo
     }
 
     @Transactional
-    private void handleSaveAction(List<AbstractField> fields, CreateSupplier<?> supplier) {
+    protected void handleSaveAction(List<AbstractField> fields, CreateSupplier<?> supplier) {
         Object object = supplier.get(createFields.supplier().get(), fields);
 
         if (object == null) return;
