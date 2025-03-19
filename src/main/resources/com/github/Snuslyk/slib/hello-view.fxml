@@ -31,7 +31,6 @@
                         <SVGPath content="M0.675113 4.91261C0.300307 5.29423 0.300307 5.90577 0.675114 6.28739V6.28739C1.05959 6.67886 1.69041 6.67886 2.07489 6.28739L5.5 2.8L8.92511 6.28739C9.30959 6.67886 9.94041 6.67886 10.3249 6.28739V6.28739C10.6997 5.90577 10.6997 5.29423 10.3249 4.91261L6.21345 0.72642C5.82152 0.327364 5.17848 0.327365 4.78655 0.72642L0.675113 4.91261Z" fill="WHITE" layoutX="325.0" layoutY="16.0" mouseTransparent="true" />
                      </children>
                   </AnchorPane>
-<<<<<<< Updated upstream
                   <VBox prefHeight="572.0" prefWidth="399.0" spacing="12.0">
                      <children>
                         <Label styleClass="object-label" stylesheets="@application.css" text="Объекты" textFill="WHITE">
@@ -53,25 +52,6 @@
                         </ScrollPane>
                      </children>
                   </VBox>
-=======
-                  <ScrollPane hbarPolicy="NEVER" prefHeight="627.0" prefWidth="399.0">
-                     <content>
-                        <VBox prefHeight="200.0" prefWidth="399.0" spacing="12.0">
-                           <children>
-                              <Label styleClass="object-label" stylesheets="@application.css" text="Объекты" textFill="WHITE">
-                                 <font>
-                                    <Font name="Futura Cyrillic Demi" size="24.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets left="64.0" />
-                                 </VBox.margin>
-                              </Label>
-                              <VBox fx:id="objectContainer" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="8.0" />
-                           </children>
-                        </VBox>
-                     </content>
-                  </ScrollPane>
->>>>>>> Stashed changes
                </children>
                <opaqueInsets>
                   <Insets />
